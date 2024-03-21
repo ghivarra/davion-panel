@@ -1,13 +1,13 @@
 #-------------------------
 # Config Files
 #-------------------------
-Config/App.php
-Config/Cookie.php
-Config/Database.php
-Config/Email.php
-Config/Session.php
-Config/Security.php
-Config/Encryption.php
+app/Config/App.php
+app/Config/Cookie.php
+app/Config/Database.php
+app/Config/Email.php
+app/Config/Session.php
+app/Config/Security.php
+app/Config/Encryption.php
 
 # OS X
 .DS_Store
