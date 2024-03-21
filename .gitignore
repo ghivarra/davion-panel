@@ -8,6 +8,8 @@ app/Config/Email.php
 app/Config/Session.php
 app/Config/Security.php
 app/Config/Encryption.php
+app/Config/Cache.php
+app/Config/ContentSecurityPolicy.php
 
 # OS X
 .DS_Store
