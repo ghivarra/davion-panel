@@ -11,6 +11,11 @@ app/Config/Encryption.php
 app/Config/Cache.php
 app/Config/ContentSecurityPolicy.php
 
+#-------------------------
+# Storage Files
+#-------------------------
+writable/app/*
+
 # Logs
 logs
 *.log
