@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class AdminModule extends Model
+class AdminModuleModel extends Model
 {
     protected $table            = 'admin_module';
     protected $primaryKey       = 'id';

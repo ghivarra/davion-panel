@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class AdminMenuGroupList extends Model
+class AdminMenuListModel extends Model
 {
     protected $table            = 'admin_menu_group_list';
     protected $primaryKey       = 'id';
