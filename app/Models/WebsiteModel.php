@@ -41,4 +41,26 @@ class WebsiteModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    // public functions
+    public function getAllData() : array
+    {
+        $allData = $this->select(['name', 'value'])->find();
+
+        if (empty($allData))
+        {
+            return [];
+        }
+        
+        foreach ($allData as $item):
+
+            $result[$item['name']] = $item['value'];
+
+        endforeach;
+
+        // return
+        return $result;
+    }
+
+    //======================================================================================
 }
