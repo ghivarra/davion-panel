@@ -8,6 +8,9 @@ class Home extends BaseController
 {
     public function index(): string
     {
+        $db = db_connect();
+        dd($db->DBDriver);
+
         $vueIgniter = new VueIgniter();
         return $vueIgniter->render('MyComponent', [
             'ucing' => 'oyok',
