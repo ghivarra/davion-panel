@@ -115,7 +115,7 @@ class Admin extends Migration
         $this->forge->addKey('deleted_at');
 
         // add foreign key
-        $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id');
+        $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id', 'CASCADE', 'RESTRICT');
 
         // create table
         $this->forge->createTable($this->tableName, true);

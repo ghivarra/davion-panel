@@ -108,7 +108,7 @@ class AdminMenu extends Migration
         $this->forge->addKey('deleted_at');
 
         // add foreign key
-        $this->forge->addForeignKey('admin_menu_group_id', 'admin_menu_group', 'id');
+        $this->forge->addForeignKey('admin_menu_group_id', 'admin_menu_group', 'id', 'CASCADE', 'SET NULL');
 
         // create table
         $this->forge->createTable($this->tableName, true);

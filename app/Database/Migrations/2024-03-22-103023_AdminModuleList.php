@@ -83,8 +83,8 @@ class AdminModuleList extends Migration
         $this->forge->addKey('type');
 
         // add foreign key
-        $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id');
-        $this->forge->addForeignKey('admin_module_id', 'admin_module', 'id');
+        $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('admin_module_id', 'admin_module', 'id', 'CASCADE', 'CASCADE');
 
         // create table
         $this->forge->createTable($this->tableName, true);

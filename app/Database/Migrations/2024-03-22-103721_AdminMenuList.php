@@ -55,8 +55,8 @@ class AdminMenuList extends Migration
         $this->forge->addKey('type');
 
         // add foreign key
-        $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id');
-        $this->forge->addForeignKey('admin_menu_id', 'admin_menu', 'id');
+        $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('admin_menu_id', 'admin_menu', 'id', 'CASCADE', 'CASCADE');
 
         // create table
         $this->forge->createTable($this->tableName, true);
