@@ -2,6 +2,7 @@ import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import { fileURLToPath, URL } from 'url'
+import { customHotReload } from "./resources/library/Ghivarra/PHP-Hmr";
 
 /*global process*/
 
@@ -12,6 +13,7 @@ export default defineConfig(() => {
 		plugins: [
             vue(), 
             basicSsl(),
+			customHotReload()
         ],
 		build: {
 			emptyOutDir: false,
