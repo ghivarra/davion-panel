@@ -1,3 +1,5 @@
+/*global process, module, require*/
+
 const IN_PRODUCTION = process.env.VITE_APP_ENV === "production";
 
 module.exports = {

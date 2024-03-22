@@ -1,7 +1,9 @@
 import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import basicSsl from '@vitejs/plugin-basic-ssl';
-import path from "path";
+import { fileURLToPath, URL } from 'url'
+
+/*global process*/
 
 export default defineConfig(() => {
 	const env = loadEnv(null, process.cwd());
@@ -34,8 +36,8 @@ export default defineConfig(() => {
 		},
 		resolve: {
 			alias: {
-				"@": path.resolve(__dirname, `./${env.VITE_RESOURCES_DIR}`),
-			},
-		},
+				'@': fileURLToPath(new URL(`./${env.VITE_RESOURCES_DIR}`, import.meta.url))
+			}
+		}
 	};
 });
