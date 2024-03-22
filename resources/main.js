@@ -1,11 +1,14 @@
-import './assets/main.css'
+import { createApp, h } from 'vue'
+import { VueIgniter } from './library/Ghivarra/VueIgniter'
 
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-
-const app = createApp(App)
-
-app.use(router)
-
-app.mount('#app')
+// create new Vue CodeIgniter
+VueIgniter({
+    rootId: 'app',
+    setup: (App, props, root) => {
+        const app = createApp({
+            render: () => h(App, props)
+        })
+        //app.use(router)
+        app.mount(root)
+    }
+})
