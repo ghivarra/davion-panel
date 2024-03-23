@@ -22,7 +22,7 @@ class ImageController extends BaseController
     
     //================================================================================================
     
-    protected function render(string $path, string $etags)
+    protected function render(string $path, string $etags) : string
     {
         // set header and cache
         $this->response->setCache(['max-age' => 300, 's-maxage' => 900, 'etag' => $etags])
@@ -36,7 +36,7 @@ class ImageController extends BaseController
 
     //================================================================================================
 
-    public function serve(string ...$params)
+    public function serve(string ...$params) : string
     {
         $realImagePath = IMAGEPATH . implode(DIRECTORY_SEPARATOR, $params);
         
