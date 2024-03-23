@@ -3,7 +3,7 @@ import { VueIgniter } from './library/Ghivarra/VueIgniter'
 
 // create new Vue CodeIgniter
 VueIgniter({
-    rootId: 'app',
+    rootId: import.meta.env.VITE_APP_ID,
     setup: (App, props, root) => {
         const app = createApp({
             render: () => h(App, props)
