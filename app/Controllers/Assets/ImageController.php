@@ -22,7 +22,7 @@ class ImageController extends BaseController
     
     //================================================================================================
     
-    protected function render(string $path, string $etags) : string
+    protected function render(string $path, string $etags): string
     {
         // set header and cache
         $this->response->setCache(['max-age' => 300, 's-maxage' => 900, 'etag' => $etags])
@@ -36,9 +36,22 @@ class ImageController extends BaseController
 
     //================================================================================================
 
-    public function serve(string ...$params) : string
+    protected function fallback(string $etags): string
+    {
+        $fallbackImagePath = IMAGEPATH . 'no-image.png';
+
+        // return fallback image
+        return $this->render($fallbackImagePath, "{$etags}_ImageNotFound");
+    }
+
+    //================================================================================================
+
+    public function serve(string ...$params): string
     {
         $realImagePath = IMAGEPATH . implode(DIRECTORY_SEPARATOR, $params);
+
+        // get full requested path for etag purposes
+        $etags = md5($this->request->getServer('REQUEST_URI'));
         
         // get query
         $priority      = $this->request->getGet('priority') ?? 'width';
@@ -47,18 +60,19 @@ class ImageController extends BaseController
             'height' => $this->request->getGet('height') ?? $this->allowedSize[0],
         ];
 
-        // get full requested path for etag purposes
-        $etags = md5($this->request->getServer('REQUEST_URI'));
-
         // check if file not exist or wrong use of query
         // send image not available png
         if (!file_exists($realImagePath) OR !is_really_writable($realImagePath))
         {
-            $fallbackImagePath = IMAGEPATH . 'no-image.png';
-            $fallbackImage     = new File($fallbackImagePath);
+            return $this->fallback($etags);
+        }
 
-            // return fallback image
-            return $this->render($fallbackImagePath, "{$etags}_ImageNotFound");
+        // original
+        $original = $this->request->getGet('original');
+
+        if (!empty($original))
+        {
+            return $this->render($realImagePath, $etags);
         }
 
         // check if resized image exist
