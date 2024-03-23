@@ -36,7 +36,6 @@
 <!-- SCRIPTS -->
 <script>
 
-import loginBackground from "../assets/login-background.jpg"
 import { imageUrl, loginUrl, checkAxiosError } from "../libraries/Function"
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
@@ -54,13 +53,11 @@ export default {
         return {
             passwordInputType: 'password',
             formAccount: '',
-            formPassword: ''
+            formPassword: '',
+            background: 'url(' + imageUrl('login-background.jpg') + '&original=true)'
         }
     },
     computed: {
-        background: function() {
-            return `url('${loginBackground}')`
-        },
         logo: function() {
             return imageUrl(`logo/${this.config.logo}`, 220)
         }
