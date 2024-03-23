@@ -1,0 +1,19 @@
+@import "./base.scss";
+@import "../../node_modules/bootstrap/scss/bootstrap";
+
+html,
+body,
+main {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 15px;
+}
+
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+    -webkit-background-clip: text !important;
+}
+
+.text-small {
+    font-size: 0.9em;
+}
