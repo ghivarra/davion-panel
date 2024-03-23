@@ -8,6 +8,11 @@ use CodeIgniter\Filters\DebugToolbar;
 use CodeIgniter\Filters\Honeypot;
 use CodeIgniter\Filters\InvalidChars;
 use CodeIgniter\Filters\SecureHeaders;
+use App\Filters\LoggedIn;
+use App\Filters\LoggedOut;
+
+defined('PANEL_PAGE') || define('PANEL_PAGE', $_ENV['PANEL_PAGE']);
+defined('LOGIN_PAGE') || define('LOGIN_PAGE', $_ENV['LOGIN_PAGE']);
 
 class Filters extends BaseConfig
 {
@@ -24,6 +29,8 @@ class Filters extends BaseConfig
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
+        'loggedIn'      => LoggedIn::class,
+        'loggedOut'     => LoggedOut::class
     ];
 
     /**
@@ -65,5 +72,12 @@ class Filters extends BaseConfig
      * Example:
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      */
-    public array $filters = [];
+    public array $filters = [
+        'loggedOut' => [
+            'before' => [ PANEL_PAGE . '/', PANEL_PAGE . '/*' ]
+        ],
+        'loggedIn' => [
+            'before' => [ LOGIN_PAGE . '/', LOGIN_PAGE . '/*' ]
+        ],
+    ];
 }
