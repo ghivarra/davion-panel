@@ -8,11 +8,8 @@ class Home extends BaseController
 {
     public function index(): string
     {
-        $websiteModel = new WebsiteModel();
-
-        // return render vue
-        return $this->vue->render('MyComponent', [
-            'webConfig' => $websiteModel->getAllData()
-        ]);
+        return 'Davion Panel is working as intended.';
     }
+    
+    //================================================================================================
 }
