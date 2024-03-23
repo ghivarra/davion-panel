@@ -57,7 +57,7 @@ class VueIgniter
             }
 
             // push main js url
-            array_push($assets['js'], "<script type=\"module\" crossorigin src=\"{$mainJSUrl}\"></script>");
+            array_push($assets['js'], "<script type=\"module\" crossorigin src=\"{$mainJSUrl}\" defer></script>");
 
         } elseif ($_ENV['VITE_APP_ENV'] === 'production' || $_ENV['VITE_APP_ENV'] === 'testing') {
             
@@ -77,7 +77,7 @@ class VueIgniter
                         if (isset($asset->isEntry) && $asset->isEntry === true)
                         {
                             $assetUrl = base_url($asset->file);
-                            array_push($assets['js'], "<script type=\"module\" crossorigin src=\"{$assetUrl}\"></script>");
+                            array_push($assets['js'], "<script type=\"module\" crossorigin src=\"{$assetUrl}\" defer></script>");
                         }
 
                     } elseif ($fileExtension === '.css') {
@@ -131,7 +131,7 @@ class VueIgniter
 
         $assets  = $this->getAssets();
         $styles  = "\t";
-        $scripts = "\t";
+        $scripts = "";
 
         // inject css into head
         foreach ($assets['css'] as $style):
@@ -142,17 +142,17 @@ class VueIgniter
 
         $view = str_replace('</head>', $styles . '</head>', $view);
 
-        // inject js into after body
+        // inject js into just before head
         foreach ($assets['js'] as $script):
 
             $scripts .= $script . "\n";
 
         endforeach;
 
-        $view = str_replace('</body>', $scripts . '</body>', $view);
+        $view = str_replace('</head>', $scripts . '</head>', $view);
 
         // inject noscript
-        $view = str_replace('</body>', "\t<noscript>{$noscriptMessage}</noscript>\n</body>", $view);
+        $view = str_replace('<body>', "<body>\n\t<noscript>{$noscriptMessage}</noscript>", $view);
 
         // return
         return $view;
