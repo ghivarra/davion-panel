@@ -10,6 +10,7 @@ $routes->get('/', 'Home::index');
 // login routes
 $routes->group($_ENV['LOGIN_PAGE'], static function ($routes) {
     $routes->get('/', 'Admin\\LoginController::index', ['as' => 'login']);
+    $routes->match(['options', 'post'], 'authenticate', 'Admin\\LoginController::authenticate');
 });
 
 // dashboard routes

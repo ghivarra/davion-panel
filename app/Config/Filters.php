@@ -79,5 +79,8 @@ class Filters extends BaseConfig
         'loggedIn' => [
             'before' => [ LOGIN_PAGE . '/', LOGIN_PAGE . '/*' ]
         ],
+        'csrf' => [
+            'before' => [ LOGIN_PAGE . '/', LOGIN_PAGE . '/*' ]
+        ]
     ];
 }
