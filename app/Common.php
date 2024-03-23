@@ -13,3 +13,20 @@
  *
  * @see: https://codeigniter.com/user_guide/extending/common.html
  */
+
+function imageUrl($slug = '', $width = NULL, $height = NULL, $priority = 'width'): string
+{
+    $url = base_url("assets/image/{$slug}?priority={$priority}");
+
+    if (!is_null($width))
+    {
+        $url .= "&width={$width}";
+    }
+
+    if (!is_null($height))
+    {
+        $url .= "&height={$height}";
+    }
+
+    return $url;
+}
