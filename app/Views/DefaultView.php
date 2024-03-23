@@ -16,7 +16,7 @@
 
     <!-- FAVICON & PAGE IDENTIFICATION -->
     <link data-id="favicon" rel="shortcut icon" href="<?= base_url("favicon.ico?v={$data['website']['logo_version']}") ?>" type="image/x-icon">
-    <title><?= "{$data['title']} | {$data['website']['name']} - {$data['website']['tagline']}" ?></title>
+    <title><?= esc("{$data['title']} | {$data['website']['name']} - {$data['website']['tagline']}") ?></title>
     <meta name="description" content="<?= esc("{$data['website']['tagline']} - {$data['website']['description']}") ?>">
 
     <!-- ICONS -->
@@ -25,7 +25,7 @@
     <link data-id="icon16" rel="icon" type="image/png" sizes="16x16" href="<?= imageUrl('icon/icon.png', 16) ?>">
 
     <!-- DEFAULT CSS -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans&display=swap" rel="stylesheet" async>
 </head>
 <body>
     <div id="<?= $_ENV['VITE_APP_ID'] ?>" data-page='<?= $app->getPageData() ?>'></div>

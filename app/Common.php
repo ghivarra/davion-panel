@@ -16,7 +16,7 @@
 
 function imageUrl($slug = '', $width = NULL, $height = NULL, $priority = 'width'): string
 {
-    $url = base_url("assets/image/{$slug}?priority={$priority}");
+    $url = base_url("assets/images/{$slug}?priority={$priority}");
 
     if (!is_null($width))
     {
