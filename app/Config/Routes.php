@@ -7,7 +7,12 @@ use CodeIgniter\Router\RouteCollection;
  */
 $routes->get('/', 'Home::index');
 
+// login routes
+$routes->group($_ENV['LOGIN_PAGE'], static function ($routes) {
+    $routes->get('/', 'Admin\\LoginController::index', ['as' => 'login']);
+});
+
 // dynamic image routes
 $routes->group('assets', static function ($routes) {
-    $routes->match(['head', 'options', 'get'], 'images/(:any)', 'Assets\\ImageController::serve/$1');
+    $routes->get('images/(:any)', 'Assets\\ImageController::serve/$1');
 });
