@@ -15,7 +15,18 @@ $routes->group($_ENV['LOGIN_PAGE'], static function ($routes) {
 
 // dashboard routes
 $routes->group($_ENV['PANEL_PAGE'], static function ($routes) {
+
+    // dashboard
     $routes->get('/', 'Admin\\DashboardController::index', ['as' => 'panel.dashboard']);
+
+    // public routes
+    $routes->group('public', static function ($routes) {
+        $routes->match(['options', 'get'], 'session-data', 'Admin\\PublicController::sessionData');
+        $routes->match(['options', 'get'], 'logout', 'Admin\\PublicController::logout');
+    });
+
+    // fallback SPA routes
+    $routes->get('(:any)', 'Admin\\PublicController::singlePageApplication', ['as' => 'panel.fallback']);
 });
 
 // dynamic image routes
