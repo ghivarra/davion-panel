@@ -125,7 +125,7 @@ export default {
                 if (result.isDenied) {
                     Swal.close()
                     app.showLoader()
-                    axios.get(panelUrl('logout'))
+                    axios.get(panelUrl('public/logout'))
                         .then(function(res) {
                             let data = res.data
                             if(typeof data.status === 'undefined' || data.status !== 'success') {
