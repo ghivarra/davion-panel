@@ -56,6 +56,8 @@ export default {
     },
     watch: {
         '$route.name': function() {
+            this.pageTitle = this.$router.currentRoute.value.meta.pageName
+            this.updateMetaData()
             if (this.firstLoad) {
                 this.loaderState = true
             }
@@ -103,6 +105,8 @@ export default {
             }).finally(function() {
                 app.loaderState = false
             })
+
+        
     },
     mounted: function() {
         let app = this
