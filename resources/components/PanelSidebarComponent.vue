@@ -1,7 +1,9 @@
 <template>
     <section class="panel-sidebar shadow-lg" v-bind:class="{ active: showSidebar }">
         <div class="p-3 d-flex panel-sidebar-logo-wrapper">
-            <img class="panel-sidebar-logo" v-bind:src="logo" v-bind:alt="config.name">
+            <router-link v-bind:to="{ name: 'panel.dashboard' }">
+                <img class="panel-sidebar-logo" v-bind:src="logo" v-bind:alt="config.name">
+            </router-link>
             <button v-on:click="$emit('sidebarToggleClick')" type="button" class="panel-sidebar-logo-toggle btn btn-link align-items-center">
                 <font-awesome icon="fa fa-xmark" class="text-danger fs-3"></font-awesome>
             </button>
