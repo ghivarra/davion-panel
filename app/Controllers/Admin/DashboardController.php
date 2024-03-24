@@ -14,7 +14,7 @@ class DashboardController extends BaseController
         $websiteModel = new WebsiteModel();
 
         // return and render vue
-        return $this->vue->render('MyComponent', [
+        return $this->vue->render('Panel/PanelIndexView', [
             'title'   => 'Dashboard',
             'website' => $websiteModel->getAllData()
         ]);
