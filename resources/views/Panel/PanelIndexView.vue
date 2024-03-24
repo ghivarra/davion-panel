@@ -38,7 +38,7 @@ import axios from 'axios'
 
 export default {
     name: 'panel-index-view',
-    props: ['websiteInfo', 'title'],
+    props: ['website', 'title'],
     components: {
         'preload-component': PreloadComponent,
         'panel-sidebar-component': PanelSidebarComponent,
@@ -46,7 +46,7 @@ export default {
     },
     data: function() {
         return {
-            webInfo: this.websiteInfo,
+            webInfo: this.website,
             pageTitle: this.title,
             admin: {},
             firstLoad: true,
@@ -94,10 +94,10 @@ export default {
     },
     created: function() {
         let app = this
-        axios.get(panelUrl('session-data'))
+        axios.get(panelUrl('public/session-data'))
             .then(function(res) {
-                let data = res.data
-                app.admin = data.message
+                res = res.data
+                app.admin = res.data
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
             }).finally(function() {
