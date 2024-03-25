@@ -4,7 +4,9 @@
 
         <!-- SIDEBAR -->
         <aside>
-            <panel-sidebar-component 
+            <panel-sidebar-component
+                v-bind:activeMenu="activeMenuId"
+                v-bind:activeParentMenu="activeParentMenuId"
                 v-bind:menu="menu"
                 v-bind:showSidebar="showSidebar" 
                 v-on:sidebarToggleClick="toggleSidebar">
@@ -56,7 +58,9 @@ export default {
             menu: [],
             firstLoad: true,
             loaderState: true,
-            showSidebar: false
+            showSidebar: false,
+            activeMenuId: null,
+            activeParentMenuId: null
         }
     },
     watch: {
@@ -78,12 +82,31 @@ export default {
         toggleSidebar: function() {
             this.showSidebar = !this.showSidebar
         },
+        activateMenu: function() {
+            let app = this
+            let currentRouteName = app.$router.currentRoute.value.name
+
+            app.menu.forEach((item) => {
+                if (typeof item.router_name !== 'undefined' && item.router_name === currentRouteName) {
+                    app.activeMenuId = item.id
+                }
+                if (typeof item.childs !== 'undefined') {
+                    item.childs.forEach((child) => {
+                        if (typeof child.router_name !== 'undefined' && child.router_name === currentRouteName) {
+                            app.activeParentMenuId = item.id
+                            app.activeMenuId = child.id
+                        }
+                    })
+                }
+            })
+        },
         stopLoader: function() {
             let app = this
             if (app.firstLoad) {
                 app.firstLoad = false
                 setTimeout(() => {
                     app.loaderState = false
+                    app.activateMenu()
                 }, 1000)
             } else {
                 app.$nextTick(() => {

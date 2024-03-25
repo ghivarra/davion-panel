@@ -49,12 +49,20 @@ library.add(faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChe
 
 export default {
     name: 'panel-sidebar-component',
-    props: ['showSidebar', 'menu'],
+    props: ['showSidebar', 'menu', 'activeMenu', 'activeParentMenu'],
     inject: ['config'],
     data: function() {
         return {
             activePrimary: [],
             activeParent: []
+        }
+    },
+    watch: {
+        activeMenu: function(newValue) {
+            this.activePrimary.push(newValue)
+        },
+        activeParentMenu: function(newValue) {
+            this.activeParent.push(newValue)
         }
     },
     methods:{
