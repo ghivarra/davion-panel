@@ -63,12 +63,26 @@ class AdminMenuModel extends Model
             if ($mainMenu['type'] === 'Parent')
             {
                 // get child
-                // $childMenu = $this->select(['id', 'title', 'router_name', '']) 
+                $primaryParentMenu[$key]['childs'] = $this->select(['id', 'title', 'router_name', 'admin_menu_parent_id as parent_id']) 
+                                                          ->where('status', 'Aktif')
+                                                          ->where('admin_menu_parent_id', $mainMenu['id'])
+                                                          ->orderBy('sort_order', 'ASC')
+                                                          ->find();
+
+                if (!empty($primaryParentMenu[$key]['childs']))
+                {
+                    foreach ($primaryParentMenu[$key]['childs'] as $n => $child):
+
+                        $primaryParentMenu[$key]['childs'][$n]['is_active'] = false;
+
+                    endforeach;
+                }
             }
 
         endforeach;
 
-        dd($primaryParentMenu);
+        // return
+        return $primaryParentMenu;
     }
 
     //================================================================================================
