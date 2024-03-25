@@ -73,7 +73,12 @@ class PublicController extends BaseController
             $adminMenu          = $adminMenuListModel->getRoleMenu($accountData['admin_role_id']);
         }
 
-        dd($adminMenu);
+        /// return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => $adminMenu
+        ]);
     }
 
     //================================================================================================
