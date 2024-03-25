@@ -19,17 +19,59 @@ class DavionShield
 
     //================================================================================================
 
+    protected function parseUserAgent($request): array
+    {
+        $useragent = $request->getUserAgent();
+
+        return [
+            'browser'  => $useragent->getBrowser() . ' ' . $useragent->getVersion(),
+            'os'       => $useragent->getPlatform(),
+            'mobile'   => $useragent->isMobile(),
+            'platform' => $useragent->isMobile() ? $useragent->getMobile() : 'Non-Mobile Platform'
+        ];
+    }
+
+    //================================================================================================
+
     public function check(): bool
     {
         $sessionToken = $this->session->get($_ENV['SESSION_LOGIN_PARAM']);
 
-        if (empty($sessionToken))
+        // session is not valid
+        if (empty($sessionToken) OR !hash_equals(md5($_ENV['SESSION_LOGIN_TOKEN']), $sessionToken))
         {
             return false;
         }
 
-        // check if hash is equals
-        return hash_equals(md5($_ENV['SESSION_LOGIN_TOKEN']), $sessionToken) ? true : false;
+        // check if session ttl needed to be regenerate
+        $TTL = time() - $_ENV['SESSION_LOGIN_TTL'];
+
+        if ($TTL > $this->session->get('lastRegenerate'))
+        {
+            // store old id
+            $oldId = $this->session->session_id;
+            
+            // regenerate
+            $this->session->regenerate();
+
+            // load services and models
+            $request           = Services::request();
+            $adminSessionModel = new AdminSessionModel();
+            $accountData       = $this->session->get('accountData');
+
+            // update old id to new id
+            $adminSessionModel->where('name', $oldId)
+                              ->set([
+                                'name'       => $this->session->session_id,
+                                'admin_id'   => $accountData['id'],
+                                'useragent'  => json_encode($this->parseUserAgent($request)),
+                                'ip_address' => $request->getIPAddress()
+                              ])
+                              ->update();
+        }
+        
+        // return
+        return true;
     }
 
     //================================================================================================
@@ -71,28 +113,23 @@ class DavionShield
             return false;
         }
 
+        // auth success, regenerate session id
+        $this->session->regenerate();
+
         // clear private data and put admin data + login token in sessions
         unset($accountData['password']);
         $this->session->set([
+            'lastRegenerate'             => time(),
             'accountData'                => $accountData,
             $_ENV['SESSION_LOGIN_PARAM'] => md5($_ENV['SESSION_LOGIN_TOKEN'])
         ]);
-
-        // get user agent data
-        $useragent = $request->getUserAgent();
-        $agentData = [
-            'browser'  => $useragent->getBrowser() . ' ' . $useragent->getVersion(),
-            'os'       => $useragent->getPlatform(),
-            'mobile'   => $useragent->isMobile(),
-            'platform' => $useragent->isMobile() ? $useragent->getMobile() : 'Non-Mobile Platform'
-        ];
-
+        
         // save login data in admin_session
         $adminSessionModel = new AdminSessionModel();
         $adminSessionModel->insert([
             'name'       => $this->session->session_id,
             'admin_id'   => $accountData['id'],
-            'useragent'  => json_encode($agentData),
+            'useragent'  => json_encode($this->parseUserAgent($request)),
             'ip_address' => $request->getIPAddress()
         ]);
 
@@ -102,7 +139,7 @@ class DavionShield
 
     //================================================================================================
 
-    public function logout()
+    public function logout(): bool
     {
         $sessionId = $this->session->session_id;
 
@@ -117,7 +154,7 @@ class DavionShield
 
     //================================================================================================
 
-    public function getAccountData()
+    public function getAccountData(): array
     {
         return $this->session->get('accountData');
     }
