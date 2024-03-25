@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\AdminMenuGroupModel;
 use CodeIgniter\Model;
 
 class AdminMenuModel extends Model
@@ -13,7 +14,7 @@ class AdminMenuModel extends Model
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'title', 'router_name', 'icon', 'sort_order', 'status', 'type', 'admin_menu_group_id'
+        'title', 'router_name', 'icon', 'sort_order', 'status', 'type', 'admin_menu_parent_id', 'admin_menu_group_id'
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -41,4 +42,34 @@ class AdminMenuModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    //================================================================================================
+
+    public function getSuperadminMenu(): array
+    {
+        $primaryParentMenu = $this->select(['admin_menu.id', 'title', 'router_name', 'icon', 'type', 'admin_menu_group_id', 'admin_menu_group.name as admin_menu_group_name'])
+                                  ->join('admin_menu_group', 'admin_menu_group_id = admin_menu_group.id', 'left')
+                                  ->where('admin_menu.status', 'Aktif')
+                                  ->where('admin_menu_group.status', 'Aktif')
+                                  ->orderBy('admin_menu_group.sort_order', 'ASC')
+                                  ->orderBy('admin_menu.sort_order', 'ASC')
+                                  ->find();
+        
+        foreach ($primaryParentMenu as $key => $mainMenu):
+
+            // add is_active
+            $primaryParentMenu[$key]['is_active'] = false;
+
+            if ($mainMenu['type'] === 'Parent')
+            {
+                // get child
+                // $childMenu = $this->select(['id', 'title', 'router_name', '']) 
+            }
+
+        endforeach;
+
+        dd($primaryParentMenu);
+    }
+
+    //================================================================================================
 }
