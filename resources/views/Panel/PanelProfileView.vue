@@ -8,11 +8,15 @@
 
 export default {
     name: 'panel-profile-view',
+    inject: ['showLoader', 'hideLoader'],
     data: function() {
         return {
             name: 'Profile'
         }
     },
+    mounted: function() {
+        this.hideLoader()
+    }
 }
 
 </script>

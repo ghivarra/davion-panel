@@ -8,11 +8,15 @@
 
 export default {
     name: 'panel-dashboard-view',
+    inject: ['showLoader', 'hideLoader'],
     data: function() {
         return {
             name: 'Dashboard'
         }
     },
+    mounted: function() {
+        this.hideLoader()
+    }
 }
 
 </script>

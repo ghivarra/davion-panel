@@ -8,11 +8,15 @@
 
 export default {
     name: 'panel-account-view',
+    inject: ['showLoader', 'hideLoader'],
     data: function() {
         return {
             name: 'Account'
         }
     },
+    mounted: function() {
+        this.hideLoader()
+    }
 }
 
 </script>

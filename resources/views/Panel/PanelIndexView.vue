@@ -58,9 +58,7 @@ export default {
         '$route.name': function() {
             this.pageTitle = this.$router.currentRoute.value.meta.pageName
             this.updateMetaData()
-            if (this.firstLoad) {
-                this.loaderState = true
-            }
+            this.loaderState = true
         }
     },
     methods: {
