@@ -15,7 +15,9 @@ export default {
         }
     },
     mounted: function() {
-        this.hideLoader()
+        this.$nextTick(function() {
+            this.$emit('loaded')
+        })
     }
 }
 

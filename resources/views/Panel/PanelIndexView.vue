@@ -23,7 +23,7 @@
             <panel-header-component v-on:sidebarToggleClick="toggleSidebar"></panel-header-component>
 
             <!-- VIEW -->
-            <router-view></router-view>
+            <router-view v-on:loaded="stopLoader"></router-view>
         </main>
 
     </div>
@@ -77,6 +77,19 @@ export default {
         },
         toggleSidebar: function() {
             this.showSidebar = !this.showSidebar
+        },
+        stopLoader: function() {
+            let app = this
+            if (app.firstLoad) {
+                app.firstLoad = false
+                setTimeout(() => {
+                    app.loaderState = false
+                }, 1000)
+            } else {
+                app.$nextTick(() => {
+                    app.loaderState = false
+                })
+            }
         }
     },
     provide: function() {
@@ -114,20 +127,11 @@ export default {
             .then(function(res) {
                 res = res.data
                 app.menu = res.data
-                console.log(app.menu)
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
-            }).finally(function() {
-                app.loaderState = false
             })
     },
     mounted: function() {
-        let app = this
-        app.$nextTick(() => {
-            app.firstLoad = false
-            app.loaderState = false
-        })
-
         // watch icons
         dom.watch();
     }
