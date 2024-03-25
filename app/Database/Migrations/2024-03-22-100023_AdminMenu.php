@@ -60,6 +60,11 @@ class AdminMenu extends Migration
                 'constraint' => ['Primary', 'Parent', 'Child'],
                 'default'    => 'Primary'
             ],
+            'admin_menu_parent_id' => [
+                'type'     => 'BIGINT',
+                'unsigned' => true,
+                'null'     => true
+            ],
             'admin_menu_group_id' => [
                 'type'     => 'BIGINT',
                 'unsigned' => true,
@@ -108,6 +113,7 @@ class AdminMenu extends Migration
         $this->forge->addKey('deleted_at');
 
         // add foreign key
+        $this->forge->addForeignKey('admin_menu_parent_id', 'admin_menu', 'id', 'CASCADE', 'RESTRICT');
         $this->forge->addForeignKey('admin_menu_group_id', 'admin_menu_group', 'id', 'CASCADE', 'SET NULL');
 
         // create table
@@ -119,6 +125,7 @@ class AdminMenu extends Migration
     public function down()
     {
         // drop foreign key
+        $this->forge->dropForeignKey($this->tableName, "{$this->tableName}_admin_menu_parent_id_foreign");
         $this->forge->dropForeignKey($this->tableName, "{$this->tableName}_admin_menu_group_id_foreign");
 
         // drop table

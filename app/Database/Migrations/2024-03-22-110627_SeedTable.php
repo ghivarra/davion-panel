@@ -81,15 +81,26 @@ class SeedTable extends Migration
 
         // create menu group
         $db->table("admin_menu_group")->insert([
-            'name'       => 'Pengaturan',
+            'name'       => 'Default',
             'sort_order' => 1,
             'status'     => 'Aktif',
             'created_at' => $now,
             'updated_at' => $now
         ]);
-        $groupId = $db->insertId();
 
-        // add menu
+        $defaultGroupId = $db->insertId();
+
+        $db->table("admin_menu_group")->insert([
+            'name'       => 'Pengaturan',
+            'sort_order' => 2,
+            'status'     => 'Aktif',
+            'created_at' => $now,
+            'updated_at' => $now
+        ]);
+
+        $pengaturanGroupId = $db->insertId();
+
+        // add primary and parent menu
         $db->table('admin_menu')->insertBatch([
             [
                 'title'               => 'Dasbor', 
@@ -99,7 +110,7 @@ class SeedTable extends Migration
                 'sort_order'          => 1,
                 'created_at'          => $now, 
                 'updated_at'          => $now,
-                'admin_menu_group_id' => NULL
+                'admin_menu_group_id' => $defaultGroupId
             ],[
                 'title'               => 'Profil', 
                 'router_name'         => 'panel.profile', 
@@ -108,7 +119,7 @@ class SeedTable extends Migration
                 'sort_order'          => 2,
                 'created_at'          => $now, 
                 'updated_at'          => $now,
-                'admin_menu_group_id' => NULL
+                'admin_menu_group_id' => $defaultGroupId
             ], [
                 'title'               => 'Admin', 
                 'router_name'         => NULL,
@@ -117,25 +128,7 @@ class SeedTable extends Migration
                 'sort_order'          => 1,
                 'created_at'          => $now, 
                 'updated_at'          => $now,
-                'admin_menu_group_id' => $groupId,
-            ], [
-                'title'               => 'Akun', 
-                'router_name'         => 'panel.admin',
-                'icon'                => NULL,
-                'type'                => 'Child',
-                'sort_order'          => 1,
-                'created_at'          => $now, 
-                'updated_at'          => $now,
-                'admin_menu_group_id' => NULL,
-            ], [
-                'title'               => 'Role', 
-                'router_name'         => 'panel.role',
-                'icon'                => NULL,
-                'type'                => 'Child',
-                'sort_order'          => 2,
-                'created_at'          => $now, 
-                'updated_at'          => $now,
-                'admin_menu_group_id' => NULL,
+                'admin_menu_group_id' => $pengaturanGroupId,
             ], [
                 'title'               => 'Halaman', 
                 'router_name'         => NULL,
@@ -144,25 +137,7 @@ class SeedTable extends Migration
                 'sort_order'          => 2,
                 'created_at'          => $now, 
                 'updated_at'          => $now,
-                'admin_menu_group_id' => $groupId,
-            ], [
-                'title'               => 'Modul', 
-                'router_name'         => 'panel.module',
-                'icon'                => NULL,
-                'type'                => 'Child',
-                'sort_order'          => 1,
-                'created_at'          => $now, 
-                'updated_at'          => $now,
-                'admin_menu_group_id' => NULL,
-            ], [
-                'title'               => 'Role', 
-                'router_name'         => 'panel.menu',
-                'icon'                => NULL,
-                'type'                => 'Child',
-                'sort_order'          => 2,
-                'created_at'          => $now, 
-                'updated_at'          => $now,
-                'admin_menu_group_id' => NULL,
+                'admin_menu_group_id' => $pengaturanGroupId,
             ], [
                 'title'               => 'Website', 
                 'router_name'         => 'panel.website',
@@ -171,7 +146,56 @@ class SeedTable extends Migration
                 'sort_order'          => 3,
                 'created_at'          => $now, 
                 'updated_at'          => $now,
-                'admin_menu_group_id' => $groupId,
+                'admin_menu_group_id' => $pengaturanGroupId,
+            ]
+        ]);
+
+        // search and get parents id
+        $adminParent   = $db->table('admin_menu')->select('id')->where('title', 'Admin')->get()->getRowArray();
+        $halamanParent = $db->table('admin_menu')->select('id')->where('title', 'Halaman')->get()->getRowArray();
+
+        // add child menu
+        $db->table('admin_menu')->insertBatch([
+            [
+                'title'                => 'Akun', 
+                'router_name'          => 'panel.admin',
+                'icon'                 => NULL,
+                'type'                 => 'Child',
+                'sort_order'           => 1,
+                'created_at'           => $now, 
+                'updated_at'           => $now,
+                'admin_menu_group_id'  => NULL,
+                'admin_menu_parent_id' => $adminParent['id'],
+            ], [
+                'title'                => 'Role', 
+                'router_name'          => 'panel.role',
+                'icon'                 => NULL,
+                'type'                 => 'Child',
+                'sort_order'           => 2,
+                'created_at'           => $now, 
+                'updated_at'           => $now,
+                'admin_menu_group_id'  => NULL,
+                'admin_menu_parent_id' => $adminParent['id'],
+            ], [
+                'title'                => 'Modul', 
+                'router_name'          => 'panel.module',
+                'icon'                 => NULL,
+                'type'                 => 'Child',
+                'sort_order'           => 1,
+                'created_at'           => $now, 
+                'updated_at'           => $now,
+                'admin_menu_group_id'  => NULL,
+                'admin_menu_parent_id' => $halamanParent['id'],
+            ], [
+                'title'                => 'Role', 
+                'router_name'          => 'panel.menu',
+                'icon'                 => NULL,
+                'type'                 => 'Child',
+                'sort_order'           => 2,
+                'created_at'           => $now, 
+                'updated_at'           => $now,
+                'admin_menu_group_id'  => NULL,
+                'admin_menu_parent_id' => $halamanParent['id'],
             ]
         ]);
     }
