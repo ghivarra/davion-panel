@@ -5,6 +5,7 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Libraries\Ghivarra\DavionShield;
 use App\Models\WebsiteModel;
+use App\Models\AdminMenuModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class PublicController extends BaseController
@@ -51,6 +52,28 @@ class PublicController extends BaseController
             'status'  => 'success',
             'message' => 'Anda berhasil keluar/logout dari panel',
         ]);
+    }
+
+    //================================================================================================
+
+    public function menu(): ResponseInterface
+    {
+        $davionShield = new DavionShield();
+        $accountData  = $davionShield->getAccountData();
+        
+        // check if superadmin
+        if ($accountData['is_superadmin'] === SUPERADMIN)
+        {
+            $adminMenuModel = new AdminMenuModel();
+            $adminMenu      = $adminMenuModel->getSuperadminMenu();
+
+        } else {
+
+            $adminMenuListModel = new AdminMenuListModel();
+            $adminMenu          = $adminMenuListModel->getRoleMenu($accountData['admin_role_id']);
+        }
+
+        dd($adminMenu);
     }
 
     //================================================================================================
