@@ -4,7 +4,11 @@
 
         <!-- SIDEBAR -->
         <aside>
-            <panel-sidebar-component v-bind:showSidebar="showSidebar" v-on:sidebarToggleClick="toggleSidebar"></panel-sidebar-component>
+            <panel-sidebar-component 
+                v-bind:menu="menu"
+                v-bind:showSidebar="showSidebar" 
+                v-on:sidebarToggleClick="toggleSidebar">
+            </panel-sidebar-component>
         </aside>
 
         <!-- MAIN -->
@@ -49,6 +53,7 @@ export default {
             webInfo: this.website,
             pageTitle: this.title,
             admin: {},
+            menu: [],
             firstLoad: true,
             loaderState: true,
             showSidebar: false
@@ -94,17 +99,27 @@ export default {
     },
     created: function() {
         let app = this
+
+        // get account data
         axios.get(panelUrl('public/session-data'))
             .then(function(res) {
                 res = res.data
                 app.admin = res.data
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
+            })
+
+        // get menu
+        axios.get(panelUrl('public/menu'))
+            .then(function(res) {
+                res = res.data
+                app.menu = res.data
+                console.log(app.menu)
+            }).catch(function(res) {
+                checkAxiosError(res.request.status)
             }).finally(function() {
                 app.loaderState = false
             })
-
-        
     },
     mounted: function() {
         let app = this

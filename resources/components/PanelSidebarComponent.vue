@@ -9,14 +9,32 @@
             </button>
         </div>
         <div class="p-3">
-            <span v-on:click="activate(key)" v-for="(menuLink, key) in menuLinks" v-bind:key="key" class="panel-sidebar-link mb-2" v-bind:class="{ active: (menuLink.id === activeMenu) }">
-                <font-awesome v-bind:icon="menuLink.icon" class="panel-sidebar-link-icon me-2"></font-awesome>
-                {{ menuLink.name }}
-                <div class="arrow">
-                    <font-awesome icon="fas fa-chevron-right" class="arrow-icon"></font-awesome>
+            <div 
+                v-for="(item, n) in menu" 
+                v-bind:key="n"
+                v-bind:class="{ active: (item.type === 'Primary') ? this.activePrimary.includes(item.id) : this.activeParent.includes(item.id), 'parent': (item.type === 'Parent') }"
+                class="panel-sidebar-link mb-2">
+                <button v-on:click="mainMenuClick(item)" type="button" class="d-flex align-items-center panel-sidebar-link-button btn btn-link w-100 text-decoration-none">
+                    <font-awesome v-bind:icon="item.icon" class="panel-sidebar-link-icon me-2"></font-awesome>
+                    {{ item.title }}
+                    <div v-if="item.type === 'Parent'" class="arrow">
+                        <font-awesome icon="fas fa-chevron-right" class="arrow-icon"></font-awesome>
+                    </div>
+                </button>
+                <div v-if="(typeof item.childs !== 'undefined')" class="panel-sidebar-link-child-wrapper text-white pt-2">
+                    <button 
+                        v-for="(child, x) in item.childs"
+                        v-bind:key="x" 
+                        v-on:click="childMenuClick(child)"
+                        v-bind:class="{ active: this.activePrimary.includes(child.id) }"
+                        type="button" 
+                        class="d-flex mb-2 align-items-center panel-sidebar-link-button child btn btn-link w-100 text-decoration-none">
+                        <font-awesome icon="fa-regular fa-circle" class="panel-sidebar-link-icon me-2"></font-awesome>
+                        {{ child.title }}
+                    </button>
                 </div>
-            </span>
             </div>
+        </div>
     </section>
 </template>
 
@@ -24,27 +42,63 @@
 
 import { imageUrl } from "../libraries/Function"
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faEye, faEyeSlash, faGlobe, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight } from '@fortawesome/free-solid-svg-icons'
+import { faCircle } from "@fortawesome/free-regular-svg-icons"
 
-library.add(faEye, faEyeSlash, faGlobe, faChevronRight)
+library.add(faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight, faCircle)
 
 export default {
     name: 'panel-sidebar-component',
-    props: ['showSidebar'],
+    props: ['showSidebar', 'menu'],
     inject: ['config'],
     data: function() {
         return {
-            activeMenu: 2,
-            menuLinks: [
-                {id: 1, icon: 'fas fa-globe', name: 'Pengaturan Website'},
-                {id: 2, icon: 'fas fa-eye', name: 'Admin'},
-                {id: 3, icon: 'fas fa-eye-slash', name: 'Modul'},
-            ]
+            activePrimary: [],
+            activeParent: []
         }
     },
     methods:{
-        activate: function(key) {
-            this.activeMenu = this.menuLinks[key].id
+        isActive: function(menu) {
+            if (menu.type === 'Primary') {
+                return this.activePrimary.includes(menu.id)
+            } else if (menu.type === 'Parent') {
+                return this.activeParent.includes(menu.id)
+            }
+        },
+        mainMenuClick: function(menu) {
+            
+            if (menu.type === 'Primary') {
+
+                // clean active Menu
+                this.activePrimary = []
+                this.activeParent = []
+
+                // push new routes
+                this.activePrimary.push(menu.id)
+                this.$router.push({
+                    name: menu.router_name
+                })
+
+            } else if (menu.type === 'Parent') {
+                if (this.activeParent.includes(menu.id)) {
+                    // search and activate parent
+                    var index = this.activeParent.indexOf(menu.id);
+                    this.activeParent.splice(index, 1);
+                } else {
+                    this.activeParent.push(menu.id)
+                }
+            }
+        },
+        childMenuClick: function(menu) {
+
+            // clean active Menu
+            this.activePrimary = []
+
+            // push new routes
+            this.activePrimary.push(menu.id)
+            this.$router.push({
+                name: menu.router_name
+            })
         }
     },
     computed: {
@@ -108,49 +162,89 @@ export default {
     }
 
     &-link {
-        color: darken(#ffffff, 20%);
-        padding: .5em 1.25em .5em 1.25em;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        transition: all 100ms ease-out;
-        position: relative;
 
-        &-icon {
-            width: 1em;
-        }
+        &-button {
+            color: darken(#ffffff, 20%);
+            padding: .5em 1.25em .5em 1.25em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 100ms ease-out;
+            position: relative;
 
-        .arrow {
-            align-self: flex-end;
-            position: absolute;
-            right: 10px;
-            top: 8px;
-            width: 16px;
-            height: 16px;
-            transition: all 100ms ease-in;
+            &:hover {
+                color: #ffffff;
+                background-color: adjust-color(#ffffff, $alpha: -0.95);
+            }
 
             &-icon {
-                width: 16px;
-                height: 16px;
+                width: 1em;
             }
-        }
-
-        &:hover {
-            color: #ffffff;
-            background-color: adjust-color(#ffffff, $alpha: -0.95);
-        }
-
-        &.active {
-            background: linear-gradient(73deg, $primary 25%, adjust-color($primary, $alpha: -0.3) 78%);
-            box-shadow: 0px 2px 6px 0px adjust-color($primary, $lightness: 20%, $alpha: -0.52);
-            color: #ffffff;
 
             .arrow {
-                rotate: 90deg;
-                top: 10px;
+                align-self: flex-end;
+                position: absolute;
+                right: 10px;
+                top: 8px;
+                width: 16px;
+                height: 16px;
+                transition: all 100ms ease-in;
+
+                &-icon {
+                    width: 16px;
+                    height: 16px;
+                }
             }
         }
+        
+        &.active {
+
+            .panel-sidebar-link-button {
+                background: linear-gradient(73deg, $primary 25%, adjust-color($primary, $alpha: -0.3) 78%);
+                box-shadow: 0px 2px 6px 0px adjust-color($primary, $lightness: 20%, $alpha: -0.52);
+                color: #ffffff;
+            }
+        }
+
+        
+        &.parent {
+
+            .panel-sidebar-link-child-wrapper {
+                overflow: hidden;
+                height: 0;
+            }
+
+            &.active {
+                .panel-sidebar-link-button {
+                    background: adjust-color(#ffffff, $alpha: -0.85);
+
+                    &.child {
+                        background: none;
+                        box-shadow: none;
+
+                        &:hover {
+                            color: #ffffff;
+                            background-color: adjust-color(#ffffff, $alpha: -0.95);
+                        }
+
+                        &.active {
+                            background: linear-gradient(73deg, $primary 25%, adjust-color($primary, $alpha: -0.3) 78%);
+                            box-shadow: 0px 2px 6px 0px adjust-color($primary, $lightness: 20%, $alpha: -0.52);
+                            color: #ffffff;
+                        }
+                    }
+
+                    .arrow {
+                        rotate: 90deg;
+                        top: 10px;
+                    }
+                }
+
+                .panel-sidebar-link-child-wrapper {
+                    height: 100%
+                }
+            }
+        }
+        
     }
 }
 
