@@ -10,6 +10,7 @@ use CodeIgniter\Filters\InvalidChars;
 use CodeIgniter\Filters\SecureHeaders;
 use App\Filters\LoggedIn;
 use App\Filters\LoggedOut;
+use App\Filters\SessionGarbageCollector;
 
 defined('PANEL_PAGE') || define('PANEL_PAGE', $_ENV['PANEL_PAGE']);
 defined('LOGIN_PAGE') || define('LOGIN_PAGE', $_ENV['LOGIN_PAGE']);
@@ -30,7 +31,8 @@ class Filters extends BaseConfig
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
         'loggedIn'      => LoggedIn::class,
-        'loggedOut'     => LoggedOut::class
+        'loggedOut'     => LoggedOut::class,
+        'sessionGC'     => SessionGarbageCollector::class
     ];
 
     /**
@@ -41,7 +43,7 @@ class Filters extends BaseConfig
      */
     public array $globals = [
         'before' => [
-            // 'honeypot',
+            'sessionGC',
             // 'csrf',
             // 'invalidchars',
         ],
