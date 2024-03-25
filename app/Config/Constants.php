@@ -101,3 +101,4 @@ define('EVENT_PRIORITY_HIGH', 10);
  | The path user uses to confuse others LOL and screaming what is this freaking constants.
  */
 defined('IMAGEPATH') || define('IMAGEPATH', WRITEPATH . 'app'. DIRECTORY_SEPARATOR .'images'. DIRECTORY_SEPARATOR);
+defined('SUPERADMIN') || define('SUPERADMIN', '1');
