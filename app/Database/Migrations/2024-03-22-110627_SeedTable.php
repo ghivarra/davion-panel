@@ -187,7 +187,7 @@ class SeedTable extends Migration
                 'admin_menu_group_id'  => NULL,
                 'admin_menu_parent_id' => $halamanParent['id'],
             ], [
-                'title'                => 'Role', 
+                'title'                => 'Menu', 
                 'router_name'          => 'panel.menu',
                 'icon'                 => NULL,
                 'type'                 => 'Child',
