@@ -62,6 +62,7 @@ export default {
     },
     watch: {
         activeMenu: function(newValue) {
+            this.activePrimary = []
             this.activePrimary.push(newValue)
         },
         activeParentMenu: function(newValue) {
@@ -173,7 +174,7 @@ export default {
     }
 
     &-label {
-        color: darken(#ffffff, 20%);
+        color: darken(#ffffff, 35%);
     }
 
     &-link {

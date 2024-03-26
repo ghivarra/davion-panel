@@ -87,14 +87,19 @@ export default {
             let app = this
             let currentRouteName = app.$router.currentRoute.value.name
 
+            // menu exist
+            let menuExist = false
+
             app.menu.forEach((group) => {
                 group.menu.forEach((item) => {
                     if (typeof item.router_name !== 'undefined' && item.router_name === currentRouteName) {
+                        menuExist = true
                         app.activeMenuId = item.id
                     }
                     if (typeof item.childs !== 'undefined') {
                         item.childs.forEach((child) => {
                             if (typeof child.router_name !== 'undefined' && child.router_name === currentRouteName) {
+                                menuExist = true
                                 app.activeParentMenuId = item.id
                                 app.activeMenuId = child.id
                             }
@@ -102,6 +107,10 @@ export default {
                     }
                 })
             })
+
+            if (!menuExist) {
+                app.activeMenuId = null
+            }
         },
         stopLoader: function() {
             let app = this
