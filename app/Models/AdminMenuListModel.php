@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class AdminMenuListModel extends Model
 {
-    protected $table            = 'admin_menu_group_list';
+    protected $table            = 'admin_menu_list';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
@@ -41,4 +41,72 @@ class AdminMenuListModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
+
+    //================================================================================================
+
+    public function getRoleMenu($roleId): array
+    {
+        $primaryParentMenu = $this->select(['admin_menu.id', 'title', 'router_name', 'icon', 'type', 'admin_menu_group_id', 'admin_menu_group.name as admin_menu_group_name'])
+                                  ->join('admin_menu', 'admin_menu_id = admin_menu.id', 'left')
+                                  ->join('admin_menu_group', 'admin_menu_group_id = admin_menu_group.id', 'left')
+                                  ->where('admin_role_id', $roleId)
+                                  ->where('admin_menu.type !=', 'Child')
+                                  ->where('admin_menu.status', 'Aktif')
+                                  ->where('admin_menu_group.status', 'Aktif')
+                                  ->orderBy('admin_menu_group.sort_order', 'ASC')
+                                  ->orderBy('admin_menu.sort_order', 'ASC')
+                                  ->find();
+
+        // get array groups
+        $groupList = array_column($primaryParentMenu, 'admin_menu_group_id');
+        $groupList = array_unique($groupList);
+        $groups    = [];
+
+        // create group of array
+        foreach ($groupList as $item):
+
+            array_push($groups, $item);
+
+        endforeach;
+
+        // add menu to menu groups
+        foreach ($primaryParentMenu as $key => $mainMenu):
+
+            if ($mainMenu['type'] === 'Parent')
+            {
+                // get child
+                $primaryParentMenu[$key]['childs'] = $this->select(['admin_menu.id', 'title', 'router_name', 'admin_menu_parent_id as parent_id'])
+                                                          ->join('admin_menu', 'admin_menu_id = admin_menu.id', 'left')
+                                                          ->where('admin_role_id', $roleId)
+                                                          ->where('admin_menu.type', 'Child')
+                                                          ->where('admin_menu.status', 'Aktif')
+                                                          ->where('admin_menu_parent_id', $mainMenu['id'])
+                                                          ->orderBy('admin_menu.sort_order', 'ASC')
+                                                          ->find();
+            }
+
+            // search group key
+            $groupKey = array_keys($groups, $mainMenu['admin_menu_group_id']);
+            $groupKey = $groupKey[0];
+
+            // create result if not exist
+            if (!isset($result[$groupKey]))
+            {
+                $result[$groupKey] = [
+                    'id'   => $mainMenu['admin_menu_group_id'],
+                    'name' => $mainMenu['admin_menu_group_name'],
+                    'menu' => []
+                ];
+            }
+
+            // push to groups
+            array_push($result[$groupKey]['menu'], $primaryParentMenu[$key]);
+
+        endforeach;
+
+        // return
+        return $result;
+    }
+
+    //================================================================================================
 }
