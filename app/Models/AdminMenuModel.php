@@ -54,11 +54,21 @@ class AdminMenuModel extends Model
                                   ->orderBy('admin_menu_group.sort_order', 'ASC')
                                   ->orderBy('admin_menu.sort_order', 'ASC')
                                   ->find();
-        
-        foreach ($primaryParentMenu as $key => $mainMenu):
 
-            // add is_active
-            $primaryParentMenu[$key]['is_active'] = false;
+        // get array groups
+        $groupList = array_column($primaryParentMenu, 'admin_menu_group_id');
+        $groupList = array_unique($groupList);
+        $groups    = [];
+
+        // create group of array
+        foreach ($groupList as $item):
+
+            array_push($groups, $item);
+
+        endforeach;
+
+        // add menu to menu groups
+        foreach ($primaryParentMenu as $key => $mainMenu):
 
             if ($mainMenu['type'] === 'Parent')
             {
@@ -68,21 +78,29 @@ class AdminMenuModel extends Model
                                                           ->where('admin_menu_parent_id', $mainMenu['id'])
                                                           ->orderBy('sort_order', 'ASC')
                                                           ->find();
-
-                if (!empty($primaryParentMenu[$key]['childs']))
-                {
-                    foreach ($primaryParentMenu[$key]['childs'] as $n => $child):
-
-                        $primaryParentMenu[$key]['childs'][$n]['is_active'] = false;
-
-                    endforeach;
-                }
             }
+
+            // search group key
+            $groupKey = array_keys($groups, $mainMenu['admin_menu_group_id']);
+            $groupKey = $groupKey[0];
+
+            // create result if not exist
+            if (!isset($result[$groupKey]))
+            {
+                $result[$groupKey] = [
+                    'id'   => $mainMenu['admin_menu_group_id'],
+                    'name' => $mainMenu['admin_menu_group_name'],
+                    'menu' => []
+                ];
+            }
+
+            // push to groups
+            array_push($result[$groupKey]['menu'], $primaryParentMenu[$key]);
 
         endforeach;
 
         // return
-        return $primaryParentMenu;
+        return $result;
     }
 
     //================================================================================================
