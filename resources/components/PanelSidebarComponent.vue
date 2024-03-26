@@ -9,29 +9,32 @@
             </button>
         </div>
         <div class="p-3">
-            <div 
-                v-for="(item, n) in menu" 
-                v-bind:key="n"
-                v-bind:class="{ active: (item.type === 'Primary') ? this.activePrimary.includes(item.id) : this.activeParent.includes(item.id), 'parent': (item.type === 'Parent') }"
-                class="panel-sidebar-link mb-2">
-                <button v-on:click="mainMenuClick(item)" type="button" class="d-flex align-items-center panel-sidebar-link-button btn btn-link w-100 text-decoration-none">
-                    <font-awesome v-bind:icon="item.icon" class="panel-sidebar-link-icon me-2"></font-awesome>
-                    {{ item.title }}
-                    <div v-if="item.type === 'Parent'" class="arrow">
-                        <font-awesome icon="fas fa-chevron-right" class="arrow-icon"></font-awesome>
-                    </div>
-                </button>
-                <div v-if="(typeof item.childs !== 'undefined')" class="panel-sidebar-link-child-wrapper text-white pt-2">
-                    <button 
-                        v-for="(child, x) in item.childs"
-                        v-bind:key="x" 
-                        v-on:click="childMenuClick(child)"
-                        v-bind:class="{ active: this.activePrimary.includes(child.id) }"
-                        type="button" 
-                        class="d-flex mb-2 align-items-center panel-sidebar-link-button child btn btn-link w-100 text-decoration-none">
-                        <font-awesome icon="fa-regular fa-circle" class="panel-sidebar-link-icon me-2"></font-awesome>
-                        {{ child.title }}
+            <div v-for="(group, a) in menu" v-bind:key="a">
+                <span v-if="group.name !== 'Default'" class="d-block pt-2 ps-3 mb-2 panel-sidebar-label text-uppercase">{{ group.name }}</span>
+                <div 
+                    v-for="(item, n) in group.menu" 
+                    v-bind:key="n"
+                    v-bind:class="{ active: (item.type === 'Primary') ? this.activePrimary.includes(item.id) : this.activeParent.includes(item.id), 'parent': (item.type === 'Parent') }"
+                    class="panel-sidebar-link mb-1">
+                    <button v-on:click="mainMenuClick(item)" type="button" class="d-flex align-items-center panel-sidebar-link-button btn btn-link w-100 text-decoration-none">
+                        <font-awesome v-bind:icon="item.icon" class="panel-sidebar-link-icon me-2"></font-awesome>
+                        {{ item.title }}
+                        <div v-if="item.type === 'Parent'" class="arrow">
+                            <font-awesome icon="fas fa-chevron-right" class="arrow-icon"></font-awesome>
+                        </div>
                     </button>
+                    <div v-if="(typeof item.childs !== 'undefined')" class="panel-sidebar-link-child-wrapper text-white pt-2">
+                        <button 
+                            v-for="(child, x) in item.childs"
+                            v-bind:key="x" 
+                            v-on:click="childMenuClick(child)"
+                            v-bind:class="{ active: this.activePrimary.includes(child.id) }"
+                            type="button" 
+                            class="d-flex mb-2 align-items-center panel-sidebar-link-button child btn btn-link w-100 text-decoration-none">
+                            <font-awesome icon="fa-regular fa-circle" class="panel-sidebar-link-icon me-2"></font-awesome>
+                            {{ child.title }}
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -167,6 +170,10 @@ export default {
                 display: flex;
             }
         }
+    }
+
+    &-label {
+        color: darken(#ffffff, 20%);
     }
 
     &-link {

@@ -67,6 +67,7 @@ export default {
         '$route.name': function() {
             this.pageTitle = this.$router.currentRoute.value.meta.pageName
             this.updateMetaData()
+            this.activateMenu()
             this.loaderState = true
         }
     },
@@ -86,18 +87,20 @@ export default {
             let app = this
             let currentRouteName = app.$router.currentRoute.value.name
 
-            app.menu.forEach((item) => {
-                if (typeof item.router_name !== 'undefined' && item.router_name === currentRouteName) {
-                    app.activeMenuId = item.id
-                }
-                if (typeof item.childs !== 'undefined') {
-                    item.childs.forEach((child) => {
-                        if (typeof child.router_name !== 'undefined' && child.router_name === currentRouteName) {
-                            app.activeParentMenuId = item.id
-                            app.activeMenuId = child.id
-                        }
-                    })
-                }
+            app.menu.forEach((group) => {
+                group.menu.forEach((item) => {
+                    if (typeof item.router_name !== 'undefined' && item.router_name === currentRouteName) {
+                        app.activeMenuId = item.id
+                    }
+                    if (typeof item.childs !== 'undefined') {
+                        item.childs.forEach((child) => {
+                            if (typeof child.router_name !== 'undefined' && child.router_name === currentRouteName) {
+                                app.activeParentMenuId = item.id
+                                app.activeMenuId = child.id
+                            }
+                        })
+                    }
+                })
             })
         },
         stopLoader: function() {
