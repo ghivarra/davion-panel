@@ -49,6 +49,7 @@ class AdminMenuModel extends Model
     {
         $primaryParentMenu = $this->select(['admin_menu.id', 'title', 'router_name', 'icon', 'type', 'admin_menu_group_id', 'admin_menu_group.name as admin_menu_group_name'])
                                   ->join('admin_menu_group', 'admin_menu_group_id = admin_menu_group.id', 'left')
+                                  ->where('admin_menu.type !=', 'Child')
                                   ->where('admin_menu.status', 'Aktif')
                                   ->where('admin_menu_group.status', 'Aktif')
                                   ->orderBy('admin_menu_group.sort_order', 'ASC')
@@ -73,7 +74,8 @@ class AdminMenuModel extends Model
             if ($mainMenu['type'] === 'Parent')
             {
                 // get child
-                $primaryParentMenu[$key]['childs'] = $this->select(['id', 'title', 'router_name', 'admin_menu_parent_id as parent_id']) 
+                $primaryParentMenu[$key]['childs'] = $this->select(['id', 'title', 'router_name', 'admin_menu_parent_id as parent_id'])
+                                                          ->where('type', 'Child')
                                                           ->where('status', 'Aktif')
                                                           ->where('admin_menu_parent_id', $mainMenu['id'])
                                                           ->orderBy('sort_order', 'ASC')
