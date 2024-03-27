@@ -8,19 +8,52 @@
         </button>
 
         <!-- NAVBAR -->
-        <section class="px-2 bg-white panel-box d-flex justify-content-between align-items-stretch w-100">
+        <section class="px-2 bg-white panel-box d-flex justify-content-between align-items-stretch w-100 position-relative">
+            
+            <!-- Search Result -->
+            <nav v-show="showSearchResult" class="page-form-result panel-box p-3">
+                <button 
+                    v-for="(result, n) in searchPageResult"
+                    v-bind:key="n"
+                    v-on:click="clickSearchResult(result)"
+                    type="button"
+                    class="btn btn-link w-100 page-form-result-link text-decoration-none text-start fw-bold"
+                    title="Klik untuk membuka halaman">
+                    <font-awesome v-bind:icon="result.icon" class="me-2"></font-awesome>
+                    {{ result.title }}
+                </button>
+                <p 
+                    v-if="searchPageResult.length < 1"
+                    class="m-0 text-secondary">
+                    Tidak ditemukan halaman dengan kata kunci "{{ searchPageValue }}"
+                </p>
+            </nav>
+
+            <!-- Search Form -->
             <div v-show="pageSearch" class="page-form-wrapper w-100">
                 <datalist id="panelPages"></datalist>
-                <input ref="searchform" name="searchpage" list="panelPages" type="text" class="border-0 py-0 page-form form-control w-100" placeholder="Ketik Halaman/Menu...">
-                <button v-on:click="pageSearch = false" type="button" class="btn btn-link d-flex align-items-center">
+                <input 
+                    v-on:input="attemptSearchPage"
+                    v-model="searchPageValue"
+                    autocomplete="off"
+                    ref="searchform" 
+                    name="searchpage" 
+                    list="panelPages" 
+                    type="text" 
+                    class="border-0 py-0 page-form form-control w-100" 
+                    placeholder="Ketik Halaman/Menu...">
+                <button v-on:click="pageSearch = false; showSearchResult = false" ref="pageSearchCloseButton" type="button" class="btn btn-link d-flex align-items-center">
                     <font-awesome icon="fa fa-xmark" class="text-secondary fs-4"></font-awesome>
                 </button>
             </div>
+
+            <!-- Search Button Trigger -->
             <button v-show="!pageSearch" v-on:click="showPageSearch" type="button" class="btn btn-link text-decoration-none w-100 text-start text-secondary align-items-center page-form-button py-0">
                 <font-awesome icon="fa fa-magnifying-glass" class="me-2"></font-awesome>
                 Cari Halaman
             </button>
-    
+            
+            <!-- Header Menu -->
             <div ref="headerMenu" class="header-menu dropdown">
                 <button type="button" class="header-menu-button btn btn-link text-decoration-none dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <img class="header-menu-image rounded-circle" v-bind:src="profilePicture" v-bind:alt="admin.name">
@@ -57,6 +90,7 @@
                     </li>
                 </ul>
             </div>
+
         </section>
 
 
@@ -68,12 +102,12 @@
 
 import { imageUrl, panelUrl, checkAxiosError } from '../libraries/Function';
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faBars } from '@fortawesome/free-solid-svg-icons'
+import { faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faBars, faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import * as bootstrap from 'bootstrap'
 import Swal from 'sweetalert2'
 import axios from 'axios'
 
-library.add(faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faBars)
+library.add(faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faBars, faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight)
 
 export default {
     name: 'panel-header-component',
@@ -81,13 +115,11 @@ export default {
     data: function() {
         return {
             pageSearch: false,
+            searchPageValue: '',
+            searchPageResult: [],
+            showSearchResult: false,
+            delayedSearch: null,
             headerDropdown: {},
-            headerDropdownList: [
-                {href: '#', name: 'Admin'},
-                {href: '#', name: 'Another Action'},
-                {href: '#', name: 'Something Else Here'},
-                {href: '#', name: 'LogOut'},
-            ]
         }
     },
     computed: {
@@ -140,6 +172,37 @@ export default {
                     Swal.close()
                 }
             })
+        },
+        attemptSearchPage: function() {
+            let app = this
+
+            clearTimeout(app.delayedSearch)
+            app.delayedSearch = setTimeout(() => {
+                let data = new FormData()
+                data.append('query', app.searchPageValue)
+
+                if (app.searchPageValue.length > 1) {
+                    axios.post(panelUrl('public/menu/search'), data)
+                        .then(function(res) {
+                            app.searchPageResult = res.data.data
+                            app.$nextTick(() => {
+                                app.showSearchResult = true
+                            })                       
+                        }).catch(function(res) {
+                            checkAxiosError(res.request.status)
+                        })
+                } else {
+                    app.showSearchResult = false
+                }
+            }, 300)
+        },
+        clickSearchResult: function(menu) {
+            this.showSearchResult = false
+            this.searchPageValue = ''
+            this.$refs.pageSearchCloseButton.click()
+            this.$router.push({
+                name: menu.router_name
+            })
         }
     },
     mounted: function() {
@@ -166,6 +229,21 @@ export default {
     &-wrapper {
         display: flex;
         align-items: center;
+    }
+
+    &-result {
+        width: 100%;
+        position: absolute;
+        background-color: #ffffff;
+        z-index: 100;
+        left: 0;
+        top: calc(100% + .5rem);
+
+        &-link {
+            &:hover {
+                background-color: darken(#ffffff, 3%)
+            }
+        }
     }
 }
 
