@@ -24,6 +24,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function ($routes) {
         $routes->match(['options', 'get'], 'logout', 'Admin\\PublicController::logout');
         $routes->match(['options', 'get'], 'session-data', 'Admin\\PublicController::sessionData');
         $routes->match(['options', 'get'], 'menu', 'Admin\\PublicController::menu');
+        $routes->match(['options', 'post'], 'menu/search', 'Admin\\PublicController::searchMenu');
     });
 
     // fallback SPA routes
