@@ -83,4 +83,96 @@ class PublicController extends BaseController
     }
 
     //================================================================================================
+
+    public function searchMenu(): ResponseInterface
+    {
+        $davionShield = new DavionShield();
+        $accountData  = $davionShield->getAccountData();
+        $query        = $this->request->getPost('query');
+
+        if (empty($query) OR strlen($query) < 2)
+        {
+            return $this->response->setJSON([
+                'status'  => 'success',
+                'message' => 'Data tidak ditemukan',
+                'data'    => []
+            ]);
+        }
+
+        // check if superadmin
+        if ($accountData['is_superadmin'] === SUPERADMIN)
+        {
+            $adminMenuModel = new AdminMenuModel();
+            $adminMenu      = $adminMenuModel->select(['admin_menu.id', 'title', 'router_name', 'icon', 'type', 'admin_menu_parent_id'])
+                                             ->where('admin_menu.type !=', 'Parent')
+                                             ->where('admin_menu.status', 'Aktif')
+                                             ->like('title', $query, 'both', null, true)
+                                             ->orderBy('title', 'ASC')
+                                             ->find();
+
+            // get all parents
+            $adminMenuParent = $adminMenuModel->select(['id', 'icon', 'title'])
+                                              ->where('type', 'Parent')
+                                              ->find();
+
+            $adminMenuParentId = array_column($adminMenuParent, 'id');
+
+            foreach ($adminMenu as $n => $item):
+
+                if ($item['type'] === 'Child')
+                {
+                    $key = array_keys($adminMenuParentId, $item['admin_menu_parent_id']);
+                    $key = $key[0];
+
+                    // fill data
+                    $adminMenu[$n]['icon']  = $adminMenuParent[$key]['icon'];
+                    $adminMenu[$n]['title'] = "{$adminMenuParent[$key]['title']} - {$item['title']}";
+                }
+
+            endforeach;
+
+        } else {
+
+            $adminMenuModel     = new AdminMenuModel();
+            $adminMenuListModel = new AdminMenuListModel();
+            $adminMenu          = $adminMenuListModel->select(['admin_menu_id as id', 'title', 'router_name', 'icon', 'type', 'admin_menu_parent_id'])
+                                                     ->join('admin_menu', 'admin_menu_id = admin_menu.id', 'left')
+                                                     ->where('admin_role_id', $accountData['admin_role_id'])
+                                                     ->where('admin_menu.type !=', 'Parent')
+                                                     ->where('admin_menu.status', 'Aktif')
+                                                     ->like('title', $query, 'both', null, true)
+                                                     ->orderBy('title', 'ASC')
+                                                     ->find();
+
+            // get all parents
+            $adminMenuParent = $adminMenuModel->select(['id', 'icon', 'title'])
+                                              ->where('type', 'Parent')
+                                              ->find();
+
+            $adminMenuParentId = array_column($adminMenuParent, 'id');
+
+            foreach ($adminMenu as $n => $item):
+
+                if ($item['type'] === 'Child')
+                {
+                    $key = array_keys($adminMenuParentId, $item['admin_menu_parent_id']);
+                    $key = $key[0];
+
+                    // fill data
+                    $adminMenu[$n]['icon']  = $adminMenuParent[$key]['icon'];
+                    $adminMenu[$n]['title'] = "{$adminMenuParent[$key]['title']} - {$item['title']}";
+                }
+
+            endforeach;
+        }
+
+        /// return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => $adminMenu
+        ]);
+    }
+
+    //================================================================================================
 }
