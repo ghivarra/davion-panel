@@ -2,6 +2,7 @@
 
 namespace App\Filters;
 
+use App\Models\AdminSessionModel;
 use Config\Session as SessionConfig;
 use CodeIgniter\Filters\FilterInterface;
 use CodeIgniter\HTTP\RequestInterface;
@@ -32,7 +33,7 @@ class SessionGarbageCollector implements FilterInterface
             $sessionConfig = new SessionConfig();
 
             // glob session folders
-            $sessions       = glob("{$sessionConfig->savePath}/{$sessionConfig->cookieName}*");
+            $sessions       = glob($sessionConfig->savePath . DIRECTORY_SEPARATOR .  $sessionConfig->cookieName . "*");
             $expirationTime = time() - $sessionConfig->expiration;
             $expiredSession = [];
 
@@ -42,9 +43,18 @@ class SessionGarbageCollector implements FilterInterface
                 if (filemtime($session) <= $expirationTime)
                 {
                     unlink($session);
+                    $sessionName = substr(strrchr($session, DIRECTORY_SEPARATOR), 1);
+                    array_push($expiredSession, str_ireplace($sessionConfig->cookieName, '', $sessionName));
                 }
 
             endforeach;
+
+            // search and delete sessions from db
+            if (!empty($expiredSession))
+            {
+                $adminSessionModel = new AdminSessionModel();
+                $adminSessionModel->whereIn('name', $expiredSession)->delete();
+            }
         }
     }
 
