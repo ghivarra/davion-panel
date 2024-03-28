@@ -12,6 +12,11 @@ app/Config/Cache.php
 app/Config/ContentSecurityPolicy.php
 
 #-------------------------
+# Package Lock
+#-------------------------
+package-lock.json
+
+#-------------------------
 # Storage Files
 #-------------------------
 writable/app/*
