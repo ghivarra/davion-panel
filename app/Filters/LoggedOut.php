@@ -31,7 +31,19 @@ class LoggedOut implements FilterInterface
 
         if (!$davionShield->check())
         {
-            return redirect('login');
+            if ($request->isAJAX())
+            {
+                $service = Services::response();
+
+                return $service->setStatusCode(401)->setJSON([
+                    'status'  => 'error',
+                    'message' => 'Sesi anda sudah berakhir atau anda belum melakukan otentikasi'
+                ]);
+
+            } else {
+
+                return redirect('login');
+            }
         }
     }
 
