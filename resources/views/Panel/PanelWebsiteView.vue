@@ -3,7 +3,9 @@
         <header class="mb-3">
             <slot name="breadcrumb"></slot>
         </header>
-        Hello ini {{ name }}
+        <article class="panel-box px-3 py-2 bg-white">
+            Hello
+        </article>
     </main>
 </template>
 

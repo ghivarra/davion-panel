@@ -1,6 +1,6 @@
 <template>
 
-    <div class="d-flex panel-body">
+    <div class="d-flex">
 
         <!-- SIDEBAR -->
         <aside>
@@ -10,7 +10,7 @@
         </aside>
 
         <!-- MAIN -->
-        <main class="panel-main px-4 py-3">
+        <div class="panel-body px-4 py-3">
 
             <!-- PRELOADER -->
             <Transition name="loader">
@@ -24,8 +24,9 @@
             <router-view v-slot="{ Component }">
                 <component v-on:loaded="stopLoader" v-bind:is="Component">
                     <template v-slot:breadcrumb>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="text-primary fw-bold mb-0">{{ $router.currentRoute.value.meta.pageName }}</h4>
+                        <div class="panel-main-header justify-content-between align-items-center">
+                            <h4 class="panel-main-header-title text-primary fw-bold">{{
+                $router.currentRoute.value.meta.pageName }}</h4>
                             <div class="d-flex align-items-center">
                                 <router-link v-for="(bread, n) in breadcrumbs" v-bind:key="n"
                                     v-bind:to="{ name: bread.name }" class="text-decoration-none link-secondary">
@@ -37,7 +38,7 @@
                     </template>
                 </component>
             </router-view>
-        </main>
+        </div>
 
     </div>
 
@@ -82,6 +83,7 @@ export default {
             this.activateMenu()
             this.breadcrumbs = generateBreadcrumb(this.$router)
             this.loaderState = true
+            this.showSidebar = false
         }
     },
     methods: {
@@ -188,15 +190,38 @@ export default {
 </script>
 
 <style lang="scss">
+$largeBreakpoint: "991.98px";
+
 .panel {
-    &-main {
+    &-body {
         background-color: darken(#ffffff, 5%);
         width: calc(100vw - 260px);
         width: calc(100dvw - 260px);
+        display: block;
 
-        @media (max-width: 991.98px) {
+        @media (max-width: $largeBreakpoint) {
             width: 100vw;
             width: 100dvw;
+            background-color: #ffffff;
+        }
+    }
+
+    &-main {
+        &-header {
+            display: flex;
+
+            @media (max-width: $largeBreakpoint) {
+                display: block;
+            }
+
+            &-title {
+                margin-bottom: 0;
+                font-size: 1.6rem;
+
+                @media (max-width: $largeBreakpoint) {
+                    margin-bottom: .4rem;
+                }
+            }
         }
     }
 
