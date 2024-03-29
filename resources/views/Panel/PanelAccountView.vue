@@ -1,8 +1,6 @@
 <template>
     <main role="main" class="mb-4">
-        <header class="mb-3">
-            <slot name="breadcrumb"></slot>
-        </header>
+        <slot name="breadcrumb"></slot>
         Hello ini {{ name }}
     </main>
 </template>

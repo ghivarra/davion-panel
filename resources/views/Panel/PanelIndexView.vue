@@ -24,7 +24,7 @@
             <router-view v-slot="{ Component }">
                 <component v-on:loaded="stopLoader" v-bind:is="Component">
                     <template v-slot:breadcrumb>
-                        <div class="panel-main-header justify-content-between align-items-center">
+                        <header class="panel-main-header my-4 justify-content-between align-items-center">
                             <h4 class="panel-main-header-title text-primary fw-bold">{{
                 $router.currentRoute.value.meta.pageName }}</h4>
                             <div class="d-flex align-items-center">
@@ -34,7 +34,7 @@
                                     {{ bread.title }}
                                 </router-link>
                             </div>
-                        </div>
+                        </header>
                     </template>
                 </component>
             </router-view>

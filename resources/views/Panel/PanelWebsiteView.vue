@@ -1,8 +1,6 @@
 <template>
     <main role="main" class="mb-4">
-        <header class="mb-3">
-            <slot name="breadcrumb"></slot>
-        </header>
+        <slot name="breadcrumb"></slot>
         <article class="panel-box px-3 py-2 bg-white">
             Hello
         </article>
