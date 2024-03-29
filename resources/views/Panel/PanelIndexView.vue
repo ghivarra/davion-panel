@@ -4,12 +4,8 @@
 
         <!-- SIDEBAR -->
         <aside>
-            <panel-sidebar-component
-                v-bind:activeMenu="activeMenuId"
-                v-bind:activeParentMenu="activeParentMenuId"
-                v-bind:menu="menu"
-                v-bind:showSidebar="showSidebar" 
-                v-on:sidebarToggleClick="toggleSidebar">
+            <panel-sidebar-component v-bind:activeMenu="activeMenuId" v-bind:activeParentMenu="activeParentMenuId"
+                v-bind:menu="menu" v-bind:showSidebar="showSidebar" v-on:sidebarToggleClick="toggleSidebar">
             </panel-sidebar-component>
         </aside>
 
@@ -25,7 +21,23 @@
             <panel-header-component v-on:sidebarToggleClick="toggleSidebar"></panel-header-component>
 
             <!-- VIEW -->
-            <router-view v-on:loaded="stopLoader"></router-view>
+            <router-view v-slot="{ Component }">
+                <component v-on:loaded="stopLoader" v-bind:is="Component">
+                    <template v-slot:breadcrumb>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="text-primary fw-bold">{{ $router.currentRoute.value.meta.pageName }}</h4>
+                            <div class="d-flex align-items-center">
+                                <router-link v-for="(bread, n) in breadcrumbs" v-bind:key="n"
+                                    v-bind:to="{ name: bread.name }"
+                                    class="text-decoration-none fw-bold link-secondary">
+                                    <span v-if="(n == !0)" class="mx-1">/</span>
+                                    {{ bread.title }}
+                                </router-link>
+                            </div>
+                        </div>
+                    </template>
+                </component>
+            </router-view>
         </main>
 
     </div>
@@ -39,7 +51,7 @@ import PreloadComponent from '../../components/PreloadComponent.vue'
 import PanelSidebarComponent from '../../components/PanelSidebarComponent.vue'
 import { dom } from '@fortawesome/fontawesome-svg-core'
 import { computed } from 'vue'
-import { baseUrl, imageUrl, panelUrl, checkAxiosError } from '../../libraries/Function'
+import { baseUrl, imageUrl, panelUrl, checkAxiosError, generateBreadcrumb } from '../../libraries/Function'
 import axios from 'axios'
 
 export default {
@@ -52,6 +64,7 @@ export default {
     },
     data: function() {
         return {
+            breadcrumbs: [],
             webInfo: this.website,
             pageTitle: this.title,
             admin: {},
@@ -60,7 +73,7 @@ export default {
             loaderState: true,
             showSidebar: false,
             activeMenuId: null,
-            activeParentMenuId: null
+            activeParentMenuId: null,
         }
     },
     watch: {
@@ -68,6 +81,7 @@ export default {
             this.pageTitle = this.$router.currentRoute.value.meta.pageName
             this.updateMetaData()
             this.activateMenu()
+            this.breadcrumbs = generateBreadcrumb(this.$router)
             this.loaderState = true
         }
     },
@@ -167,7 +181,7 @@ export default {
             })
     },
     mounted: function() {
-        // watch icons
+        this.breadcrumbs = generateBreadcrumb(this.$router)
         dom.watch();
     }
 }
@@ -175,7 +189,6 @@ export default {
 </script>
 
 <style lang="scss">
-
 .panel {
     &-main {
         background-color: darken(#ffffff, 5%);
@@ -191,8 +204,7 @@ export default {
     &-box {
         border-radius: 6px;
         border: 1px solid lighten(#000000, 85%);
-        box-shadow: 0 0.125em 0.25em rgba(0,0,0,.15);
+        box-shadow: 0 0.125em 0.25em rgba(0, 0, 0, .15);
     }
 }
-
 </style>
