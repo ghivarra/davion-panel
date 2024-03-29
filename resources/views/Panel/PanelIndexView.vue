@@ -25,12 +25,11 @@
                 <component v-on:loaded="stopLoader" v-bind:is="Component">
                     <template v-slot:breadcrumb>
                         <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="text-primary fw-bold">{{ $router.currentRoute.value.meta.pageName }}</h4>
+                            <h4 class="text-primary fw-bold mb-0">{{ $router.currentRoute.value.meta.pageName }}</h4>
                             <div class="d-flex align-items-center">
                                 <router-link v-for="(bread, n) in breadcrumbs" v-bind:key="n"
-                                    v-bind:to="{ name: bread.name }"
-                                    class="text-decoration-none fw-bold link-secondary">
-                                    <span v-if="(n == !0)" class="mx-1">/</span>
+                                    v-bind:to="{ name: bread.name }" class="text-decoration-none link-secondary">
+                                    <span v-if="(n > 0)" class="mx-1">/</span>
                                     {{ bread.title }}
                                 </router-link>
                             </div>
