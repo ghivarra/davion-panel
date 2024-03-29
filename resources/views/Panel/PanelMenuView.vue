@@ -1,9 +1,11 @@
 <template>
-    <section class="mb-4">
+    <main role="main" class="mb-4">
+        <header class="mb-3">
+            <slot name="breadcrumb"></slot>
+        </header>
         Hello ini {{ name }}
-    </section>
+    </main>
 </template>
-
 <script>
 
 export default {
@@ -23,7 +25,4 @@ export default {
 
 </script>
 
-<style lang="scss">
-
-
-</style>
+<style lang="scss"></style>
