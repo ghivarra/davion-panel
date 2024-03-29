@@ -51,5 +51,24 @@ function checkAxiosError(status) {
     }
 }
 
+function generateBreadcrumb(router) {
+    const currentPath = window.location.pathname.substring(1).split('/')
+    let eachPath = ''
+    let breadcrumbs = []
+
+    currentPath.forEach((item) => {
+        eachPath += `/${item}`
+        let resolvedPath = router.resolve(eachPath)
+        breadcrumbs.push({
+            path: eachPath,
+            name: (typeof resolvedPath.name === 'undefined') ? null : resolvedPath.name,
+            title: (typeof resolvedPath.meta.pageName === 'undefined') ? null : resolvedPath.meta.pageName
+        })
+    })
+
+    // return
+    return breadcrumbs;
+}
+
 // export functions
-export { baseUrl, panelUrl, loginUrl, imageUrl, checkAxiosError }
+export { baseUrl, panelUrl, loginUrl, imageUrl, checkAxiosError, generateBreadcrumb }
