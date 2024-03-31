@@ -26,15 +26,9 @@ class AdminModule extends Migration
 
         // set fields
         $fields = [
-            'id' => [
-                'type'           => 'BIGINT',
-                'unsigned'       => true,
-                'auto_increment' => true
-            ],
             'alias' => [
                 'type'       => 'VARCHAR',
-                'constraint' => 100,
-                'unique'     => true
+                'constraint' => 100
             ],
             'name' => [
                 'type'       => 'VARCHAR',
@@ -79,7 +73,7 @@ class AdminModule extends Migration
         $this->forge->addField($fields);
 
         // add primary key
-        $this->forge->addKey('id', true);
+        $this->forge->addKey('alias', true);
 
         // add indexes
         $this->forge->addKey('group');

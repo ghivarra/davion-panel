@@ -45,10 +45,9 @@ class AdminModuleList extends Migration
                 'unsigned' => true,
                 'null'     => true
             ],
-            'admin_module_id' => [
-                'type'     => 'BIGINT',
-                'unsigned' => true,
-                'null'     => true
+            'admin_module_alias' => [
+                'type'       => 'VARCHAR',
+                'constraint' => 100
             ],
             'created_at' => [
                 'type'    => 'TIMESTAMP',
@@ -79,12 +78,12 @@ class AdminModuleList extends Migration
 
         // add indexes
         $this->forge->addKey('admin_role_id');
-        $this->forge->addKey('admin_module_id');
+        $this->forge->addKey('admin_module_alias');
         $this->forge->addKey('type');
 
         // add foreign key
         $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id', 'CASCADE', 'CASCADE');
-        $this->forge->addForeignKey('admin_module_id', 'admin_module', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('admin_module_alias', 'admin_module', 'alias', 'CASCADE', 'CASCADE');
 
         // create table
         $this->forge->createTable($this->tableName, true);
@@ -96,7 +95,7 @@ class AdminModuleList extends Migration
     {
         // drop foreign key
         $this->forge->dropForeignKey($this->tableName, "{$this->tableName}_admin_role_id_foreign");
-        $this->forge->dropForeignKey($this->tableName, "{$this->tableName}_admin_module_id_foreign");
+        $this->forge->dropForeignKey($this->tableName, "{$this->tableName}_admin_module_alias_foreign");
 
         // drop table
         $this->forge->dropTable($this->tableName, true);
