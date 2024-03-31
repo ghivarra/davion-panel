@@ -7,8 +7,8 @@ use CodeIgniter\Model;
 class AdminModuleModel extends Model
 {
     protected $table            = 'admin_module';
-    protected $primaryKey       = 'id';
-    protected $useAutoIncrement = true;
+    protected $primaryKey       = 'alias';
+    protected $useAutoIncrement = false;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = true;
     protected $protectFields    = true;

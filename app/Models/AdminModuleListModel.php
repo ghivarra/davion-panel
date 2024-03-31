@@ -13,7 +13,7 @@ class AdminModuleListModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'type', 'parameter', 'admin_role_id', 'admin_module_id'
+        'type', 'parameter', 'admin_role_id', 'admin_module_alias'
     ];
 
     protected bool $allowEmptyInserts = false;
