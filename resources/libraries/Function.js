@@ -1,17 +1,32 @@
 import Swal from 'sweetalert2'
 
+/**
+ * @param {string} uri
+ */
 function baseUrl(uri) {
     return import.meta.env.VITE_URL + `/${uri}`
 }
 
+/**
+ * @param {string} uri
+ */
 function panelUrl(uri) {
     return import.meta.env.VITE_URL + '/' + import.meta.env.VITE_PANEL_PAGE + `/${uri}`
 }
 
+/**
+ * @param {string} uri
+ */
 function loginUrl(uri) {
     return import.meta.env.VITE_URL + '/' + import.meta.env.VITE_LOGIN_PAGE + `/${uri}`
 }
 
+/**
+ * @param {string} uri
+ * @param {string|null|integer} width
+ * @param {string|null|integer} height
+ * @param {string} priority
+ */
 function imageUrl(uri, width = null, height = null, priority = 'width') {
     let url = baseUrl(`assets/images/${uri}?priority=${priority}`)
 
@@ -28,6 +43,9 @@ function imageUrl(uri, width = null, height = null, priority = 'width') {
     return url
 }
 
+/**
+ * @param {interface} status
+ */
 function checkAxiosError(status) {
 
     // return if nothing happened
@@ -57,6 +75,9 @@ function checkAxiosError(status) {
     }
 }
 
+/**
+ * @param {interface} router
+ */
 function generateBreadcrumb(router) {
     const currentPath = window.location.pathname.substring(1).split('/')
     let eachPath = ''
