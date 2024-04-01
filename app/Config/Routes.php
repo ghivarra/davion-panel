@@ -30,6 +30,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
     // Website routes
     $routes->group('website', static function($routes) {
         $routes->match(['options', 'get'], 'data', 'Admin\\WebsiteController::data');
+        $routes->match(['options', 'post'], 'main-form-update', 'Admin\\WebsiteController::mainFormUpdate');
     });
 
     // fallback SPA routes

@@ -5,7 +5,7 @@
             <header class="panel-box-header">
             Informasi
             </header>
-            <form ref="websiteMainForm" id="websiteMainForm" class="p-3">
+            <form v-on:submit.prevent="submitMainForm" id="websiteMainForm" class="p-3">
                 <div class="mb-3">
                     <label for="formName" class="form-label fw-bold">Nama Website</label>
                     <input v-model="mainForm.name" name="name" id="formName" type="text" class="form-control">
@@ -32,6 +32,7 @@
 
 import { panelUrl, checkAxiosError } from '@/libraries/Function'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default {
     name: 'panel-website-view',
@@ -45,6 +46,25 @@ export default {
                 description: '',
                 app_version: '',
             }
+        }
+    },
+    methods: {
+        submitMainForm: function(event) {
+            let app = this
+            app.showLoader()
+            axios.post(panelUrl('website/main-form-update'), new FormData(event.target))  
+                .then(function(res) {
+                    res = res.data
+                    if (res.status !== 'success') {
+                        app.hideLoader()
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        window.location.reload()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
         }
     },
     mounted: function() {
