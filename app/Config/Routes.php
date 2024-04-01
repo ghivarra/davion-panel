@@ -32,6 +32,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
         $routes->match(['options', 'get'], 'data', 'Admin\\WebsiteController::data');
         $routes->match(['options', 'post'], 'main-form-update', 'Admin\\WebsiteController::mainFormUpdate');
         $routes->match(['options', 'post'], 'logo-update', 'Admin\\WebsiteController::logoUpdate');
+        $routes->match(['options', 'post'], 'icon-update', 'Admin\\WebsiteController::iconUpdate');
     });
 
     // fallback SPA routes
