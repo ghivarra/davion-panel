@@ -3,6 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\BaseController;
+use App\Libraries\Chrisbliss18\PHP_ICO;
 use App\Models\WebsiteModel;
 use Config\Services;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -222,8 +223,16 @@ class WebsiteController extends BaseController
             $version[2]++;
         }
 
-        // create favicon
-        
+        // delete old favicon and create new favicon
+        $faviconPath = FCPATH . 'favicon.ico';
+
+        if (file_exists($faviconPath) && is_really_writable($faviconPath))
+        {
+            unlink($faviconPath);
+        }
+
+        $phpIco = new PHP_ICO($newPath, [[32, 32]]);
+        $phpIco->save_ico($faviconPath);
 
         // update
         $websiteModel->updateBatch([
