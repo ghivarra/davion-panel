@@ -161,4 +161,87 @@ class WebsiteController extends BaseController
     }
 
     //================================================================================================
+
+    public function iconUpdate(): ResponseInterface
+    {
+        $this->moduleAlias = 'websiteUpdate';
+        $permission        = $this->checkPermission($this->moduleAlias);
+        
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        // validate file
+        $validation = $this->validate([
+            'icon' => 'uploaded[icon]|max_size[icon,4096]|is_image[icon]|mime_in[icon,image/png]'
+        ]);
+
+        if (!$validation)
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data gagal diperbaharui',
+                'reasons' => $this->validator->getErrors()
+            ]);
+        }
+
+        // get file
+        $file = $this->request->getFile('icon');
+
+        // store original file with new name
+        $newName = $file->getRandomName();
+        $newPath = IMAGEPATH . "icon/{$newName}";
+        $file->move(IMAGEPATH . 'icon', $newName);
+
+        // create model instance
+        $websiteModel = new WebsiteModel();
+
+        // get logo version
+        $data    = $websiteModel->select('value')->where('name', 'icon_version')->first();
+        $version = explode('.', $data['value']);
+        $version = array_map('intval', $version);
+
+        // update version
+        if ($version[2] >= 10)
+        {
+            $version[2] = 0;
+            $version[1]++;
+            
+            if ($version[1] >= 10)
+            {
+                $version[1] = 0;
+                $version[0]++;
+            }
+
+        } else {
+
+            $version[2]++;
+        }
+
+        // create favicon
+        
+
+        // update
+        $websiteModel->updateBatch([
+            [
+                'name' => 'icon',
+                'value' => $newName 
+            ], [
+                'name' => 'icon_version',
+                'value' => implode('.', $version)
+            ]
+        ], 'name');
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil diperbaharui'
+        ]);
+    }
+
+    //================================================================================================
 }
