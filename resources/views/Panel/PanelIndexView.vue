@@ -190,6 +190,9 @@ export default {
 </script>
 
 <style lang="scss">
+
+@import "../../assets/base.scss";
+
 $largeBreakpoint: "991.98px";
 
 .panel {
@@ -229,6 +232,15 @@ $largeBreakpoint: "991.98px";
         border-radius: 6px;
         border: 1px solid lighten(#000000, 85%);
         box-shadow: 0 0.125em 0.25em rgba(0, 0, 0, .15);
+        overflow: hidden;
+
+        &-header {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--bs-light);
+            background-color: lighten($primary, 15);
+            padding: .75rem 1rem;
+        }
     }
 }
 </style>
