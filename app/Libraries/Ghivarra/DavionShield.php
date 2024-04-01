@@ -4,6 +4,7 @@ namespace App\Libraries\Ghivarra;
 
 use Config\Services;
 use App\Models\AdminModel;
+use App\Models\AdminModuleListModel;
 use App\Models\AdminSessionModel;
 
 class DavionShield
@@ -172,6 +173,36 @@ class DavionShield
     public function getAccountData(): array
     {
         return $this->session->get('accountData');
+    }
+
+    //================================================================================================
+
+    public function hasAccess($moduleAlias, $roleId, $superadmin): bool | array
+    {
+        if ($superadmin)
+        {
+            return [
+                'access_type' => 'Full',
+                'parameter'   => null
+            ];
+        }
+
+        // get
+        $adminModuleListModel = new AdminModuleListModel();
+        $moduleList           = $adminModuleListModel->select(['type', 'parameter'])
+                                                     ->where('admin_module_alias', $moduleAlias)
+                                                     ->where('admin_role_id', $roleId)
+                                                     ->first();
+        
+        if (empty($moduleList))
+        {
+            return false;
+        }
+
+        return [
+            'access_type' => $moduleList['type'],
+            'parameter'   => empty($moduleList['parameter']) ? null : json_decode($moduleList['parameter'], true)
+        ];
     }
 
     //================================================================================================

@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Libraries\Ghivarra\DavionShield;
 use CodeIgniter\Controller;
 use CodeIgniter\HTTP\CLIRequest;
 use CodeIgniter\HTTP\IncomingRequest;
@@ -59,5 +60,20 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = \Config\Services::session();
+    }
+
+    // create role check functions on base controller
+    public function checkPermission(string $moduleAlias)
+    {
+        $davionShield = new DavionShield();
+        $accountData  = $davionShield->getAccountData();
+        $checkAccess  = $davionShield->hasAccess($moduleAlias, $accountData['admin_role_id'], $accountData['is_superadmin']);
+        
+        if (!$checkAccess)
+        {
+            return false;
+        }
+
+        return $checkAccess;
     }
 }
