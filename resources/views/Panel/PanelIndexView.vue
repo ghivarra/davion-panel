@@ -51,7 +51,7 @@ import PreloadComponent from '../../components/PreloadComponent.vue'
 import PanelSidebarComponent from '../../components/PanelSidebarComponent.vue'
 import { dom } from '@fortawesome/fontawesome-svg-core'
 import { computed } from 'vue'
-import { baseUrl, imageUrl, panelUrl, checkAxiosError, generateBreadcrumb } from '../../libraries/Function'
+import { imageUrl, panelUrl, checkAxiosError, generateBreadcrumb } from '../../libraries/Function'
 import axios from 'axios'
 
 export default {
@@ -89,11 +89,6 @@ export default {
     methods: {
         updateMetaData: function() {
             document.querySelector('title').innerHTML = `${this.pageTitle} | ${this.webInfo.name} - ${this.webInfo.tagline}`
-            document.querySelector('meta[name=description]').setAttribute('content', this.webInfo.description)
-            document.querySelector('link[data-id=favicon]').setAttribute('href', baseUrl('favicon.ico?v=' + this.webInfo.icon_version))
-            document.querySelector('link[data-id=iconApple]').setAttribute('href', imageUrl(`icon/${this.webInfo.icon}`, 180))
-            document.querySelector('link[data-id=icon32]').setAttribute('href', imageUrl(`icon/${this.webInfo.icon}`, 32))
-            document.querySelector('link[data-id=icon16]').setAttribute('href', imageUrl(`icon/${this.webInfo.icon}`, 16))
         },
         toggleSidebar: function() {
             this.showSidebar = !this.showSidebar

@@ -61,7 +61,7 @@
                     <header class="panel-box-header">
                         Icon
                     </header>
-                    <form v-on:submit.prevent="submitMainForm" id="websiteMainForm" class="p-3">
+                    <form v-on:submit.prevent="submitIconForm" id="websiteMainForm" class="p-3">
                         <img v-bind:src="iconUrl" v-bind:alt="mainForm.name" class="d-block mb-4">
                         <div class="mb-4">
                             <label for="iconInput" class="form-label fw-bold">Unggah Icon Baru</label>
@@ -134,6 +134,23 @@ export default {
             let app = this
             app.showLoader()
             axios.post(panelUrl('website/logo-update'), new FormData(event.target))  
+                .then(function(res) {
+                    res = res.data
+                    if (res.status !== 'success') {
+                        app.hideLoader()
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        window.location.reload()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
+        },
+        submitIconForm: function(event) {
+            let app = this
+            app.showLoader()
+            axios.post(panelUrl('website/icon-update'), new FormData(event.target))  
                 .then(function(res) {
                     res = res.data
                     if (res.status !== 'success') {
