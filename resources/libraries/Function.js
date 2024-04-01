@@ -46,6 +46,12 @@ function checkAxiosError(status) {
         })
     
     // if error but differ from above
+    } else if (status === 403) {
+        Swal.fire('Whoopss!!', 'Anda tidak memiliki izin untuk mengakses halaman ini', 'error').then(() => {
+            window.history.back()
+        })
+    
+    // if error but differ from above
     } else {
         Swal.fire('Whoopss!!', 'Server sedang sibuk, silahkan coba lagi di lain waktu', 'error')
     }
