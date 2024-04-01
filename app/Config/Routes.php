@@ -8,23 +8,28 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'Home::index');
 
 // login routes
-$routes->group($_ENV['LOGIN_PAGE'], static function ($routes) {
+$routes->group($_ENV['LOGIN_PAGE'], static function($routes) {
     $routes->get('/', 'Admin\\LoginController::index', ['as' => 'login']);
     $routes->match(['options', 'post'], 'authenticate', 'Admin\\LoginController::authenticate');
 });
 
 // dashboard routes
-$routes->group($_ENV['PANEL_PAGE'], static function ($routes) {
+$routes->group($_ENV['PANEL_PAGE'], static function($routes) {
 
     // dashboard
     $routes->get('/', 'Admin\\DashboardController::index', ['as' => 'panel.dashboard']);
 
     // public routes
-    $routes->group('public', static function ($routes) {
+    $routes->group('public', static function($routes) {
         $routes->match(['options', 'get'], 'logout', 'Admin\\PublicController::logout');
         $routes->match(['options', 'get'], 'session-data', 'Admin\\PublicController::sessionData');
         $routes->match(['options', 'get'], 'menu', 'Admin\\PublicController::menu');
         $routes->match(['options', 'post'], 'menu/search', 'Admin\\PublicController::searchMenu');
+    });
+
+    // Website routes
+    $routes->group('website', static function($routes) {
+        $routes->match(['options', 'get'], 'data', 'Admin\\WebsiteController::data');
     });
 
     // fallback SPA routes
@@ -32,6 +37,6 @@ $routes->group($_ENV['PANEL_PAGE'], static function ($routes) {
 });
 
 // dynamic image routes
-$routes->group('assets', static function ($routes) {
+$routes->group('assets', static function($routes) {
     $routes->get('images/(:any)', 'Assets\\ImageController::serve/$1');
 });
