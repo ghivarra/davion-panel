@@ -51,7 +51,7 @@ import PreloadComponent from '../../components/PreloadComponent.vue'
 import PanelSidebarComponent from '../../components/PanelSidebarComponent.vue'
 import { dom } from '@fortawesome/fontawesome-svg-core'
 import { computed } from 'vue'
-import { imageUrl, panelUrl, checkAxiosError, generateBreadcrumb } from '../../libraries/Function'
+import { panelUrl, checkAxiosError, generateBreadcrumb } from '../../libraries/Function'
 import axios from 'axios'
 
 export default {
