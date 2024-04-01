@@ -28,7 +28,7 @@
                 </div>
                 <button type="submit" class="btn btn-primary d-flex align-items-center">
                     <font-awesome icon="fa-solid fa-floppy-disk" class="me-2"></font-awesome>
-                    Simpan Perubahan
+                    Simpan Informasi
                 </button>
             </form>
         </section>
@@ -49,7 +49,7 @@
                         </div>
                         <button type="submit" class="btn btn-primary d-flex align-items-center">
                             <font-awesome icon="fa-solid fa-floppy-disk" class="me-2"></font-awesome>
-                            Simpan Perubahan
+                            Simpan Logo
                         </button>
                     </form>
                 </section>
@@ -69,7 +69,7 @@
                         </div>
                         <button type="submit" class="btn btn-primary d-flex align-items-center">
                             <font-awesome icon="fa-solid fa-floppy-disk" class="me-2"></font-awesome>
-                            Simpan Perubahan
+                            Simpan Icon
                         </button>
                     </form>
                 </section>
