@@ -41,7 +41,7 @@ class WebsiteController extends BaseController
 
     public function mainFormUpdate(): ResponseInterface
     {
-        $this->moduleAlias = 'websiteMainFormUpdate';
+        $this->moduleAlias = 'websiteUpdate';
         $permission        = $this->checkPermission($this->moduleAlias);
         
         if (!$permission)
@@ -72,6 +72,86 @@ class WebsiteController extends BaseController
         // update
         $websiteModel = new WebsiteModel();
         $websiteModel->updateBatch($input, 'name');
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil diperbaharui'
+        ]);
+    }
+
+    //================================================================================================
+
+    public function logoUpdate(): ResponseInterface
+    {
+        $this->moduleAlias = 'websiteUpdate';
+        $permission        = $this->checkPermission($this->moduleAlias);
+        
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        // validate file
+        $validation = $this->validate([
+            'logo' => 'uploaded[logo]|max_size[logo,4096]|is_image[logo]|mime_in[logo,image/png]'
+        ]);
+
+        if (!$validation)
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data gagal diperbaharui',
+                'reasons' => $this->validator->getErrors()
+            ]);
+        }
+
+        // get file
+        $file = $this->request->getFile('logo');
+
+        // store original file with new name
+        $newName = $file->getRandomName();
+        $newPath = IMAGEPATH . "logo/{$newName}";
+        $file->move(IMAGEPATH . 'logo', $newName);
+
+        // create model instance
+        $websiteModel = new WebsiteModel();
+
+        // get logo version
+        $data    = $websiteModel->select('value')->where('name', 'logo_version')->first();
+        $version = explode('.', $data['value']);
+        $version = array_map('intval', $version);
+
+        // update version
+        if ($version[2] >= 10)
+        {
+            $version[2] = 0;
+            $version[1]++;
+            
+            if ($version[1] >= 10)
+            {
+                $version[1] = 0;
+                $version[0]++;
+            }
+
+        } else {
+
+            $version[2]++;
+        }
+
+        // update
+        $websiteModel->updateBatch([
+            [
+                'name' => 'logo',
+                'value' => $newName 
+            ], [
+                'name' => 'logo_version',
+                'value' => implode('.', $version)
+            ]
+        ], 'name');
 
         // return
         return $this->response->setJSON([
