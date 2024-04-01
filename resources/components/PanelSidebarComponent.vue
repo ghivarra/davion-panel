@@ -1,5 +1,5 @@
 <template>
-    <section class="panel-sidebar shadow-lg" v-bind:class="{ active: showSidebar }">
+    <section class="panel-sidebar shadow-lg sticky-top" v-bind:class="{ active: showSidebar }">
         <div class="p-3 d-flex panel-sidebar-logo-wrapper">
             <router-link v-bind:to="{ name: 'panel.dashboard' }">
                 <img class="panel-sidebar-logo" v-bind:src="logo" v-bind:alt="config.name">
