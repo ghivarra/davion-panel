@@ -1,0 +1,187 @@
+.ghivarra-vue-table {
+    border: collapse;
+    border-spacing: 0;
+    min-width: 100%;
+
+    &-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    &-body {
+        max-width: 100%;
+        overflow: auto;
+        margin-bottom: 1.5rem;
+    }
+
+    thead,
+    tfoot {
+
+        td,
+        th {
+            padding: 8px 30px 8px 10px;
+            text-align: left;
+            font-weight: bold;
+        }
+    }
+
+    thead, tfoot {
+        th {
+            position: relative;
+            cursor: pointer;
+
+            &.sortable::before {
+                bottom: 55%;
+                content: "▲";
+                position: absolute;
+                display: block;
+                opacity: .125;
+                right: 10px;
+                line-height: 9px;
+                font-size: .8em;
+            }
+    
+            &.sortable::after {
+                top: 55%;
+                content: "▼";
+                position: absolute;
+                display: block;
+                opacity: .125;
+                right: 10px;
+                line-height: 9px;
+                font-size: .8em;
+            }
+    
+            &.sortable[data-sort=asc]::before,
+            &.sortable[data-sort=desc]::after {
+                opacity: .8;
+            }
+        }
+
+    }
+
+    tbody {
+        background-color: #ffffff;
+
+        tr {
+
+            &:first-child td {
+                border-top: 2px solid rgba(0, 0, 0, .15);
+            }
+
+            &:last-child td {
+                border-bottom: 2px solid rgba(0, 0, 0, .15);
+            }
+
+            &:nth-child(odd) {
+                background-color: #ffffff;
+            }
+
+            &:nth-child(even) {
+                background-color: #ecf9ff;
+            }
+
+            td {
+                border: 0;
+                border-bottom: 1px solid rgba(0, 0, 0, .15);
+                margin: 0;
+                padding: 8px 10px;
+            }
+        }
+    }
+
+    &-wrapper {
+        thead, tfoot {
+            background-color: #585858;
+            background: linear-gradient(180deg, #585858 0, #212529);
+            color: #ffffff;
+        }
+    
+        .chevron {
+            height: 16px;
+            width: 16px;
+            fill: #343434;
+            position: relative;
+            top: 0px;
+        }
+    
+        .chevron-left {
+            left: 0px;
+        }
+    
+        .chevron-right {
+            left: 0px;
+        }
+    
+        .paginator-wrapper {
+            display: flex;
+            align-items: center;
+            height: 100%;
+        }
+    
+        .paginator-button {
+            border-radius: 50%;
+            height: 32px;
+            width: 32px;
+            padding: 4px;
+            cursor: pointer;
+            border: 0;
+            background-color: #ffffff;
+            filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+    
+            &:hover,
+            &:focus {
+                background-color: #585858;
+                background: linear-gradient(180deg, #585858 0, #212529);
+    
+                .chevron {
+                    fill: #ffffff;
+                }
+    
+                &[disabled] {
+                    background: #dcdcdc;
+                }
+            }
+    
+            &[disabled] {
+                background: #dcdcdc;
+            }
+        }
+    
+        .input-length {
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            color: #212529;
+            outline: none;
+            background-color: #ffffff;
+            filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+        }
+    
+        .paginator-input {
+            margin: 0 .5rem;
+            width: 70px;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 1rem;
+            border: 1px solid #ced4da;
+            color: #212529;
+            outline: none;
+            background-color: #ffffff;
+            filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
+        }
+    
+        .bottom-paginator-wrapper,
+        .info {
+            display: flex;
+            justify-content: center;
+        }
+    
+        .bottom-paginator-wrapper {
+            margin-bottom: 1rem;
+        }
+    }
+}
