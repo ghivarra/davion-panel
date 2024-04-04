@@ -239,4 +239,14 @@ $largeBreakpoint: "991.98px";
     }
 }
 
+table {
+    .col {
+        &-no {
+            width: 100px;
+        }
+        
+    }
+
+}
+
 </style>
