@@ -35,6 +35,11 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
         $routes->match(['options', 'post'], 'icon-update', 'Admin\\WebsiteController::iconUpdate');
     });
 
+    // Module Routes
+    $routes->group('module', static function($routes) {
+        $routes->match(['options', 'post'], 'datatable', 'Admin\\ModuleController::datatable');
+    });
+
     // fallback SPA routes
     $routes->get('(:any)', 'Admin\\PublicController::singlePageApplication', ['as' => 'panel.fallback']);
 });
