@@ -30,3 +30,15 @@ function imageUrl($slug = '', $width = NULL, $height = NULL, $priority = 'width'
 
     return $url;
 }
+
+function numbering(array $array = [], int $start = 0): array
+{
+    foreach ($array as $key => $value):
+
+        $start++;
+        $array[$key]['no'] = number_format($start, 0, ',', '.');
+
+    endforeach;
+
+    return $array;
+}
