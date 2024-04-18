@@ -15,6 +15,7 @@ app/Config/ContentSecurityPolicy.php
 # Package Lock
 #-------------------------
 package-lock.json
+composer.lock
 
 #-------------------------
 # Storage Files
