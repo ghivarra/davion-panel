@@ -126,6 +126,21 @@
 
 <script>
 
+const buildColumn = (form, columns) => {
+    columns.forEach((column, i) => {
+        let query = (typeof column.query !== 'undefined') ? column.query : ''
+        let key = (typeof column.key !== 'undefined') ? column.key : '' 
+
+        if (typeof column.searchable !== 'undefined' && !column.searchable) {
+            query = ''
+        }
+
+        form.append(`columns[${i}][query]`, query)
+        form.append(`columns[${i}][key]`, key)
+    })
+    return form
+}
+
 export default {
     name: 'vue-table',
     props: {
@@ -259,6 +274,12 @@ export default {
             } else {
                 this.pageNow = 1
             }
+        },
+        columns: {
+            handler: function() {
+                this.draw()
+            },
+            deep: true
         }
     },
     methods: {
@@ -321,6 +342,9 @@ export default {
             data.append('offset', offset)
             data.append('order[column]', app.orderColumn)
             data.append('order[dir]', app.orderDir)
+
+            // build column and append
+            data = buildColumn(data, app.columns)
 
             fetch(app.url, {
                 method: 'POST',
