@@ -8,7 +8,7 @@
         </button>
 
         <!-- NAVBAR -->
-        <section class="px-2 bg-white panel-box d-flex justify-content-between align-items-stretch w-100 position-relative">
+        <section class="px-2 bg-white panel-box overflow-visible d-flex justify-content-between align-items-stretch w-100 position-relative">
             
             <!-- Search Result -->
             <nav v-show="showSearchResult" class="page-form-result panel-box p-3">
