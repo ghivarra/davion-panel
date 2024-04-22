@@ -249,6 +249,18 @@ export default {
             return new Intl.NumberFormat(this.language).format(this.response.recordsFiltered)
         }
     },
+    watch: {
+        pageNow: function() {
+            this.draw()
+        },
+        length: function() {
+            if (this.pageNow === 1) {
+                this.draw()
+            } else {
+                this.pageNow = 1
+            }
+        }
+    },
     methods: {
         handleError: function(statusCode, statusText) {
             if (statusCode === 401) {
