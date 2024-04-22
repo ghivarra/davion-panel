@@ -60,10 +60,9 @@
 
                 <tbody v-if="status === 'loaded'">
                     <tr v-if="response.row.length < 1">
-                        <td>{{ emptyText }}</td>
+                        <td v-bind:colspan="columns.length">{{ emptyText }}</td>
                     </tr>
-                    <tr v-else v-for="(item, n) in response.row"
-                        v-bind:key="n">
+                    <tr v-else v-for="(item, n) in response.row" v-bind:key="n">
                         <td v-for="(column, b) in columns" v-bind:key="b" v-bind:class="column.class"
                             v-html="item[column.key]"></td>
                     </tr>
@@ -221,7 +220,8 @@ export default {
             idle: true,
             pageNow: 1,
             status: 'loading',
-            searchTimeout: undefined,
+            searchStatus: false,
+            searchTimeout: 500,
             orderColumn: '',
             orderDir: 'asc'
         }
@@ -277,7 +277,15 @@ export default {
         },
         columns: {
             handler: function() {
-                this.draw()
+                let app = this
+                if (app.searchStatus) {
+                    clearTimeout(app.searchStatus)
+                }
+
+                app.searchStatus = setTimeout(() => {
+                    this.pageNow = 1
+                    app.draw()
+                }, app.searchTimeout)
             },
             deep: true
         }
