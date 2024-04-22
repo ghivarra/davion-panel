@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Models\AdminModuleModel;
 use Config\Services;
 use CodeIgniter\HTTP\ResponseInterface;
+use Faker\Factory;
 
 class ModuleController extends BaseController
 {
@@ -69,6 +70,32 @@ class ModuleController extends BaseController
                 'row'             => numbering($data, $offset)
             ]
         ]);
+    }
+
+    //================================================================================================
+
+    public function seed($total): String
+    {
+        $faker = Factory::create();
+        $group = ['Website', 'Admin', 'Public', 'Module', 'Menu'];
+
+        for ($i=0; $i < $total; $i++)
+        {
+            $groupId  = random_int(0, 4);
+            $data[$i] = [
+                'alias'  => $faker->uuid(),
+                'name'   => $faker->words(2, true),
+                'group'  => $group[$groupId],
+                'status' => 'Aktif'
+            ];
+        }
+
+        // input
+        $orm = new AdminModuleModel();
+        $orm->insertBatch($data);
+
+        // return
+        return 'OK';
     }
 
     //================================================================================================
