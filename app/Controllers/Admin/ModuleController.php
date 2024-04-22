@@ -17,8 +17,8 @@ class ModuleController extends BaseController
         // get input
         $draw    = $this->request->getPost('draw');
         $all     = $this->request->getPost('all');
-        $limit   = $this->request->getPost('limit');
-        $offset  = $this->request->getPost('offset');
+        $limit   = intval($this->request->getPost('limit'));
+        $offset  = intval($this->request->getPost('offset'));
         $order   = $this->request->getPost('order');
         $columns = $this->request->getPost('columns');
 
