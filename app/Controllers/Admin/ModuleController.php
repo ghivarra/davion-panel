@@ -10,6 +10,27 @@ use Faker\Factory;
 
 class ModuleController extends BaseController
 {
+    private function buildSearchQuery($orm, $columns)
+    {
+        foreach ($columns as $column):
+
+            if (!empty($column['query']))
+            {
+                if (str_contains($column['key'], '.'))
+                {
+                    $orm->like($column['key'], $column['query'], 'both', null, true);
+                } else {
+                    $orm->like("admin_module.{$column['key']}", $column['query'], 'both', null, true);
+                }
+            }
+
+        endforeach;
+
+        return $orm;
+    }
+
+    //================================================================================================
+
     public function datatable(): ResponseInterface
     {
         // create model instance
@@ -43,6 +64,7 @@ class ModuleController extends BaseController
         }
 
         // get filtered total
+        $orm           = $this->buildSearchQuery($orm, $columns);
         $filteredTotal = $orm->countAllResults();
 
         // build query again
@@ -56,6 +78,7 @@ class ModuleController extends BaseController
         }
 
         // get data
+        $orm  = $this->buildSearchQuery($orm, $columns);
         $data = $orm->find();
 
         // return

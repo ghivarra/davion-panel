@@ -9,6 +9,10 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class DashboardController extends BaseController
 {
+    protected $moduleAlias;
+
+    //================================================================================================
+    
     public function index(): string
     {
         $websiteModel = new WebsiteModel();
