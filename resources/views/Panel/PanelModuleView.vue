@@ -6,13 +6,28 @@
                 <tr>
                     <th></th>
                     <th>
-                        <input type="text" class="form-control">
+                        <input 
+                            ref="tableSearch1" 
+                            v-bind:value="table.columns[1].query" 
+                            v-on:keyup="searchColumn($refs.tableSearch1, 1)" 
+                            type="text" 
+                            class="form-control">
                     </th>
                     <th>
-                        <input type="text" class="form-control">
+                        <input 
+                            ref="tableSearch2" 
+                            v-bind:value="table.columns[2].query" 
+                            v-on:keyup="searchColumn($refs.tableSearch2, 2)" 
+                            type="text" 
+                            class="form-control">
                     </th>
                     <th>
-                        <input type="text" class="form-control">
+                        <input 
+                            ref="tableSearch3" 
+                            v-bind:value="table.columns[3].query" 
+                            v-on:keyup="searchColumn($refs.tableSearch3, 3)" 
+                            type="text" 
+                            class="form-control">
                     </th>
                 </tr>
             </template>
@@ -34,6 +49,8 @@ export default {
     data: function() {
         return {
             name: 'Module',
+            searchTableStatus: false,
+            searchTableTimeout: 300,
             table: {
                 url: panelUrl('module/datatable'),
                 order: {
@@ -47,6 +64,19 @@ export default {
                     { query: '', text: 'Alias', key: 'alias', class: ['col-secondary'] },
                 ]
             }
+        }
+    },
+    methods: {
+        searchColumn: function(target, key) {
+            let app = this
+
+            if (app.searchTableStatus) {
+                clearTimeout(app.searchTableStatus)
+            }
+
+            app.searchTableStatus = setTimeout(() => {
+                app.table.columns[key].query = target.value
+            }, app.searchTableTimeout);
         }
     },
     mounted: function() {
