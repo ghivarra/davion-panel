@@ -52,21 +52,21 @@
                     </tr>
                 </thead>
 
-                <tbody>
-
-                    <tr v-if="status === 'loading'">
+                <tbody v-if="status === 'loading'">
+                    <tr>
                         <td v-bind:colspan="columns.length">{{ loadingText }}</td>
                     </tr>
+                </tbody>
 
-                    <tr v-if="status === 'loaded' && response.row.length < 1">
-                        <td v-bind:colspan="columns.length">{{ emptyText }}</td>
+                <tbody v-if="status === 'loaded'">
+                    <tr v-if="response.row.length < 1">
+                        <td>{{ emptyText }}</td>
                     </tr>
-
-                    <tr v-if="status === 'loaded'" v-for="(item, n) in response.row" v-bind:key="n">
+                    <tr v-else v-for="(item, n) in response.row"
+                        v-bind:key="n">
                         <td v-for="(column, b) in columns" v-bind:key="b" v-bind:class="column.class"
                             v-html="item[column.key]"></td>
                     </tr>
-
                 </tbody>
 
                 <tfoot>
