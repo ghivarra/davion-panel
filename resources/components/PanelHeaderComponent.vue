@@ -100,6 +100,8 @@
 
 <script>
 
+/*eslint no-unused-vars: 0*/
+
 import { imageUrl, panelUrl, checkAxiosError } from '../libraries/Function';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faBars, faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight } from '@fortawesome/free-solid-svg-icons'
@@ -133,13 +135,6 @@ export default {
             app.pageSearch = true
             await this.$nextTick()
             app.$refs.searchform.focus()
-        },
-        updateDropdown: function() {
-            if (this.headerDropdown.length > 0) {
-                this.headerDropdown.dispose()
-            }
-
-            this.headerDropdown = new bootstrap.Dropdown(this.$refs.headerMenu)
         },
         logout: function() {
             let app = this
@@ -204,12 +199,6 @@ export default {
                 name: menu.router_name
             })
         }
-    },
-    mounted: function() {
-        this.updateDropdown()
-    },
-    updated: function() {
-        this.updateDropdown()
     }
 }
 
