@@ -12,7 +12,7 @@ class WebsiteController extends BaseController
 {
     public function data(): ResponseInterface
     {
-        $permission = $this->checkPermission('websiteData');
+        $permission = $this->checkPermission('websiteView');
         
         if (!$permission)
         {
