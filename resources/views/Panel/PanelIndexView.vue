@@ -46,6 +46,8 @@
 
 <script>
 
+/*eslint no-unused-vars: 0*/
+import * as bootstrap from 'bootstrap'
 import PanelHeaderComponent from '../../components/PanelHeaderComponent.vue'
 import PreloadComponent from '../../components/PreloadComponent.vue'
 import PanelSidebarComponent from '../../components/PanelSidebarComponent.vue'
