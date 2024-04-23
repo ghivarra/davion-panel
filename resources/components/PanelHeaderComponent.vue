@@ -100,12 +100,9 @@
 
 <script>
 
-/*eslint no-unused-vars: 0*/
-
 import { imageUrl, panelUrl, checkAxiosError } from '../libraries/Function';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faBars, faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight } from '@fortawesome/free-solid-svg-icons'
-import * as bootstrap from 'bootstrap'
 import Swal from 'sweetalert2'
 import axios from 'axios'
 
