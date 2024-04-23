@@ -38,7 +38,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
     // Module Routes
     $routes->group('module', static function($routes) {
         $routes->match(['options', 'post'], 'datatable', 'Admin\\ModuleController::datatable');
-        $routes->match(['options', 'get'], 'seed/(:segment)', 'Admin\\ModuleController::seed/$1');
+        $routes->match(['options', 'post'], 'create', 'Admin\\ModuleController::create');
     });
 
     // fallback SPA routes
