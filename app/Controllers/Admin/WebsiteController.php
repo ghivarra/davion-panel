@@ -10,14 +10,9 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class WebsiteController extends BaseController
 {
-    protected $moduleAlias;
-
-    //================================================================================================
-
     public function data(): ResponseInterface
     {
-        $this->moduleAlias = 'websiteData';
-        $permission        = $this->checkPermission($this->moduleAlias);
+        $permission = $this->checkPermission('websiteData');
         
         if (!$permission)
         {
@@ -42,8 +37,7 @@ class WebsiteController extends BaseController
 
     public function mainFormUpdate(): ResponseInterface
     {
-        $this->moduleAlias = 'websiteUpdate';
-        $permission        = $this->checkPermission($this->moduleAlias);
+        $permission = $this->checkPermission('websiteUpdate');
         
         if (!$permission)
         {
@@ -85,8 +79,7 @@ class WebsiteController extends BaseController
 
     public function logoUpdate(): ResponseInterface
     {
-        $this->moduleAlias = 'websiteUpdate';
-        $permission        = $this->checkPermission($this->moduleAlias);
+        $permission = $this->checkPermission('websiteUpdate');
         
         if (!$permission)
         {
@@ -165,8 +158,7 @@ class WebsiteController extends BaseController
 
     public function iconUpdate(): ResponseInterface
     {
-        $this->moduleAlias = 'websiteUpdate';
-        $permission        = $this->checkPermission($this->moduleAlias);
+        $permission = $this->checkPermission('websiteUpdate');
         
         if (!$permission)
         {
