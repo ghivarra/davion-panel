@@ -48,31 +48,35 @@ function imageUrl(uri, width = null, height = null, priority = 'width') {
  */
 function checkAxiosError(status) {
 
-    // return if nothing happened
-    if (status === 200) {
-        return false
+    switch (status) {
+        case 400:
+            Swal.fire('Whoopss!!', 'Ada kesalahan dalam pengisian form', 'error')
+            break;
+
+        case 401:
+            Swal.fire('Whoopss!!', 'Sesi login anda sudah kedaluwarsa, silahkan login kembali', 'warning').then(() => {
+                window.location.reload()
+            })
+            break;
+        
+        case 403:
+            Swal.fire('Whoopss!!', 'Anda tidak memiliki izin untuk mengakses halaman ini', 'error').then(() => {
+                window.history.back()
+            })
+            break;
+
+        case 404:
+            Swal.fire('Whoopss!!', 'Halaman Tidak Ditemukan', 'error')
+            break;
+            
+        case (status >= 500):
+            Swal.fire('Whoopss!!', 'Jaringan internet anda bermasalah atau server sedang sibuk, silahkan coba lagi', 'error')
+            break;
+            
+        default:
+            // do nothing
     }
 
-    // check if connection or server error 
-    if (status >= 500) {
-        Swal.fire('Whoopss!!', 'Jaringan internet anda bermasalah atau server sedang sibuk, silahkan coba lagi', 'error')
-
-    // check if session already ended
-    } else if (status === 401) {
-        Swal.fire('Whoopss!!', 'Sesi login anda sudah kedaluwarsa, silahkan login kembali', 'warning').then(() => {
-            window.location.reload()
-        })
-    
-    // if error but differ from above
-    } else if (status === 403) {
-        Swal.fire('Whoopss!!', 'Anda tidak memiliki izin untuk mengakses halaman ini', 'error').then(() => {
-            window.history.back()
-        })
-    
-    // if error but differ from above
-    } else {
-        Swal.fire('Whoopss!!', 'Server sedang sibuk, silahkan coba lagi di lain waktu', 'error')
-    }
 }
 
 /**
