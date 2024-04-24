@@ -312,7 +312,7 @@ export default {
                     checkAxiosError(res.request.status)
                 })
         },
-        toggleStatus: function(key) {
+        updateStatus: function(key) {
             this.showLoader()
 
             // set status
@@ -327,6 +327,32 @@ export default {
 
             // save data
             axios.post(panelUrl('module/update-status'), form)  
+                .then(function(res) {
+                    res = res.data
+                    app.hideLoader()
+                    if (res.status !== 'success') {
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        app.$refs.moduleTable.draw()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
+        },
+        delete: function(key) {
+            this.showLoader()
+
+            // set status
+            let app = this
+            let data = app.tableData[key]
+
+            // create form
+            let form = new FormData()
+            form.append('id', data.id)
+
+            // send
+            axios.post(panelUrl('module/delete'), form)  
                 .then(function(res) {
                     res = res.data
                     app.hideLoader()
@@ -361,7 +387,14 @@ export default {
         app.$refs.moduleTableSection.addEventListener('click', (event) => {
             event.preventDefault()
             if (event.target.closest('.status-button')) {
-                app.toggleStatus(event.target.getAttribute('data-key'))
+                app.updateStatus(event.target.getAttribute('data-key'))
+            }
+        })
+
+        app.$refs.moduleTableSection.addEventListener('click', (event) => {
+            event.preventDefault()
+            if (event.target.closest('.delete-button')) {
+                app.delete(event.target.getAttribute('data-key'))
             }
         })
     }
