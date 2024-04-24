@@ -41,6 +41,8 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
         $routes->match(['options', 'get'], 'get', 'Admin\\ModuleController::get');
         $routes->match(['options', 'post'], 'datatable', 'Admin\\ModuleController::datatable');
         $routes->match(['options', 'post'], 'create', 'Admin\\ModuleController::create');
+        $routes->match(['options', 'post'], 'update', 'Admin\\ModuleController::update');
+        $routes->match(['options', 'post'], 'update-status', 'Admin\\ModuleController::updateStatus');
     });
 
     // fallback SPA routes
