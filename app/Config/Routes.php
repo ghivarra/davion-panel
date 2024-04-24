@@ -43,6 +43,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
         $routes->match(['options', 'post'], 'create', 'Admin\\ModuleController::create');
         $routes->match(['options', 'post'], 'update', 'Admin\\ModuleController::update');
         $routes->match(['options', 'post'], 'update-status', 'Admin\\ModuleController::updateStatus');
+        $routes->match(['options', 'post'], 'delete', 'Admin\\ModuleController::delete');
     });
 
     // fallback SPA routes
