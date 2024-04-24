@@ -1,29 +1,99 @@
 <template>
     <main role="main" class="mb-4">
         <slot name="breadcrumb"></slot>
-        <vue-table id="module-table" v-bind:url="table.url" v-bind:order="table.order" v-bind:columns="table.columns">
-            <template v-slot:header>
-                <tr>
-                    <th></th>
-                    <th>
-                        <input v-model="table.columns[1].query" type="text" class="form-control">
-                    </th>
-                    <th>
-                        <input v-model="table.columns[2].query" type="text" class="form-control">
-                    </th>
-                    <th>
-                        <input v-model="table.columns[3].query" type="text" class="form-control">
-                    </th>
-                </tr>
-            </template>
-        </vue-table>
+
+        <section id="create-table" class="mb-4">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createFormModal">
+                <font-awesome icon="fas fa-plus" class="me-2"></font-awesome>
+                Tambah Modul
+            </button>
+            <div class="modal fade" id="createFormModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="createFormModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <form v-on:submit.prevent="create" method="POST" class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h1 class="modal-title fs-5" id="createFormModalLabel">Tambah Modul</h1>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="moduleGroup" class="form-label fw-bold">Grup</label>
+                                <input list="groupList" type="text" class="form-control" id="moduleGroup" name="group"
+                                    maxlength="200" required>
+                                <datalist id="groupList">
+                                    <option v-for="(item, n) in groupList" v-bind:key="n" v-bind:value="item">
+                                        {{ item }}
+                                    </option>
+                                </datalist>
+                            </div>
+                            <div class="mb-3">
+                                <label for="moduleAlias" class="form-label fw-bold">Alias</label>
+                                <input type="text" class="form-control" id="moduleAlias" name="alias" maxlength="100"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="moduleName" class="form-label fw-bold">Nama</label>
+                                <input type="text" class="form-control" id="moduleName" name="name" maxlength="200"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="moduleStatus" class="form-label fw-bold">Status</label>
+                                <select name="status" id="moduleStatus" class="form-select" required>
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Nonaktif">Nonaktif</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button ref="createModalCloseBtn" type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">Simpan Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section ref="moduleTableSection">
+            <vue-table id="module-table" ref="moduleTable" v-bind:defaultLength="25" v-bind:lengthOptions="[10,25,50]"
+                v-bind:url="table.url" v-bind:order="table.order" v-bind:columns="table.columns"
+                v-bind:processData="processData">
+                <template v-slot:header>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th>
+                            <input v-model="table.columns[2].query" type="text" class="form-control">
+                        </th>
+                        <th>
+                            <input v-model="table.columns[3].query" type="text" class="form-control">
+                        </th>
+                        <th>
+                            <input v-model="table.columns[4].query" type="text" class="form-control">
+                        </th>
+                        <th>
+                            <select v-model="table.columns[5].query" class="form-select">
+                                <option value="">Tampilkan Semua</option>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Nonaktif">Nonaktif</option>
+                            </select>
+                        </th>
+                    </tr>
+                </template>
+            </vue-table>
+        </section>
     </main>
 </template>
 
 <script>
 
-import { panelUrl } from '@/libraries/Function'
+import { panelUrl, checkAxiosError } from '@/libraries/Function'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faBars, faPenToSquare, faSliders, faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons'
 import VueTable from '../../libraries/Ghivarra/VueTable/VueTable.vue'
+import axios from 'axios'
+import Swal from 'sweetalert2'
+
+library.add(faBars, faPenToSquare, faSliders, faTrashCan, faPlus)
 
 export default {
     name: 'panel-module-view',
@@ -42,20 +112,128 @@ export default {
                 },
                 columns: [
                     { query: '', text: 'No.', key: 'no', sortable: false, searchable: false, class: ['col-no'] },
+                    { query: '', text: '', key: 'action', sortable: false, searchable: false, class: ['col-action'] },
                     { query: '', text: 'Grup', key: 'group', class: ['col-secondary'] },
                     { query: '', text: 'Nama', key: 'name', class: ['col-primary'] },
                     { query: '', text: 'Alias', key: 'alias', class: ['col-secondary'] },
+                    { query: '', text: 'Status', key: 'status', class: ['col-secondary'] },
                 ]
-            }
+            },
+            groupList: [],
+            tableData: []
         }
     },
+    methods: {
+        getModuleGroup: function() {
+            let app = this
+
+            // get module group list
+            axios.get(panelUrl('module/group-list'))
+                .then(function(res) {
+                    app.groupList = res.data.data
+                }).catch(function(res) {
+                    checkAxiosError(res.request.status)
+                })
+        },
+        processData: function(data) {
+            this.tableData = data.row
+
+            if (this.tableData.length < 1) {
+                return data
+            }
+
+            this.tableData.forEach((item, i) => {
+                let btnText = (item.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan'
+                data.row[i].action = `<div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa-solid fa-bars me-1"></i>
+                                            Aksi
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <button data-key="${i}" class="edit-button dropdown-item" type="button" title="Edit Data">
+                                                    <i class="fa-solid fa-pen-to-square me-1 text-primary"></i>
+                                                    Edit
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button data-key="${i}" class="status-button dropdown-item" type="button" title="${btnText} Data">
+                                                    <i class="fa-solid fa-sliders me-1 text-info"></i>
+                                                    ${btnText}
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button data-key="${i}" class="delete-button dropdown-item" type="button" title="Hapus Data">
+                                                    <i class="fa-solid fa-trash-can me-1 text-danger"></i>
+                                                    Hapus
+                                                </button>
+                                            </li>
+                                        </ul>
+                                    </div>`
+                data.row[i].group = `<p class="m-0 fw-bold">${item.group}</p>`
+                data.row[i].status = (item.status === 'Aktif') ? `<span class="bg-success text-white py-2 px-3 rounded-pill fw-bold">${item.status}</span>` : `<span class="bg-warning py-2 px-3 rounded-pill fw-bold">${item.status}</span>`;
+            })
+
+            return data
+        },
+        create: function(e) {
+            let form = e.target
+            let app = this
+            app.showLoader()
+            axios.post(panelUrl('module/create'), new FormData(form))  
+                .then(function(res) {
+                    res = res.data
+                    app.hideLoader()
+                    if (res.status !== 'success') {
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        app.$refs.createModalCloseBtn.click()
+                        form.reset()
+                        app.getModuleGroup()
+                        app.$refs.moduleTable.draw()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
+        },
+        editData: function(key) {
+            console.log(key)
+        }
+    },
+    created: function() {
+        this.getModuleGroup()
+    },
     mounted: function() {
-        this.$nextTick(function() {
-            this.$emit('loaded')
+        let app = this
+
+        app.$nextTick(function() {
+            app.$emit('loaded')
+        })
+
+        app.$refs.moduleTableSection.addEventListener('click', (event) => {
+            event.preventDefault()
+            if (event.target.closest('.edit-button')) {
+                app.editData(event.target.getAttribute('data-key'))
+            }
         })
     }
 }
 
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+#module-table {
+    min-width: 800px;
+    width: 100%;
+    .col-no {
+        width: 90px;
+    }
+    .col-action {
+        width: 110px;
+    }
+    .col-secondary {
+        width: 160px;
+    }
+}
+</style>
