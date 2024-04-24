@@ -93,7 +93,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button ref="createModalCloseBtn" type="button" class="btn btn-secondary"
+                            <button ref="updateModalCloseButton" type="button" class="btn btn-secondary"
                                 data-bs-dismiss="modal">Batal</button>
                             <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                         </div>
@@ -171,6 +171,7 @@ export default {
             groupList: [],
             tableData: [],
             updateData: {
+                id: '',
                 group: '',
                 name: '',
                 alias: '',
@@ -193,11 +194,11 @@ export default {
         processData: function(data) {
             this.tableData = data.row
 
-            if (this.tableData.length < 1) {
+            if (data.row.length < 1) {
                 return data
             }
 
-            this.tableData.forEach((item, i) => {
+            data.row.forEach((item, i) => {
                 let btnText = (item.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan'
                 data.row[i].action = `<div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -225,8 +226,10 @@ export default {
                                             </li>
                                         </ul>
                                     </div>`
+                data.row[i].groupDefault = item.group
+                data.row[i].statusDefault = item.status
                 data.row[i].group = `<p class="m-0 fw-bold">${item.group}</p>`
-                data.row[i].status = (item.status === 'Aktif') ? `<span class="bg-success text-white py-2 px-3 rounded-pill fw-bold">${item.status}</span>` : `<span class="bg-warning py-2 px-3 rounded-pill fw-bold">${item.status}</span>`;
+                data.row[i].status = (item.status === 'Aktif') ? `<span class="bg-success text-white py-2 px-3 rounded-pill fw-bold">${item.status}</span>` : `<span class="bg-warning py-2 px-3 rounded-pill fw-bold">${item.status}</span>`
             })
 
             return data
@@ -246,6 +249,7 @@ export default {
                     if (res.status !== 'success') {
                         Swal.fire('Whoopss!!', res.message, 'warning')
                     } else {
+                        app.updateData.id = parseInt(res.data.id)
                         app.updateData.group = res.data.group
                         app.updateData.alias = res.data.alias
                         app.updateData.name = res.data.name
@@ -271,8 +275,8 @@ export default {
                     if (res.status !== 'success') {
                         Swal.fire('Whoopss!!', res.message, 'warning')
                     } else {
-                        app.$refs.createModalCloseBtn.click()
                         form.reset()
+                        app.$refs.createModalCloseBtn.click()
                         app.getModuleGroup()
                         app.$refs.moduleTable.draw()
                     }
@@ -282,10 +286,59 @@ export default {
                 })
         },
         update: function(e) {
-            let form = e.target
+            let form = new FormData(e.target)
             let app = this
 
-            console.log(form)
+            form.append('id', app.updateData.id)
+
+            // show loader
+            app.showLoader()
+
+            // save data
+            axios.post(panelUrl('module/update'), form)  
+                .then(function(res) {
+                    res = res.data
+                    app.hideLoader()
+                    if (res.status !== 'success') {
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        e.target.reset()
+                        app.$refs.updateModalCloseButton.click()
+                        app.getModuleGroup()
+                        app.$refs.moduleTable.draw()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
+        },
+        toggleStatus: function(key) {
+            this.showLoader()
+
+            // set status
+            let app = this
+            let data = app.tableData[key]
+            let targetStatus = (data.statusDefault === 'Aktif') ? 'Nonaktif' : 'Aktif'
+            
+            // create form
+            let form = new FormData()
+            form.append('id', data.id)
+            form.append('status', targetStatus)
+
+            // save data
+            axios.post(panelUrl('module/update-status'), form)  
+                .then(function(res) {
+                    res = res.data
+                    app.hideLoader()
+                    if (res.status !== 'success') {
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        app.$refs.moduleTable.draw()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
         }
     },
     created: function() {
@@ -302,6 +355,13 @@ export default {
             event.preventDefault()
             if (event.target.closest('.edit-button')) {
                 app.editData(event.target.getAttribute('data-key'))
+            }
+        })
+
+        app.$refs.moduleTableSection.addEventListener('click', (event) => {
+            event.preventDefault()
+            if (event.target.closest('.status-button')) {
+                app.toggleStatus(event.target.getAttribute('data-key'))
             }
         })
     }

@@ -41,7 +41,7 @@ class ModuleController extends BaseController
 
     public function datatable(): ResponseInterface
     {
-        $permission = $this->checkPermission('moduleDatatable');
+        $permission = $this->checkPermission('moduleView');
         
         if (!$permission)
         {
@@ -61,7 +61,7 @@ class ModuleController extends BaseController
         $offset  = intval($this->request->getPost('offset'));
         $order   = $this->request->getPost('order');
         $columns = $this->request->getPost('columns');
-        $select  = ['alias', 'name', 'group', 'status'];
+        $select  = ['id', 'alias', 'name', 'group', 'status'];
 
         // set order column and dir
         $defaultOrderCol = 'name';
@@ -118,7 +118,7 @@ class ModuleController extends BaseController
 
     public function groupList(): ResponseInterface
     {
-        $permission = $this->checkPermission('moduleDatatable');
+        $permission = $this->checkPermission('moduleView');
 
         if (!$permission)
         {
@@ -144,7 +144,7 @@ class ModuleController extends BaseController
 
     public function get(): ResponseInterface
     {
-        $permission = $this->checkPermission('moduleDatatable');
+        $permission = $this->checkPermission('moduleView');
 
         if (!$permission)
         {
@@ -219,6 +219,110 @@ class ModuleController extends BaseController
         return $this->response->setJSON([
             'status'  => 'success',
             'message' => 'Data berhasil diinput'
+        ]);
+    }
+
+    //================================================================================================
+
+    public function update(): ResponseInterface
+    {
+        $permission = $this->checkPermission('moduleUpdate');
+        
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        // create model instance
+        $orm = new AdminModuleModel();
+
+        // check
+        $check = $orm->where('id !=', $this->request->getPost('id'))
+                     ->where('alias', $this->request->getPost('alias'))
+                     ->countAllResults();
+
+        if (!empty($check)) 
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Alias modul harus unik dan tidak sama dengan modul lain'
+            ]);
+        }
+
+        // validate data
+        $rules = [
+            'id'     => ['label' => 'Modul', 'rules' => 'required|numeric|is_not_unique[admin_module.id]'],
+            'group'  => ['label' => 'Grup', 'rules' => 'required|max_length[100]'],
+            'alias'  => ['label' => 'Alias', 'rules' => 'required|max_length[200]'],
+            'name'   => ['label' => 'Nama', 'rules' => 'required|max_length[200]'],
+            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // insert data
+        $orm->save($data);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil diperbaharui'
+        ]);
+    }
+
+    //================================================================================================
+
+    public function updateStatus(): ResponseInterface
+    {
+        $permission = $this->checkPermission('moduleUpdate');
+        
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        // validate data
+        $rules = [
+            'id'     => ['label' => 'Modul', 'rules' => 'required|numeric|is_not_unique[admin_module.id]'],
+            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // save data
+        $orm = new AdminModuleModel();
+        $orm->save($data);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil diperbaharui'
         ]);
     }
 
