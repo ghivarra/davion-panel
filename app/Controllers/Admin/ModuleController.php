@@ -154,11 +154,37 @@ class ModuleController extends BaseController
             ]);
         }
 
-        // get post data
+        // validate data
+        $rules = [
+            'group'  => ['label' => 'Grup', 'rules' => 'required|max_length[100]'],
+            'alias'  => ['label' => 'Alias', 'rules' => 'required|max_length[200]|is_unique[admin_module.alias]'],
+            'name'   => ['label' => 'Nama', 'rules' => 'required|max_length[200]'],
+            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+        ];
 
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
 
         // create model instance
         $orm = new AdminModuleModel();
+
+        // insert data
+        $orm->save($data);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil diinput'
+        ]);
     }
 
     //================================================================================================
