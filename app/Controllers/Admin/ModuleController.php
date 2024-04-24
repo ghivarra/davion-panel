@@ -52,7 +52,7 @@ class ModuleController extends BaseController
         }
 
         // create model instance
-        $adminModuleModel = new AdminModuleModel();
+        $orm = new AdminModuleModel();
 
         // get input
         $draw    = $this->request->getPost('draw');
@@ -70,12 +70,12 @@ class ModuleController extends BaseController
         $orderDir        = isset($order['dir']) ? strtoupper($order['dir']) : 'ASC';
 
         // get total
-        $total = $adminModuleModel->countAllResults();
+        $total = $orm->countAllResults();
 
         // no query
-        $orm = $adminModuleModel->select($select)
-                                ->orderBy($orderColumn, $orderDir)
-                                ->orderBy($defaultOrderCol, $defaultOrderDir);
+        $orm = $orm->select($select)
+                   ->orderBy($orderColumn, $orderDir)
+                   ->orderBy($defaultOrderCol, $defaultOrderDir);
         
         if ($all !== 'true')
         {
@@ -87,9 +87,9 @@ class ModuleController extends BaseController
         $filteredTotal = $orm->countAllResults();
 
         // build query again
-        $orm = $adminModuleModel->select($select)
-                                ->orderBy($orderColumn, $orderDir)
-                                ->orderBy($defaultOrderCol, $defaultOrderDir);
+        $orm = $orm->select($select)
+                   ->orderBy($orderColumn, $orderDir)
+                   ->orderBy($defaultOrderCol, $defaultOrderDir);
         
         if ($all !== 'true')
         {
@@ -116,6 +116,32 @@ class ModuleController extends BaseController
 
     //================================================================================================
 
+    public function groupList(): ResponseInterface
+    {
+        $permission = $this->checkPermission('moduleDatatable');
+
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        // create ORM instance
+        $orm  = new AdminModuleModel();
+        $data = $orm->select('group')->distinct()->find();
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => array_column($data, 'group')
+        ]);
+    }
+
+    //================================================================================================
+
     public function create(): ResponseInterface
     {
         $permission = $this->checkPermission('moduleCreate');
@@ -132,7 +158,7 @@ class ModuleController extends BaseController
 
 
         // create model instance
-        $adminModuleModel = new AdminModuleModel();
+        $orm = new AdminModuleModel();
     }
 
     //================================================================================================
