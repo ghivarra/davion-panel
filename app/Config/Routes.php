@@ -38,6 +38,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
     // Module Routes
     $routes->group('module', static function($routes) {
         $routes->match(['options', 'get'], 'group-list', 'Admin\\ModuleController::groupList');
+        $routes->match(['options', 'get'], 'get', 'Admin\\ModuleController::get');
         $routes->match(['options', 'post'], 'datatable', 'Admin\\ModuleController::datatable');
         $routes->match(['options', 'post'], 'create', 'Admin\\ModuleController::create');
     });
