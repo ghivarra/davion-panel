@@ -6,7 +6,6 @@ use App\Controllers\BaseController;
 use App\Models\AdminModuleModel;
 use Config\Services;
 use CodeIgniter\HTTP\ResponseInterface;
-use Faker\Factory;
 
 class ModuleController extends BaseController
 {
@@ -16,11 +15,20 @@ class ModuleController extends BaseController
 
             if (!empty($column['query']))
             {
-                if (str_contains($column['key'], '.'))
+                if ($column['key'] === 'status')
                 {
-                    $orm->like($column['key'], $column['query'], 'both', null, true);
+                    $orm->where($column['key'], $column['query']);
+
                 } else {
-                    $orm->like("admin_module.{$column['key']}", $column['query'], 'both', null, true);
+
+                    if (str_contains($column['key'], '.'))
+                    {
+                        $orm->like($column['key'], $column['query'], 'both', null, true);
+    
+                    } else {
+                        
+                        $orm->like("admin_module.{$column['key']}", $column['query'], 'both', null, true);
+                    }
                 }
             }
 
@@ -33,6 +41,16 @@ class ModuleController extends BaseController
 
     public function datatable(): ResponseInterface
     {
+        $permission = $this->checkPermission('moduleDatatable');
+        
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
         // create model instance
         $adminModuleModel = new AdminModuleModel();
 
@@ -43,6 +61,7 @@ class ModuleController extends BaseController
         $offset  = intval($this->request->getPost('offset'));
         $order   = $this->request->getPost('order');
         $columns = $this->request->getPost('columns');
+        $select  = ['alias', 'name', 'group', 'status'];
 
         // set order column and dir
         $defaultOrderCol = 'name';
@@ -54,7 +73,7 @@ class ModuleController extends BaseController
         $total = $adminModuleModel->countAllResults();
 
         // no query
-        $orm = $adminModuleModel->select(['alias', 'name', 'group', 'status'])
+        $orm = $adminModuleModel->select($select)
                                 ->orderBy($orderColumn, $orderDir)
                                 ->orderBy($defaultOrderCol, $defaultOrderDir);
         
@@ -68,7 +87,7 @@ class ModuleController extends BaseController
         $filteredTotal = $orm->countAllResults();
 
         // build query again
-        $orm = $adminModuleModel->select(['alias', 'name', 'group', 'status'])
+        $orm = $adminModuleModel->select($select)
                                 ->orderBy($orderColumn, $orderDir)
                                 ->orderBy($defaultOrderCol, $defaultOrderDir);
         
@@ -97,28 +116,23 @@ class ModuleController extends BaseController
 
     //================================================================================================
 
-    public function seed($total): String
+    public function create(): ResponseInterface
     {
-        $faker = Factory::create();
-        $group = ['Website', 'Admin', 'Public', 'Module', 'Menu'];
-
-        for ($i=0; $i < $total; $i++)
+        $permission = $this->checkPermission('moduleCreate');
+        
+        if (!$permission)
         {
-            $groupId  = random_int(0, 4);
-            $data[$i] = [
-                'alias'  => $faker->uuid(),
-                'name'   => $faker->words(2, true),
-                'group'  => $group[$groupId],
-                'status' => 'Aktif'
-            ];
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
         }
 
-        // input
-        $orm = new AdminModuleModel();
-        $orm->insertBatch($data);
+        // get post data
 
-        // return
-        return 'OK';
+
+        // create model instance
+        $adminModuleModel = new AdminModuleModel();
     }
 
     //================================================================================================
