@@ -44,7 +44,7 @@
                     <slot name="header"></slot>
                     <tr>
                         <th v-for="(item, key) in columns" v-bind:key="key"
-                            v-on:click.prevent="sort(item.key, (item.key === orderColumn) ? orderDir : 'none')"
+                            v-on:click.prevent="sort(item, (item.key === orderColumn) ? orderDir : 'none')"
                             v-bind:class="(typeof item.sortable === 'undefined' || item.sortable === true) ? 'sortable' : '' + item.class.join(' ')"
                             v-bind:data-sort="(item.key === orderColumn) ? orderDir : 'none'">
                             {{ item.text }}
@@ -70,7 +70,8 @@
 
                 <tfoot>
                     <tr>
-                        <th v-for="(item, key) in columns" v-bind:key="key" v-on:click.prevent="sort"
+                        <th v-for="(item, key) in columns" v-bind:key="key"
+                            v-on:click.prevent="sort(item, (item.key === orderColumn) ? orderDir : 'none')"
                             v-bind:class="(typeof item.sortable === 'undefined' || item.sortable === true) ? 'sortable' : '' + item.class.join(' ')"
                             v-bind:data-key="item.key"
                             v-bind:data-sort="(item.key === orderColumn) ? orderDir : 'none'">
@@ -314,9 +315,13 @@ export default {
                 this.pageNow++
             }
         },
-        sort: function(key, sort) {
+        sort: function(item, sort) {
+            if (typeof item.sortable !== 'undefined' && !item.sortable) {
+                return false
+            }
+
             if (this.idle) {
-                this.orderColumn = key
+                this.orderColumn = item.key
                 this.orderDir = (sort === 'asc') ? 'desc' : 'asc'
                 this.draw()
             }
