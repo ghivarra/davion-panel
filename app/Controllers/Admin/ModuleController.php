@@ -322,7 +322,49 @@ class ModuleController extends BaseController
         // return
         return $this->response->setJSON([
             'status'  => 'success',
-            'message' => 'Data berhasil diperbaharui'
+            'message' => 'Status data berhasil diperbaharui'
+        ]);
+    }
+
+    //================================================================================================
+
+    public function delete(): ResponseInterface
+    {
+        $permission = $this->checkPermission('moduleDelete');
+        
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        // validate data
+        $rules = [
+            'id' => ['label' => 'Modul', 'rules' => 'required|numeric|is_not_unique[admin_module.id]']
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // delete data
+        $orm = new AdminModuleModel();
+        $orm->delete($data['id']);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil dihapus'
         ]);
     }
 
