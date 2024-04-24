@@ -142,6 +142,41 @@ class ModuleController extends BaseController
 
     //================================================================================================
 
+    public function get(): ResponseInterface
+    {
+        $permission = $this->checkPermission('moduleDatatable');
+
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        // create ORM instance
+        $orm  = new AdminModuleModel();
+        $data = $orm->where('alias', $this->request->getGet('alias'))->first();
+
+        if (empty($data) OR !$data)
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak ditemukan',
+                'data'    => NULL
+            ]);
+        }
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => $data
+        ]);
+    }
+
+    //================================================================================================
+
     public function create(): ResponseInterface
     {
         $permission = $this->checkPermission('moduleCreate');

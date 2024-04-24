@@ -53,6 +53,55 @@
             </div>
         </section>
 
+        <section id="edit-table">
+            <button ref="editFormButton" class="d-none" data-bs-toggle="modal" data-bs-target="#editFormModal"></button>
+            <div class="modal fade" id="editFormModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                aria-labelledby="editFormModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <form v-on:submit.prevent="update" method="POST" class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h1 class="modal-title fs-5" id="editFormModalLabel">Update Modul</h1>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="moduleGroup" class="form-label fw-bold">Grup</label>
+                                <input v-model="updateData.group" list="groupList" type="text" class="form-control"
+                                    id="moduleGroup" name="group" maxlength="200" required>
+                                <datalist id="groupList">
+                                    <option v-for="(item, n) in groupList" v-bind:key="n" v-bind:value="item">
+                                        {{ item }}
+                                    </option>
+                                </datalist>
+                            </div>
+                            <div class="mb-3">
+                                <label for="moduleAlias" class="form-label fw-bold">Alias</label>
+                                <input v-model="updateData.alias" type="text" class="form-control" id="moduleAlias"
+                                    name="alias" maxlength="100" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="moduleName" class="form-label fw-bold">Nama</label>
+                                <input v-model="updateData.name" type="text" class="form-control" id="moduleName"
+                                    name="name" maxlength="200" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="moduleStatus" class="form-label fw-bold">Status</label>
+                                <select v-model="updateData.status" name="status" id="moduleStatus" class="form-select"
+                                    required>
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Nonaktif">Nonaktif</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button ref="createModalCloseBtn" type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
         <section ref="moduleTableSection">
             <vue-table id="module-table" ref="moduleTable" v-bind:defaultLength="25" v-bind:lengthOptions="[10,25,50]"
                 v-bind:url="table.url" v-bind:order="table.order" v-bind:columns="table.columns"
@@ -120,7 +169,13 @@ export default {
                 ]
             },
             groupList: [],
-            tableData: []
+            tableData: [],
+            updateData: {
+                group: '',
+                name: '',
+                alias: '',
+                status: 'Aktif'
+            }
         }
     },
     methods: {
@@ -176,10 +231,39 @@ export default {
 
             return data
         },
+        editData: function(key) {
+            let app = this
+            let item = app.tableData[key]
+
+            // show loader
+            app.showLoader()
+
+            // get single data
+            axios.get(panelUrl(`module/get?alias=${item.alias}`))
+                .then(function(res) {
+                    res = res.data
+                    app.hideLoader()
+                    if (res.status !== 'success') {
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        app.updateData.group = res.data.group
+                        app.updateData.alias = res.data.alias
+                        app.updateData.name = res.data.name
+                        app.updateData.status = res.data.status
+                        app.$refs.editFormButton.click()
+                    }
+                }).catch(function(res) {
+                    checkAxiosError(res.request.status)
+                })
+        },
         create: function(e) {
             let form = e.target
             let app = this
+
+            // show loader
             app.showLoader()
+
+            // save data
             axios.post(panelUrl('module/create'), new FormData(form))  
                 .then(function(res) {
                     res = res.data
@@ -197,8 +281,11 @@ export default {
                     checkAxiosError(res.request.status)
                 })
         },
-        editData: function(key) {
-            console.log(key)
+        update: function(e) {
+            let form = e.target
+            let app = this
+
+            console.log(form)
         }
     },
     created: function() {
