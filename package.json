@@ -19,9 +19,10 @@
     "@vitejs/plugin-basic-ssl": "^1.1.0",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
-    "sweetalert2": "^11.10.6",
+    "sweetalert2": "^11.6.13",
     "vue": "^3.4.21",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^5.0.0",
