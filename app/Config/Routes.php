@@ -46,6 +46,16 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
         $routes->match(['options', 'post'], 'delete', 'Admin\\ModuleController::delete');
     });
 
+    // Menu Routes
+    $routes->group('menu', static function($routes) {
+        $routes->match(['options', 'get'], 'list', 'Admin\\MenuController::list');
+        $routes->match(['options', 'get'], 'get', 'Admin\\MenuController::get');
+        $routes->match(['options', 'post'], 'create', 'Admin\\MenuController::create');
+        $routes->match(['options', 'post'], 'update', 'Admin\\MenuController::update');
+        $routes->match(['options', 'post'], 'update-status', 'Admin\\MenuController::updateStatus');
+        $routes->match(['options', 'post'], 'delete', 'Admin\\MenuController::delete');
+    });
+
     // fallback SPA routes
     $routes->get('(:any)', 'Admin\\PublicController::singlePageApplication', ['as' => 'panel.fallback']);
 });
