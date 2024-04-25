@@ -2,10 +2,10 @@
 
 namespace App\Controllers\Admin;
 
+use CodeIgniter\HTTP\ResponseInterface;
 use App\Controllers\BaseController;
 use App\Models\AdminModuleModel;
 use Config\Services;
-use CodeIgniter\HTTP\ResponseInterface;
 
 class ModuleController extends BaseController
 {
