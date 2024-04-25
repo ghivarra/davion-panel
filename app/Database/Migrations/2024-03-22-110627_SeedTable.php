@@ -13,6 +13,7 @@ class SeedTable extends Migration
         $this->seedWebsite();
         $this->seedAdmin();
         $this->seedMenu();
+        $this->seedModule();
     }
 
     //=====================================================================================================
@@ -74,7 +75,7 @@ class SeedTable extends Migration
 
     //=====================================================================================================
 
-    public function seedMenu()
+    protected function seedMenu()
     {
         $db  = Database::connect();
         $now = date('Y-m-d H:i:s');
@@ -197,6 +198,60 @@ class SeedTable extends Migration
                 'admin_menu_group_id'  => NULL,
                 'admin_menu_parent_id' => $halamanParent['id'],
             ]
+        ]);
+    }
+
+    //=====================================================================================================
+
+    protected function seedModule()
+    {
+        $db  = Database::connect();
+        $now = date('Y-m-d H:i:s');
+
+        $db->table('admin_module')->insertBatch([
+            [
+                'alias'      => 'websiteView',
+                'name'       => 'Pengaturan Website - View',
+                'group'      => 'Website',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'websiteUpdate',
+                'name'       => 'Pengaturan Website - Update',
+                'group'      => 'Website',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'moduleView',
+                'name'       => 'Pengaturan Modul - View',
+                'group'      => 'Module',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'moduleCreate',
+                'name'       => 'Pengaturan Modul - Create',
+                'group'      => 'Module',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'moduleUpdate',
+                'name'       => 'Pengaturan Modul - Update',
+                'group'      => 'Module',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'moduleDelete',
+                'name'       => 'Pengaturan Modul - Delete',
+                'group'      => 'Module',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ],
         ]);
     }
 
