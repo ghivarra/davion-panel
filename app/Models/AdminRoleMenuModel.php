@@ -4,7 +4,7 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class AdminRoleMenu extends Model
+class AdminRoleMenuModel extends Model
 {
     protected $table            = 'admin_role_menu';
     protected $primaryKey       = 'id';
