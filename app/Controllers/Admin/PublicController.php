@@ -6,7 +6,7 @@ use App\Controllers\BaseController;
 use App\Libraries\Ghivarra\DavionShield;
 use App\Models\WebsiteModel;
 use App\Models\AdminMenuModel;
-use App\Models\AdminMenuListModel;
+use App\Models\AdminRoleMenuModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class PublicController extends BaseController
@@ -65,13 +65,13 @@ class PublicController extends BaseController
         // check if superadmin
         if ($accountData['is_superadmin'] === SUPERADMIN)
         {
-            $adminMenuModel = new AdminMenuModel();
-            $adminMenu      = $adminMenuModel->getSuperadminMenu();
+            $orm       = new AdminMenuModel();
+            $adminMenu = $orm->getSuperadminMenu();
 
         } else {
 
-            $adminMenuListModel = new AdminMenuListModel();
-            $adminMenu          = $adminMenuListModel->getRoleMenu($accountData['admin_role_id']);
+            $orm       = new AdminRoleMenuModel();
+            $adminMenu = $orm->getRoleMenu($accountData['admin_role_id']);
         }
 
         /// return
@@ -134,8 +134,8 @@ class PublicController extends BaseController
         } else {
 
             $adminMenuModel     = new AdminMenuModel();
-            $adminMenuListModel = new AdminMenuListModel();
-            $adminMenu          = $adminMenuListModel->select(['admin_menu_id as id', 'title', 'router_name', 'icon', 'type', 'admin_menu_parent_id'])
+            $adminRoleMenuModel = new AdminRoleMenuModel();
+            $adminMenu          = $adminRoleMenuModel->select(['admin_menu_id as id', 'title', 'router_name', 'icon', 'type', 'admin_menu_parent_id'])
                                                      ->join('admin_menu', 'admin_menu_id = admin_menu.id', 'left')
                                                      ->where('admin_role_id', $accountData['admin_role_id'])
                                                      ->where('admin_menu.type !=', 'Parent')
