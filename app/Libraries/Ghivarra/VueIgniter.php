@@ -61,7 +61,7 @@ class VueIgniter
 
         } elseif ($_ENV['VITE_APP_ENV'] === 'production' || $_ENV['VITE_APP_ENV'] === 'testing') {
             
-            $manifestPath = ROOTPATH . "manifest.json";
+            $manifestPath = FCPATH . ".vite/manifest.json";
 
             if (is_file($manifestPath))
             {
@@ -74,20 +74,21 @@ class VueIgniter
 
                     if ($fileExtension === '.js')
                     {
-                        if (isset($asset->isEntry) && $asset->isEntry === true)
+                        if (isset($asset->isEntry) && $asset->isEntry)
                         {
-                            $assetUrl = base_url($asset->file);
-                            array_push($assets['js'], "<script type=\"module\" crossorigin src=\"{$assetUrl}\" defer></script>");
-                        }
+                            $mainJS = base_url($asset->file);
 
-                    } elseif ($fileExtension === '.css') {
+                            array_push($assets['js'], "<script type=\"module\" src=\"{$mainJS}\" crossorigin defer></script>");
 
-                        $fileName = strrchr($asset->src, '/');
+                            if (isset($asset->css) && !empty($asset->css))
+                            {
+                                foreach ($asset->css as $css):
 
-                        if ($fileName === '/main.css')
-                        {
-                            $assetUrl = base_url($asset->file);
-                            array_push($assets['css'], "<link rel=\"stylesheet\" href=\"{$assetUrl}\">");
+                                    $css = base_url($css);
+                                    array_push($assets['css'], "<link href=\"{$css}\" rel=\"stylesheet\">");
+
+                                endforeach;
+                            }
                         }
                     }
 
