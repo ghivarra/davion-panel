@@ -161,6 +161,7 @@ nbdist/
 nbactions.xml
 nb-configuration.xml
 .nb-gradle/
+.vite
 
 # Sublime Text
 *.tmlanguage.cache
