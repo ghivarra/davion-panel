@@ -1,15 +1,27 @@
 <template>
     <main role="main" class="mb-4">
         <slot name="breadcrumb"></slot>
-        <section>
-            <div v-for="(group, key) in menus" v-bind:key="key" class="card mb-4">
-                <header class="card-header">
-                    Grup: {{ group.name }}
-                </header>
-                <div v-bind:ref="`groupMenu${key}`" class="card-body">
-                    <draggable-menu-component v-bind:child="group.child" v-bind:onMove="log" groupName="menus" itemKey="id"></draggable-menu-component>
-                </div>
-            </div>
+        <section class="accordion mb-5">
+            <draggable v-bind:list="menus" itemKey="id">
+                <template v-slot:item="{ element, index }">
+                    <div class="accordion-item cursor-grab mb-4">
+                        <header class="accordion-header">
+                            <div v-bind:data-bs-target="`#group${index}`" v-bind:aria-controls="`group${index}`"
+                                type="button" class="accordion-button fw-bold" data-bs-toggle="collapse" aria-expanded="true">
+                                {{ element.name }}
+                                <span v-if="element.status === 'Aktif'" class="badge ms-2 text-bg-success">Aktif</span>
+                                <span v-else class="badge ms-2 text-bg-warning">Nonaktif</span>
+                            </div>
+                        </header>
+                        <div v-bind:id="`group${index}`" class="accordion-collapse collapse show">
+                            <div class="accordion-body">
+                                <draggable-menu-component v-bind:child="element.child"
+                                    groupName="menus" itemKey="id"></draggable-menu-component>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </draggable>
         </section>
 
     </main>
@@ -18,44 +30,21 @@
 <script>
 
 import { checkAxiosError, panelUrl } from '@/libraries/Function'
-import axios from 'axios'
 import draggableMenuComponent from '@/components/DraggableMenuComponent.vue'
+import draggable from 'vuedraggable'
+import axios from 'axios'
 
 export default {
     name: 'panel-menu-view',
     inject: ['showLoader', 'hideLoader'],
     components: {
+        draggable,
         'draggable-menu-component': draggableMenuComponent
     },
     data: function() {
         return {
             name: 'Menu',
             menus: []
-        }
-    },
-    methods: {
-        log: function(event) {
-            let app = this
-            let man = 'tul'
-
-            console.log(event)
-
-            for (let i = 0; i < app.menus.length; i++) {
-                let menu = app.menus[i].child
-                if (menu.length > 0) {
-                    for (let n = 0; n < menu.length; n++) {
-                        let submenu = menu[n].child
-                        if (submenu.length > 0) {
-                            for (let x = 0; x < submenu.length; x++) {
-                                let submenuChild = submenu[x].child
-                                if (submenuChild.length > 0) {
-                                    console.log(man)
-                                }
-                            }
-                        }
-                    }
-                }
-            }
         }
     },
     created: function() {
@@ -80,4 +69,14 @@ export default {
 
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+
+.cursor-grab {
+    cursor: grab;
+
+    &:click, &:focus {
+        cursor: grabbing
+    }
+}
+
+</style>

@@ -1,14 +1,19 @@
 <template>
-    <draggable v-bind:list="child" v-bind:itemKey="itemKey" v-bind:group="groupName" v-on:move="onMove"
-        class="drag-area">
+    <draggable ref="draggableMenu" v-bind:list="child" v-bind:itemKey="itemKey" v-bind:group="groupName"
+        v-bind:options="options" class="drag-area parent-drag-area" v-bind:move="checkMove">
         <template v-slot:item="{ element }">
-            <div class="drag-area my-3 bg-white border px-3 pt-2">
+            <div class="my-3 border px-3 py-2 fw-bold parent-menu-area">
                 {{ element.title }}
-                <draggable v-bind:list="element.child" v-bind:itemKey="itemKey" v-bind:group="groupName" v-on:move="onMove"
-                    class="drag-area">
+                <span v-if="element.status === 'Aktif'" class="badge ms-2 text-bg-success">Aktif</span>
+                <span v-else class="badge ms-2 text-bg-warning">Nonaktif</span>
+
+                <draggable v-bind:list="element.child" v-bind:itemKey="itemKey" v-bind:group="groupName" v-bind:move="checkMove"
+                    class="drag-area child-drag-area">
                     <template v-slot:item="{ element }">
-                        <div class="my-3 bg-white border px-3 py-2">
+                        <div class="my-3 bg-white border px-3 py-2 child-menu-area">
                             {{ element.title }}
+                            <span v-if="element.status === 'Aktif'" class="badge ms-2 text-bg-success">Aktif</span>
+                            <span v-else class="badge ms-2 text-bg-warning">Nonaktif</span>
                         </div>
                     </template>
                 </draggable>
@@ -34,17 +39,25 @@ export default {
         groupName: {
             required: true,
             type: String
-        },
-        onMove: {
-            type: Function,
-            default: function() {
-                return true
-            }
-        },
+        }
     },
     components: {
         draggable
+    },
+    data: function() {
+        return {
+            options: {
+                swapThreshold: .5
+            }
+        }
+    },
+    methods: {
+        checkMove: function(event) {
+            let child = event.dragged.getElementsByClassName('child-menu-area')
+            return (child.length > 0 && event.to.classList.contains('child-drag-area')) ? false : true
+        },
     }
+
 }
 
 </script>
@@ -53,6 +66,14 @@ export default {
 
 .drag-area {
     min-height: 50px;
+}
+
+.parent-menu-area {
+    background-color: #ecfdf5;
+
+    &.sortable-ghost {
+        height: 39.5px !important;
+    }
 }
 
 </style>
