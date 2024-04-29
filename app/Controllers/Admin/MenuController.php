@@ -51,8 +51,21 @@ class MenuController extends BaseController
                                         ->where('admin_menu_parent_id', $menu['id'])
                                         ->orderBy('sort_order', 'ASC')
                                         ->find();
-                    
-                    $menus[$i]['child'] = empty($childs) ? [] : $childs;
+
+                    if (empty($childs))
+                    {
+                        $menus[$i]['child'] = [];
+
+                    } else {
+
+                        foreach ($childs as $n => $child):
+
+                            $childs[$n]['child'] = [];
+
+                        endforeach;
+
+                        $menus[$i]['child'] = $childs;
+                    }
 
                 } else {
 
