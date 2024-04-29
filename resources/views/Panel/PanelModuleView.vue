@@ -138,7 +138,7 @@
 import { panelUrl, checkAxiosError } from '@/libraries/Function'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faBars, faPenToSquare, faSliders, faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons'
-import VueTable from '../../libraries/Ghivarra/VueTable/VueTable.vue'
+import VueTable from '@/libraries/Ghivarra/VueTable/VueTable.vue'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
