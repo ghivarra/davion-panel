@@ -101,5 +101,18 @@ function generateBreadcrumb(router) {
     return breadcrumbs;
 }
 
+/**
+ * @param {array} parentsElement
+ */
+function parents(child, parent) {
+    let parentsElement = []
+    while (child !== parent && child !== document) {
+        child = child.parentNode
+        parentsElement.push(child)
+    }
+
+    return parentsElement
+}
+
 // export functions
-export { baseUrl, panelUrl, loginUrl, imageUrl, checkAxiosError, generateBreadcrumb }
+export { baseUrl, panelUrl, loginUrl, imageUrl, checkAxiosError, generateBreadcrumb, parents }
