@@ -58,9 +58,9 @@ class MenuController extends BaseController
 
                     } else {
 
-                        foreach ($childs as $n => $child):
+                        foreach ($childs as $x => $child):
 
-                            $childs[$n]['child'] = [];
+                            $childs[$x]['child'] = [];
 
                         endforeach;
 
@@ -78,11 +78,75 @@ class MenuController extends BaseController
 
         endforeach;
 
+        
+
         // return
         return $this->response->setJSON([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
             'data'    => $menuGroup
+        ]);
+    }
+
+    //================================================================================================
+
+    public function sort(): ResponseInterface
+    {
+        $data = [
+            'group' => $this->request->getPost('group'),
+            'menu'  => $this->request->getPost('menu'),
+        ];
+
+        // initiate db to initiate transaction and update batch
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        // update group
+        foreach ($data['group'] as $n => $item):
+
+            $setGroup[$n] = [
+                'id'         => intval($item['id']),
+                'sort_order' => intval($item['sort_order']),
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+
+        endforeach;
+
+        $db->table('admin_menu_group')->updateBatch($setGroup, 'id');
+
+        // update menu
+        foreach ($data['menu'] as $n => $item):
+
+            $setMenu[$n] = [
+                'id'                   => intval($item['id']),
+                'type'                 => $item['type'],
+                'sort_order'           => intval($item['sort_order']),
+                'admin_menu_group_id'  => isset($item['admin_menu_group_id']) ? $item['admin_menu_group_id'] : null,
+                'admin_menu_parent_id' => isset($item['admin_menu_parent_id']) ? $item['admin_menu_parent_id'] : null,
+                'updated_at'           => date('Y-m-d H:i:s')
+            ];
+
+        endforeach;
+
+        $db->table('admin_menu')->updateBatch($setMenu, 'id');
+        
+        // check if transaction failed
+        if ($db->transStatus() === false)
+        {
+            $db->transRollback();
+            return $this->response->setStatusCode(503)->setJSON([
+                'status'  => 'error',
+                'message' => 'Server sedang sibuk'
+            ]);
+        }
+
+        // commit transaction
+        $db->transCommit();
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Susunan menu berhasil diperbaharui'
         ]);
     }
 
