@@ -48,6 +48,8 @@ function imageUrl(uri, width = null, height = null, priority = 'width') {
  */
 function checkAxiosError(status) {
 
+    let switchNotDetected = false
+
     switch (status) {
         case 400:
             Swal.fire('Whoopss!!', 'Ada kesalahan dalam pengisian form', 'error')
@@ -69,14 +71,14 @@ function checkAxiosError(status) {
             Swal.fire('Whoopss!!', 'Halaman Tidak Ditemukan', 'error')
             break;
             
-        case (status >= 500):
-            Swal.fire('Whoopss!!', 'Jaringan internet anda bermasalah atau server sedang sibuk, silahkan coba lagi', 'error')
-            break;
-            
         default:
-            // do nothing
+            switchNotDetected = true
+            break;
     }
 
+    if (switchNotDetected && status >= 500) {
+        Swal.fire('Whoopss!!', 'Server sedang sibuk, silahkan coba lagi dalam beberapa saat', 'warning')
+    }
 }
 
 /**
