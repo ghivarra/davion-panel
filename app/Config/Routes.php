@@ -50,6 +50,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
     $routes->group('menu', static function($routes) {
         $routes->match(['options', 'get'], 'list', 'Admin\\MenuController::list');
         $routes->match(['options', 'get'], 'get', 'Admin\\MenuController::get');
+        $routes->match(['options', 'post'], 'sort', 'Admin\\MenuController::sort');
         $routes->match(['options', 'post'], 'create', 'Admin\\MenuController::create');
         $routes->match(['options', 'post'], 'update', 'Admin\\MenuController::update');
         $routes->match(['options', 'post'], 'update-status', 'Admin\\MenuController::updateStatus');
