@@ -42,3 +42,10 @@ function numbering(array $array = [], int $start = 0): array
 
     return $array;
 }
+
+function prettyPrint($var): void
+{
+    echo '<pre>';
+    var_dump($var);
+    echo '</pre>';
+}
