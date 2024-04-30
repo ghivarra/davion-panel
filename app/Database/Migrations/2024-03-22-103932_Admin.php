@@ -14,16 +14,6 @@ class Admin extends Migration
 
     public function up()
     {
-        // connect db and check db driver for compatibility between MariaDB and Postgresql
-        $db     = Database::connect();
-        $driver = $db->DBDriver;
-
-        // create enum type if using Postgresql
-        if ($driver === 'Postgre')
-        {
-            $db->query("CREATE TYPE {$this->tableName}_status as ENUM('Aktif', 'Nonaktif', 'Diblokir')");
-        }
-
         // set fields
         $fields = [
             'id' => [
@@ -54,8 +44,8 @@ class Admin extends Migration
                 'null'       => true
             ],
             'status' => [
-                'type'       => 'ENUM',
-                'constraint' => ['Aktif', 'Nonaktif', 'Diblokir'],
+                'type'       => 'VARCHAR',
+                'constraint' => 10,
                 'default'    => 'Aktif'
             ],
             'admin_role_id' => [
@@ -92,15 +82,6 @@ class Admin extends Migration
             ]
         ];
 
-        // alter fields data if using Postgresql
-        if ($driver === 'Postgre')
-        {
-            $fields['status'] = [
-                'type'    => "{$this->tableName}_status",
-                'default' => 'Aktif'
-            ];
-        }
-
         // add fields
         $this->forge->addField($fields);
 
@@ -130,16 +111,6 @@ class Admin extends Migration
 
         // drop table
         $this->forge->dropTable($this->tableName, true);
-
-        // connect db and check db driver for compatibility between MariaDB and Postgresql
-        $db     = Database::connect();
-        $driver = $db->DBDriver;
-
-        // drop enum type if using Postgresql
-        if ($driver === 'Postgre')
-        {
-            $db->query("DROP TYPE IF EXISTS {$this->tableName}_status");
-        }
     }
 
     //=====================================================================================================

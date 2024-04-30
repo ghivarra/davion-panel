@@ -14,17 +14,6 @@ class AdminMenu extends Migration
 
     public function up()
     {
-        // connect db and check db driver for compatibility between MariaDB and Postgresql
-        $db     = Database::connect();
-        $driver = $db->DBDriver;
-
-        // create enum type if using Postgresql
-        if ($driver === 'Postgre')
-        {
-            $db->query("CREATE TYPE {$this->tableName}_status as ENUM('Aktif', 'Nonaktif')");
-            $db->query("CREATE TYPE {$this->tableName}_type as ENUM('Primary', 'Parent', 'Child')");
-        }
-
         // set fields
         $fields = [
             'id' => [
@@ -51,13 +40,13 @@ class AdminMenu extends Migration
                 'default' => 1
             ],
             'status' => [
-                'type'       => 'ENUM',
-                'constraint' => ['Aktif', 'Nonaktif'],
+                'type'       => 'VARCHAR',
+                'constraint' => 10,
                 'default'    => 'Aktif'
             ],
             'type' => [
-                'type'       => 'ENUM',
-                'constraint' => ['Primary', 'Parent', 'Child'],
+                'type'       => 'VARCHAR',
+                'constraint' => 20,
                 'default'    => 'Primary'
             ],
             'admin_menu_parent_id' => [
@@ -85,20 +74,6 @@ class AdminMenu extends Migration
                 'null'    => true
             ]
         ];
-
-        // alter fields data if using Postgresql
-        if ($driver === 'Postgre')
-        {
-            $fields['status'] = [
-                'type'    => "{$this->tableName}_status",
-                'default' => 'Aktif'
-            ];
-
-            $fields['type'] = [
-                'type'    => "{$this->tableName}_type",
-                'default' => 'Primary'
-            ];
-        }
 
         // add fields
         $this->forge->addField($fields);
@@ -130,17 +105,6 @@ class AdminMenu extends Migration
 
         // drop table
         $this->forge->dropTable($this->tableName, true);
-
-        // connect db and check db driver for compatibility between MariaDB and Postgresql
-        $db     = Database::connect();
-        $driver = $db->DBDriver;
-
-        // drop enum type if using Postgresql
-        if ($driver === 'Postgre')
-        {
-            $db->query("DROP TYPE IF EXISTS {$this->tableName}_status");
-            $db->query("DROP TYPE IF EXISTS {$this->tableName}_type");
-        }
     }
 
     //=====================================================================================================

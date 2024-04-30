@@ -14,16 +14,6 @@ class AdminRoleModule extends Migration
 
     public function up()
     {
-        // connect db and check db driver for compatibility between MariaDB and Postgresql
-        $db     = Database::connect();
-        $driver = $db->DBDriver;
-
-        // create enum type if using Postgresql
-        if ($driver === 'Postgre')
-        {
-            $db->query("CREATE TYPE {$this->tableName}_type as ENUM('Full', 'Partial')");
-        }
-
         // set fields
         $fields = [
             'id' => [
@@ -32,8 +22,8 @@ class AdminRoleModule extends Migration
                 'auto_increment' => true
             ],
             'type' => [
-                'type'       => 'ENUM',
-                'constraint' => ['Full', 'Partial'],
+                'type'       => 'VARCHAR',
+                'constraint' => 10,
                 'default'    => 'Full'
             ],
             'parameter' => [
@@ -61,15 +51,6 @@ class AdminRoleModule extends Migration
                 'default' => new RawSql('CURRENT_TIMESTAMP')
             ]
         ];
-
-        // alter fields data if using Postgresql
-        if ($driver === 'Postgre')
-        {
-            $fields['type'] = [
-                'type'    => "{$this->tableName}_type",
-                'default' => 'Full'
-            ];
-        }
 
         // add fields
         $this->forge->addField($fields);
@@ -100,16 +81,6 @@ class AdminRoleModule extends Migration
 
         // drop table
         $this->forge->dropTable($this->tableName, true);
-
-        // connect db and check db driver for compatibility between MariaDB and Postgresql
-        $db     = Database::connect();
-        $driver = $db->DBDriver;
-
-        // drop enum type if using Postgresql
-        if ($driver === 'Postgre')
-        {
-            $db->query("DROP TYPE IF EXISTS {$this->tableName}_type");
-        }
     }
 
     //=====================================================================================================
