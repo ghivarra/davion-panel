@@ -54,9 +54,14 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
         $routes->match(['options', 'post'], 'create', 'Admin\\MenuController::create');
         $routes->match(['options', 'post'], 'update', 'Admin\\MenuController::update');
         $routes->match(['options', 'post'], 'update-status', 'Admin\\MenuController::updateStatus');
-        $routes->match(['options', 'post'], 'group/update-status', 'Admin\\MenuController::groupUpdateStatus');
         $routes->match(['options', 'post'], 'delete', 'Admin\\MenuController::delete');
-        $routes->match(['options', 'post'], 'group/delete', 'Admin\\MenuController::groupDelete');
+        
+
+        $routes->group('group', static function($routes) {
+            $routes->match(['options', 'post'], 'update', 'Admin\\MenuController::groupUpdate');
+            $routes->match(['options', 'post'], 'update-status', 'Admin\\MenuController::groupUpdateStatus');
+            $routes->match(['options', 'post'], 'delete', 'Admin\\MenuController::groupDelete');
+        });
     });
 
     // fallback SPA routes
