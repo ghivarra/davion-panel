@@ -19,17 +19,20 @@
                         <div v-bind:id="`group${index}`" class="accordion-collapse collapse show">
                             <div class="accordion-body">
 
-                                <div class="d-flex mt-2 mb-4">
-                                    <button type="button" class="btn btn-sm btn-primary">
+                                <div v-if="(parseInt(element.id) !== 1)" class="d-flex mt-2 mb-4">
+                                    <button v-on:click.prevent="editGroup(index)" type="button"
+                                        class="btn btn-sm btn-primary">
                                         <font-awesome icon="fas fa-pen-to-square" class="me-1"></font-awesome>
                                         Edit
                                     </button>
-                                    <button v-bind:class="(element.status === 'Aktif') ? 'btn-warning' : 'btn-success'" type="button"
-                                        class="btn btn-sm mx-2 text-white">
+                                    <button v-on:click.prevent="updateStatus(index)"
+                                        v-bind:class="(element.status === 'Aktif') ? 'btn-warning' : 'btn-success'"
+                                        type="button" class="btn btn-sm mx-2 text-white">
                                         <font-awesome icon="fas fa-sliders" class="me-1"></font-awesome>
                                         {{ (element.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan' }}
                                     </button>
-                                    <button type="button" class="btn btn-sm btn-danger">
+                                    <button v-on:click.prevent="this.delete(index)" type="button"
+                                        class="btn btn-sm btn-danger">
                                         <font-awesome icon="fas fa-trash-can" class="me-1"></font-awesome>
                                         Hapus
                                     </button>
@@ -181,6 +184,34 @@ export default {
             this.groupUpdateData.name = this.menus[index].name
             this.groupUpdateData.status = this.menus[index].status
             this.$refs.groupEditFormButton.click()
+        },
+        updateStatus: function(index) {
+            let app = this
+            let status = (app.menus[index].status === 'Aktif') ? 'Nonaktif' : 'Aktif';
+
+            app.showLoader()
+            
+            let form = new FormData()
+            form.append('id', app.menus[index].id)
+            form.append('status', status)
+
+            // save data
+            axios.post(panelUrl('menu/group/update-status'), form)  
+                .then(function(res) {
+                    res = res.data
+                    if (res.status !== 'success') {
+                        app.hideLoader()
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        window.location.reload()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
+        },
+        delete: function(index) {
+            console.log(this.menus[index].id)
         },
         update: function(event) {
             console.log(event.target)
