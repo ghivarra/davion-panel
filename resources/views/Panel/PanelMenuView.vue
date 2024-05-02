@@ -1,6 +1,7 @@
 <template>
     <main role="main" class="mb-4">
         <slot name="breadcrumb"></slot>
+
         <section class="accordion mb-5">
 
             <draggable v-bind:list="menus" itemKey="id">
@@ -13,15 +14,28 @@
                                 {{ element.name }}
                                 <span v-if="element.status === 'Aktif'" class="badge ms-2 text-bg-success">Aktif</span>
                                 <span v-else class="badge ms-2 text-bg-warning">Nonaktif</span>
-
-                                <button v-on:click.prevent="editButton" type="button" class="btn btn-link edit-menu-button group" title="Edit Menu">
-                                    <font-awesome icon="fas fa-gear"></font-awesome>
-                                </button>
                             </div>
                         </header>
                         <div v-bind:id="`group${index}`" class="accordion-collapse collapse show">
                             <div class="accordion-body">
-                                <draggable-menu-component v-bind:child="element.child" v-on:editButtonTrigger="editButton" groupName="menus"
+
+                                <div class="d-flex mt-2 mb-4">
+                                    <button type="button" class="btn btn-sm btn-primary">
+                                        <font-awesome icon="fas fa-pen-to-square" class="me-1"></font-awesome>
+                                        Edit
+                                    </button>
+                                    <button v-bind:class="(element.status === 'Aktif') ? 'btn-warning' : 'btn-success'" type="button"
+                                        class="btn btn-sm mx-2 text-white">
+                                        <font-awesome icon="fas fa-sliders" class="me-1"></font-awesome>
+                                        {{ (element.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan' }}
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-danger">
+                                        <font-awesome icon="fas fa-trash-can" class="me-1"></font-awesome>
+                                        Hapus
+                                    </button>
+                                </div>
+
+                                <draggable-menu-component v-bind:child="element.child" groupName="menus"
                                     itemKey="id"></draggable-menu-component>
                             </div>
                         </div>
@@ -38,6 +52,41 @@
 
         </section>
 
+        <section id="edit-menu-group">
+            <button ref="groupEditFormButton" class="d-none" data-bs-toggle="modal"
+                data-bs-target="#groupEditFormModal"></button>
+            <div class="modal fade" id="groupEditFormModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="groupEditFormModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <form v-on:submit.prevent="update" method="POST" class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h1 class="modal-title fs-5" id="groupEditFormModalLabel">Update Grup Menu</h1>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="groupUpdateName" class="form-label fw-bold">Nama</label>
+                                <input v-model="groupUpdateData.name" type="text" class="form-control"
+                                    id="groupUpdateName" name="name" maxlength="200" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="groupUpdateStatus" class="form-label fw-bold">Status</label>
+                                <select v-model="groupUpdateData.status" name="status" id="groupUpdateStatus"
+                                    class="form-select" required>
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Nonaktif">Nonaktif</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button ref="groupUpdateModalCloseButton" type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
     </main>
 </template>
 
@@ -45,13 +94,13 @@
 
 import { checkAxiosError, panelUrl } from '@/libraries/Function'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSave } from '@fortawesome/free-solid-svg-icons'
+import { faSave, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import draggableMenuComponent from '@/components/DraggableMenuComponent.vue'
 import draggable from 'vuedraggable'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
-library.add(faSave)
+library.add(faSave, faEllipsisVertical)
 
 export default {
     name: 'panel-menu-view',
@@ -63,7 +112,11 @@ export default {
     data: function() {
         return {
             name: 'Menu',
-            menus: []
+            menus: [],
+            groupUpdateData: {
+                name: '',
+                status: 'Aktif'
+            }
         }
     },
     methods: {
@@ -124,8 +177,13 @@ export default {
                     checkAxiosError(res.request.status)
                 })
         },
-        editButton: function() {
-            console.log('run edit button')
+        editGroup: function(index) {
+            this.groupUpdateData.name = this.menus[index].name
+            this.groupUpdateData.status = this.menus[index].status
+            this.$refs.groupEditFormButton.click()
+        },
+        update: function(event) {
+            console.log(event.target)
         }
     },
     created: function() {
@@ -136,15 +194,12 @@ export default {
             .then(function(res) {
                 if (typeof res.data.status !== 'undefined' && res.data.status === 'success') {
                     app.menus = res.data.data
+                    app.$emit('loaded')
                 }
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
+                app.$emit('loaded')
             })
-    },
-    mounted: function() {
-        this.$nextTick(function() {
-            this.$emit('loaded')
-        })
     }
 }
 
@@ -160,7 +215,7 @@ export default {
     }
 }
 
-.edit-menu-button {
+.option-menu-button {
     position: absolute;
     right: 0;
     top: 0;
@@ -168,6 +223,15 @@ export default {
     &.group {
         right: 2.5rem;
         top: .5rem;
+    }
+
+    &.parent-primary {
+        top: .5rem;
+        right: .6rem;
+    }
+
+    .dropdown-toggle::after {
+        display: none;
     }
 }
 

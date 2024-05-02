@@ -9,18 +9,72 @@
                 <span v-if="element.status === 'Aktif'" class="badge ms-2 text-bg-success">Aktif</span>
                 <span v-else class="badge ms-2 text-bg-warning">Nonaktif</span>
 
-                <button v-on:click.prevent="edit" type="button" class="btn btn-link edit-menu-button" title="Edit Menu">
-                    <font-awesome icon="fas fa-gear"></font-awesome>
-                </button>
+                <div class="dropdown option-menu-button parent-primary">
+                    <button type="button" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <font-awesome icon="fas fa-gear"></font-awesome>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <button type="button" class="dropdown-item">
+                                <font-awesome icon="fas fa-pen-to-square" class="text-primary"></font-awesome>
+                                Edit
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item">
+                                <font-awesome icon="fas fa-sliders"
+                                    v-bind:class="(element.status === 'Aktif') ? 'text-warning' : 'text-success'"></font-awesome>
+                                {{ (element.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan' }}
+                            </button>
+                        </li>
+                        <li>
+                            <button type="button" class="dropdown-item">
+                                <font-awesome icon="fas fa-trash-can" class="text-danger"></font-awesome>
+                                Hapus
+                            </button>
+                        </li>
+                    </ul>
+                </div>
 
                 <draggable v-bind:list="element.child" v-bind:itemKey="itemKey" v-bind:group="groupName"
                     v-bind:move="checkMove" class="drag-area child-drag-area pb-4">
                     <template v-slot:item="{ element }">
-                        <div class="my-3 bg-white border px-3 py-2 child-menu-area">
+                        <div class="my-3 bg-white border px-3 py-2 child-menu-area position-relative">
                             <font-awesome icon="far fa-circle" class="me-1"></font-awesome>
                             {{ element.title }}
                             <span v-if="element.status === 'Aktif'" class="badge ms-2 text-bg-success">Aktif</span>
                             <span v-else class="badge ms-2 text-bg-warning">Nonaktif</span>
+
+                            <div class="dropdown option-menu-button">
+                                <button type="button" class="btn btn-link dropdown-toggle" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    <font-awesome icon="fas fa-ellipsis-vertical" class="text-secondary"></font-awesome>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <button type="button" class="dropdown-item">
+                                            <font-awesome icon="fas fa-pen-to-square"
+                                                class="text-primary"></font-awesome>
+                                            Edit
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item">
+                                            <font-awesome icon="fas fa-sliders"
+                                                v-bind:class="(element.status === 'Aktif') ? 'text-warning' : 'text-success'"></font-awesome>
+                                            {{ (element.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan' }}
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button type="button" class="dropdown-item">
+                                            <font-awesome icon="fas fa-trash-can" class="text-danger"></font-awesome>
+                                            Hapus
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+
                         </div>
                     </template>
                 </draggable>
@@ -62,9 +116,6 @@ export default {
         checkMove: function(event) {
             let child = event.dragged.getElementsByClassName('child-menu-area')
             return (child.length > 0 && event.to.classList.contains('child-drag-area')) ? false : true
-        },
-        edit: function() {
-            this.$emit('editButtonTrigger')
         }
     }
 
