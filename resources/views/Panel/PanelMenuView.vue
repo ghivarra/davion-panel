@@ -117,6 +117,7 @@ export default {
             name: 'Menu',
             menus: [],
             groupUpdateData: {
+                id: '',
                 name: '',
                 status: 'Aktif'
             }
@@ -181,6 +182,7 @@ export default {
                 })
         },
         editGroup: function(index) {
+            this.groupUpdateData.id = this.menus[index].id
             this.groupUpdateData.name = this.menus[index].name
             this.groupUpdateData.status = this.menus[index].status
             this.$refs.groupEditFormButton.click()
@@ -233,8 +235,30 @@ export default {
                     checkAxiosError(res.request.status)
                 })
         },
-        update: function(event) {
-            console.log(event.target)
+        update: function() {
+            let app = this
+
+            app.showLoader()
+            
+            let form = new FormData()
+            form.append('id', app.groupUpdateData.id)
+            form.append('name', app.groupUpdateData.name)
+            form.append('status', app.groupUpdateData.status)
+
+            // save data
+            axios.post(panelUrl('menu/group/update'), form)  
+                .then(function(res) {
+                    res = res.data
+                    if (res.status !== 'success') {
+                        app.hideLoader()
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        window.location.reload()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
         }
     },
     created: function() {
