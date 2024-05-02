@@ -197,6 +197,59 @@ class MenuController extends BaseController
 
     //================================================================================================
 
+    public function groupUpdate(): ResponseInterface
+    {
+        $permission = $this->checkPermission('menuUpdate');
+        
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        // validate data
+        $rules = [
+            'id'     => ['label' => 'Grup Menu', 'rules' => 'required|numeric|is_not_unique[admin_menu_group.id]'],
+            'name'   => ['label' => 'Name Grup Menu', 'rules' => 'required|max_length[200]'],
+            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        // HARD CODE SO DEFAULT NOT GET DELETED, NONACTIVED, OR CHANGED
+        if (intval($data['id']) === 1)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // save
+        $orm = new AdminMenuGroupModel();
+        $orm->save($data);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Grup menu berhasil diperbaharui'
+        ]);
+    }
+
+    //================================================================================================
+
     public function groupUpdateStatus(): ResponseInterface
     {
         $permission = $this->checkPermission('menuUpdate');
