@@ -211,7 +211,27 @@ export default {
                 })
         },
         delete: function(index) {
-            console.log(this.menus[index].id)
+            let app = this
+
+            app.showLoader()
+            
+            let form = new FormData()
+            form.append('id', app.menus[index].id)
+
+            // save data
+            axios.post(panelUrl('menu/group/delete'), form)  
+                .then(function(res) {
+                    res = res.data
+                    if (res.status !== 'success') {
+                        app.hideLoader()
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        window.location.reload()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
         },
         update: function(event) {
             console.log(event.target)
