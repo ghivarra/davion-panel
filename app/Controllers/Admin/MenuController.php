@@ -90,8 +90,53 @@ class MenuController extends BaseController
 
     //================================================================================================
 
+    public function get(): ResponseInterface
+    {
+        $permission = $this->checkPermission('menuView');
+
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        // create ORM instance
+        $orm  = new AdminMenuModel();
+        $data = $orm->where('id', $this->request->getGet('id'))->first();
+
+        if (empty($data) OR !$data)
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak ditemukan',
+                'data'    => NULL
+            ]);
+        }
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => $data
+        ]);
+    }
+
+    //================================================================================================
+
     public function sort(): ResponseInterface
     {
+        $permission = $this->checkPermission('menuUpdate');
+        
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
         $data = [
             'group' => $this->request->getPost('group'),
             'menu'  => $this->request->getPost('menu'),
