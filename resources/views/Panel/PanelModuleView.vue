@@ -136,13 +136,9 @@
 <script>
 
 import { panelUrl, checkAxiosError } from '@/libraries/Function'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faBars, faPenToSquare, faSliders, faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons'
 import VueTable from '@/libraries/Ghivarra/VueTable/VueTable.vue'
 import axios from 'axios'
 import Swal from 'sweetalert2'
-
-library.add(faBars, faPenToSquare, faSliders, faTrashCan, faPlus)
 
 export default {
     name: 'panel-module-view',
@@ -200,6 +196,7 @@ export default {
 
             data.row.forEach((item, i) => {
                 let btnText = (item.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan'
+                let btnTextColor = (item.status === 'Aktif') ? 'text-warning' : 'text-success'
                 data.row[i].action = `<div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="fa-solid fa-bars me-1"></i>
@@ -214,7 +211,7 @@ export default {
                                             </li>
                                             <li>
                                                 <button data-key="${i}" class="status-button dropdown-item" type="button" title="${btnText} Data">
-                                                    <i class="fa-solid fa-sliders me-1 text-info"></i>
+                                                    <i class="fa-solid fa-sliders me-1 ${btnTextColor}"></i>
                                                     ${btnText}
                                                 </button>
                                             </li>
@@ -229,7 +226,7 @@ export default {
                 data.row[i].groupDefault = item.group
                 data.row[i].statusDefault = item.status
                 data.row[i].group = `<p class="m-0 fw-bold">${item.group}</p>`
-                data.row[i].status = (item.status === 'Aktif') ? `<span class="bg-success text-white py-2 px-3 rounded-pill fw-bold">${item.status}</span>` : `<span class="bg-warning py-2 px-3 rounded-pill fw-bold">${item.status}</span>`
+                data.row[i].status = (item.status === 'Aktif') ? `<span class="bg-success text-white py-2 px-3 rounded-pill fw-bold">${item.status}</span>` : `<span class="bg-warning py-2 px-3 text-white rounded-pill fw-bold">${item.status}</span>`
             })
 
             return data
