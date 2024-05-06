@@ -187,6 +187,31 @@ export default {
             this.groupUpdateData.status = this.menus[index].status
             this.$refs.groupEditFormButton.click()
         },
+        update: function() {
+            let app = this
+
+            app.showLoader()
+            
+            let form = new FormData()
+            form.append('id', app.groupUpdateData.id)
+            form.append('name', app.groupUpdateData.name)
+            form.append('status', app.groupUpdateData.status)
+
+            // save data
+            axios.post(panelUrl('menu/group/update'), form)  
+                .then(function(res) {
+                    res = res.data
+                    if (res.status !== 'success') {
+                        app.hideLoader()
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        window.location.reload()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
+        },
         updateStatus: function(index) {
             let app = this
             let status = (app.menus[index].status === 'Aktif') ? 'Nonaktif' : 'Aktif';
@@ -235,31 +260,6 @@ export default {
                     checkAxiosError(res.request.status)
                 })
         },
-        update: function() {
-            let app = this
-
-            app.showLoader()
-            
-            let form = new FormData()
-            form.append('id', app.groupUpdateData.id)
-            form.append('name', app.groupUpdateData.name)
-            form.append('status', app.groupUpdateData.status)
-
-            // save data
-            axios.post(panelUrl('menu/group/update'), form)  
-                .then(function(res) {
-                    res = res.data
-                    if (res.status !== 'success') {
-                        app.hideLoader()
-                        Swal.fire('Whoopss!!', res.message, 'warning')
-                    } else {
-                        window.location.reload()
-                    }
-                }).catch(function(res) {
-                    app.hideLoader()
-                    checkAxiosError(res.request.status)
-                })
-        }
     },
     created: function() {
         let app = this
