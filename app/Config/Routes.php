@@ -58,6 +58,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
         
 
         $routes->group('group', static function($routes) {
+            $routes->match(['options', 'post'], 'create', 'Admin\\MenuController::groupCreate');
             $routes->match(['options', 'post'], 'update', 'Admin\\MenuController::groupUpdate');
             $routes->match(['options', 'post'], 'update-status', 'Admin\\MenuController::groupUpdateStatus');
             $routes->match(['options', 'post'], 'delete', 'Admin\\MenuController::groupDelete');
