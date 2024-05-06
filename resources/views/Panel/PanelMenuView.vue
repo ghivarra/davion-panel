@@ -2,6 +2,19 @@
     <main role="main" class="mb-4">
         <slot name="breadcrumb"></slot>
 
+        <!-- TOP ACTION BUTTON -->
+        <section class="mb-4">
+            <button v-on:click="createGroupModalOpen" type="button" class="btn btn-dark me-3">
+                <font-awesome icon="fas fa-plus" class="me-1"></font-awesome>
+                Tambah Grup
+            </button>
+            <button type="button" class="btn btn-primary">
+                <font-awesome icon="fas fa-plus" class="me-1"></font-awesome>
+                Tambah Menu
+            </button>
+        </section>
+
+        <!-- ACCORDION SORTIR MENU -->
         <section class="accordion mb-5">
 
             <draggable v-bind:list="menus" itemKey="id">
@@ -20,18 +33,18 @@
                             <div class="accordion-body">
 
                                 <div v-if="(parseInt(element.id) !== 1)" class="d-flex mt-2 mb-4">
-                                    <button v-on:click.prevent="editGroup(index)" type="button"
+                                    <button v-on:click.prevent="editGroupModalOpen(index)" type="button"
                                         class="btn btn-sm btn-primary">
                                         <font-awesome icon="fas fa-pen-to-square" class="me-1"></font-awesome>
                                         Edit
                                     </button>
-                                    <button v-on:click.prevent="updateStatus(index)"
+                                    <button v-on:click.prevent="updateGroupStatus(index)"
                                         v-bind:class="(element.status === 'Aktif') ? 'btn-warning' : 'btn-success'"
                                         type="button" class="btn btn-sm mx-2 text-white">
                                         <font-awesome icon="fas fa-sliders" class="me-1"></font-awesome>
                                         {{ (element.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan' }}
                                     </button>
-                                    <button v-on:click.prevent="this.delete(index)" type="button"
+                                    <button v-on:click.prevent="deleteGroup(index)" type="button"
                                         class="btn btn-sm btn-danger">
                                         <font-awesome icon="fas fa-trash-can" class="me-1"></font-awesome>
                                         Hapus
@@ -55,13 +68,50 @@
 
         </section>
 
+        <!-- CREATE GROUP MENU MODAL -->
+        <section id="create-menu-group">
+            <button ref="groupCreateFormButton" class="d-none" data-bs-toggle="modal"
+                data-bs-target="#groupCreateFormModal"></button>
+            <div class="modal fade" id="groupCreateFormModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="groupCreateFormModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <form v-on:submit.prevent="creategroup" method="POST" class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                            <h1 class="modal-title fs-5" id="groupCreateFormModalLabel">Buat Grup Menu</h1>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label for="groupCreateName" class="form-label fw-bold">Nama</label>
+                                <input v-model="groupCreateData.name" type="text" class="form-control"
+                                    id="groupCreateName" name="name" maxlength="200" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="groupCreateStatus" class="form-label fw-bold">Status</label>
+                                <select v-model="groupCreateData.status" name="status" id="groupCreateStatus"
+                                    class="form-select" required>
+                                    <option value="Aktif">Aktif</option>
+                                    <option value="Nonaktif">Nonaktif</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button ref="groupCreateModalCloseButton" type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">Simpan Data</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- EDIT GROUP MENU MODAL -->
         <section id="edit-menu-group">
             <button ref="groupEditFormButton" class="d-none" data-bs-toggle="modal"
                 data-bs-target="#groupEditFormModal"></button>
             <div class="modal fade" id="groupEditFormModal" data-bs-backdrop="static" data-bs-keyboard="false"
                 tabindex="-1" aria-labelledby="groupEditFormModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <form v-on:submit.prevent="update" method="POST" class="modal-content">
+                    <form v-on:submit.prevent="updateGroup" method="POST" class="modal-content">
                         <div class="modal-header bg-primary text-white">
                             <h1 class="modal-title fs-5" id="groupEditFormModalLabel">Update Grup Menu</h1>
                         </div>
@@ -120,11 +170,15 @@ export default {
                 id: '',
                 name: '',
                 status: 'Aktif'
+            },
+            groupCreateData: {
+                name: '',
+                status: 'Aktif'
             }
         }
     },
     methods: {
-        save: function() {
+        saveList: function() {
             let app = this
             let form = new FormData()
             let menuIterator = -1
@@ -181,15 +235,46 @@ export default {
                     checkAxiosError(res.request.status)
                 })
         },
-        editGroup: function(index) {
+        createGroupModalOpen: function() {
+            this.groupCreateData.name = ''
+            this.groupCreateData.status = 'Aktif'
+            this.$refs.groupCreateFormButton.click()
+        },
+        editGroupModalOpen: function(index) {
             this.groupUpdateData.id = this.menus[index].id
             this.groupUpdateData.name = this.menus[index].name
             this.groupUpdateData.status = this.menus[index].status
             this.$refs.groupEditFormButton.click()
         },
-        update: function() {
+        createGroup: function() {
             let app = this
 
+            app.$refs.groupCreateModalCloseButton.click()
+            app.showLoader()
+            
+            let form = new FormData()
+            form.append('name', app.groupCreateData.name)
+            form.append('status', app.groupCreateData.status)
+
+            // save data
+            axios.post(panelUrl('menu/group/create'), form)  
+                .then(function(res) {
+                    res = res.data
+                    if (res.status !== 'success') {
+                        app.hideLoader()
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        window.location.reload()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
+        },
+        updateGroup: function() {
+            let app = this
+
+            app.$refs.groupUpdateModalCloseButton.click()
             app.showLoader()
             
             let form = new FormData()
@@ -212,7 +297,7 @@ export default {
                     checkAxiosError(res.request.status)
                 })
         },
-        updateStatus: function(index) {
+        updateGroupStatus: function(index) {
             let app = this
             let status = (app.menus[index].status === 'Aktif') ? 'Nonaktif' : 'Aktif';
 
@@ -237,7 +322,7 @@ export default {
                     checkAxiosError(res.request.status)
                 })
         },
-        delete: function(index) {
+        deleteGroup: function(index) {
             let app = this
 
             app.showLoader()
