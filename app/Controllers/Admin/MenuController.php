@@ -197,6 +197,49 @@ class MenuController extends BaseController
 
     //================================================================================================
 
+    public function groupCreate(): ResponseInterface
+    {
+        $permission = $this->checkPermission('menuCreate');
+        
+        if (!$permission)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        // validate data
+        $rules = [
+            'name'   => ['label' => 'Nama Grup Menu', 'rules' => 'required|max_length[200]|not_in_list[Default]'],
+            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // save
+        $orm = new AdminMenuGroupModel();
+        $orm->save($data);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Grup menu berhasil ditambah'
+        ]);
+    }
+
+    //================================================================================================
+
     public function groupUpdate(): ResponseInterface
     {
         $permission = $this->checkPermission('menuUpdate');
@@ -212,7 +255,7 @@ class MenuController extends BaseController
         // validate data
         $rules = [
             'id'     => ['label' => 'Grup Menu', 'rules' => 'required|numeric|is_not_unique[admin_menu_group.id]'],
-            'name'   => ['label' => 'Name Grup Menu', 'rules' => 'required|max_length[200]'],
+            'name'   => ['label' => 'Nama Grup Menu', 'rules' => 'required|max_length[200]'],
             'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
         ];
 
