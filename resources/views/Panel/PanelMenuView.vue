@@ -68,110 +68,40 @@
 
         </section>
 
-        <!-- CREATE GROUP MENU MODAL -->
-        <section id="create-menu-group">
-            <button ref="groupCreateFormButton" class="d-none" data-bs-toggle="modal"
-                data-bs-target="#groupCreateFormModal"></button>
-            <div class="modal fade" id="groupCreateFormModal" data-bs-backdrop="static" data-bs-keyboard="false"
-                tabindex="-1" aria-labelledby="groupCreateFormModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <form v-on:submit.prevent="creategroup" method="POST" class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h1 class="modal-title fs-5" id="groupCreateFormModalLabel">Buat Grup Menu</h1>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="groupCreateName" class="form-label fw-bold">Nama</label>
-                                <input v-model="groupCreateData.name" type="text" class="form-control"
-                                    id="groupCreateName" name="name" maxlength="200" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="groupCreateStatus" class="form-label fw-bold">Status</label>
-                                <select v-model="groupCreateData.status" name="status" id="groupCreateStatus"
-                                    class="form-select" required>
-                                    <option value="Aktif">Aktif</option>
-                                    <option value="Nonaktif">Nonaktif</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button ref="groupCreateModalCloseButton" type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Simpan Data</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
+        <!-- CREATE GROUP MODAL -->
+        <menu-group-create-modal ref="groupCreateModal"></menu-group-create-modal>
 
-        <!-- EDIT GROUP MENU MODAL -->
-        <section id="edit-menu-group">
-            <button ref="groupEditFormButton" class="d-none" data-bs-toggle="modal"
-                data-bs-target="#groupEditFormModal"></button>
-            <div class="modal fade" id="groupEditFormModal" data-bs-backdrop="static" data-bs-keyboard="false"
-                tabindex="-1" aria-labelledby="groupEditFormModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                    <form v-on:submit.prevent="updateGroup" method="POST" class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                            <h1 class="modal-title fs-5" id="groupEditFormModalLabel">Update Grup Menu</h1>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-3">
-                                <label for="groupUpdateName" class="form-label fw-bold">Nama</label>
-                                <input v-model="groupUpdateData.name" type="text" class="form-control"
-                                    id="groupUpdateName" name="name" maxlength="200" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="groupUpdateStatus" class="form-label fw-bold">Status</label>
-                                <select v-model="groupUpdateData.status" name="status" id="groupUpdateStatus"
-                                    class="form-select" required>
-                                    <option value="Aktif">Aktif</option>
-                                    <option value="Nonaktif">Nonaktif</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button ref="groupUpdateModalCloseButton" type="button" class="btn btn-secondary"
-                                data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
+        <!-- UPDATE GROUP MODAL -->
+        <menu-group-update-modal ref="groupUpdateModal" v-bind:updateData="groupUpdateData"></menu-group-update-modal>
 
     </main>
 </template>
 
 <script>
 
+import MenuGroupCreateModal from '../Modal/MenuGroupCreateModal.vue'
+import MenuGroupUpdateModal from '../Modal/MenuGroupUpdateModal.vue'
 import { checkAxiosError, panelUrl } from '@/libraries/Function'
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSave, faEllipsisVertical } from '@fortawesome/free-solid-svg-icons'
 import draggableMenuComponent from '@/components/DraggableMenuComponent.vue'
 import draggable from 'vuedraggable'
 import axios from 'axios'
 import Swal from 'sweetalert2'
-
-library.add(faSave, faEllipsisVertical)
 
 export default {
     name: 'panel-menu-view',
     inject: ['showLoader', 'hideLoader'],
     components: {
         draggable,
-        'draggable-menu-component': draggableMenuComponent
+        'draggable-menu-component': draggableMenuComponent,
+        'menu-group-update-modal': MenuGroupUpdateModal,
+        'menu-group-create-modal': MenuGroupCreateModal,
     },
     data: function() {
         return {
             name: 'Menu',
             menus: [],
             groupUpdateData: {
-                id: '',
-                name: '',
-                status: 'Aktif'
-            },
-            groupCreateData: {
+                id: 0,
                 name: '',
                 status: 'Aktif'
             }
@@ -236,66 +166,13 @@ export default {
                 })
         },
         createGroupModalOpen: function() {
-            this.groupCreateData.name = ''
-            this.groupCreateData.status = 'Aktif'
-            this.$refs.groupCreateFormButton.click()
+            this.$refs.groupCreateModal.$refs.modalOpenButton.click()
         },
         editGroupModalOpen: function(index) {
             this.groupUpdateData.id = this.menus[index].id
             this.groupUpdateData.name = this.menus[index].name
             this.groupUpdateData.status = this.menus[index].status
-            this.$refs.groupEditFormButton.click()
-        },
-        createGroup: function() {
-            let app = this
-
-            app.$refs.groupCreateModalCloseButton.click()
-            app.showLoader()
-            
-            let form = new FormData()
-            form.append('name', app.groupCreateData.name)
-            form.append('status', app.groupCreateData.status)
-
-            // save data
-            axios.post(panelUrl('menu/group/create'), form)  
-                .then(function(res) {
-                    res = res.data
-                    if (res.status !== 'success') {
-                        app.hideLoader()
-                        Swal.fire('Whoopss!!', res.message, 'warning')
-                    } else {
-                        window.location.reload()
-                    }
-                }).catch(function(res) {
-                    app.hideLoader()
-                    checkAxiosError(res.request.status)
-                })
-        },
-        updateGroup: function() {
-            let app = this
-
-            app.$refs.groupUpdateModalCloseButton.click()
-            app.showLoader()
-            
-            let form = new FormData()
-            form.append('id', app.groupUpdateData.id)
-            form.append('name', app.groupUpdateData.name)
-            form.append('status', app.groupUpdateData.status)
-
-            // save data
-            axios.post(panelUrl('menu/group/update'), form)  
-                .then(function(res) {
-                    res = res.data
-                    if (res.status !== 'success') {
-                        app.hideLoader()
-                        Swal.fire('Whoopss!!', res.message, 'warning')
-                    } else {
-                        window.location.reload()
-                    }
-                }).catch(function(res) {
-                    app.hideLoader()
-                    checkAxiosError(res.request.status)
-                })
+            this.$refs.groupUpdateModal.$refs.modalOpenButton.click()
         },
         updateGroupStatus: function(index) {
             let app = this
