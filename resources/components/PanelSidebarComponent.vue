@@ -21,7 +21,8 @@
                     <router-link v-if="item.type === 'Primary'" v-bind:to="{ name: item.router_name }"
                         v-on:click="mainMenuClick(item)"
                         class="d-flex align-items-center panel-sidebar-link-button btn btn-link w-100 text-decoration-none">
-                        <font-awesome v-bind:icon="item.icon" class="panel-sidebar-link-icon me-2"></font-awesome>
+                        <font-awesome v-bind:icon="(item.icon === null) ? 'fa-regular fa-circle' : item.icon"
+                            class="panel-sidebar-link-icon me-2"></font-awesome>
                         {{ item.title }}
                     </router-link>
 
