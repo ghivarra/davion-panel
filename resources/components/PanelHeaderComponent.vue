@@ -12,16 +12,17 @@
             
             <!-- Search Result -->
             <nav v-show="showSearchResult" class="page-form-result panel-box p-3">
-                <button 
+                <router-link 
                     v-for="(result, n) in searchPageResult"
                     v-bind:key="n"
+                    v-bind:to="{ name: result.router_name }"
                     v-on:click="clickSearchResult(result)"
                     type="button"
                     class="btn btn-link w-100 page-form-result-link text-decoration-none text-start fw-bold"
                     title="Klik untuk membuka halaman">
                     <font-awesome v-bind:icon="result.icon" class="me-2"></font-awesome>
                     {{ result.title }}
-                </button>
+                </router-link>
                 <p 
                     v-if="searchPageResult.length < 1"
                     class="m-0 text-secondary">
@@ -101,12 +102,8 @@
 <script>
 
 import { imageUrl, panelUrl, checkAxiosError } from '../libraries/Function';
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faBars, faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import Swal from 'sweetalert2'
 import axios from 'axios'
-
-library.add(faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faBars, faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight)
 
 export default {
     name: 'panel-header-component',
@@ -192,9 +189,6 @@ export default {
             this.showSearchResult = false
             this.searchPageValue = ''
             this.$refs.pageSearchCloseButton.click()
-            this.$router.push({
-                name: menu.router_name
-            })
         }
     }
 }
