@@ -185,7 +185,7 @@ export default {
                 }
             }, 300)
         },
-        clickSearchResult: function(menu) {
+        clickSearchResult: function() {
             this.showSearchResult = false
             this.searchPageValue = ''
             this.$refs.pageSearchCloseButton.click()
