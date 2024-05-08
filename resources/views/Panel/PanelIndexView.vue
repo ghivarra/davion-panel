@@ -56,9 +56,9 @@ import { computed } from 'vue'
 import { panelUrl, checkAxiosError, generateBreadcrumb } from '../../libraries/Function'
 import axios from 'axios'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faBars, faPenToSquare, faSliders, faTrashCan, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faPenToSquare, faSliders, faTrashCan, faPlus, faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faBars, faPenToSquare, faSliders, faTrashCan, faPlus)
+library.add(faBars, faPenToSquare, faSliders, faTrashCan, faPlus, faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight)
 
 export default {
     name: 'panel-index-view',
