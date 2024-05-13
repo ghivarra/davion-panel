@@ -4,13 +4,9 @@
 
         <!-- TOP ACTION BUTTON -->
         <section class="mb-4">
-            <button v-on:click="createGroupModalOpen" type="button" class="btn btn-dark me-3">
+            <button v-on:click.prevent="createGroupModalOpen" type="button" class="btn btn-dark me-3">
                 <font-awesome icon="fas fa-plus" class="me-1"></font-awesome>
                 Tambah Grup
-            </button>
-            <button type="button" class="btn btn-primary">
-                <font-awesome icon="fas fa-plus" class="me-1"></font-awesome>
-                Tambah Menu
             </button>
         </section>
 
@@ -32,22 +28,29 @@
                         <div v-bind:id="`group${index}`" class="accordion-collapse collapse show">
                             <div class="accordion-body">
 
-                                <div v-if="(parseInt(element.id) !== 1)" class="d-flex mt-2 mb-4">
-                                    <button v-on:click.prevent="editGroupModalOpen(index)" type="button"
+                                <div class="d-flex mt-2 mb-4">
+                                    <button v-on:click.prevent="editGroupModalOpen(index)"
+                                        v-if="(parseInt(element.id) !== 1) " type="button"
                                         class="btn btn-sm btn-primary">
                                         <font-awesome icon="fas fa-pen-to-square" class="me-1"></font-awesome>
                                         Edit
                                     </button>
                                     <button v-on:click.prevent="updateGroupStatus(index)"
+                                        v-if="(parseInt(element.id) !== 1) "
                                         v-bind:class="(element.status === 'Aktif') ? 'btn-warning' : 'btn-success'"
                                         type="button" class="btn btn-sm mx-2 text-white">
                                         <font-awesome icon="fas fa-sliders" class="me-1"></font-awesome>
                                         {{ (element.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan' }}
                                     </button>
-                                    <button v-on:click.prevent="deleteGroup(index)" type="button"
-                                        class="btn btn-sm btn-danger">
+                                    <button v-on:click.prevent="deleteGroup(index)" v-if="(parseInt(element.id) !== 1) "
+                                        type="button" class="btn btn-sm btn-danger me-2">
                                         <font-awesome icon="fas fa-trash-can" class="me-1"></font-awesome>
                                         Hapus
+                                    </button>
+                                    <button v-on:click.prevent="createMenuModalOpen(index)"
+                                        type="button" class="btn btn-sm btn-dark">
+                                        <font-awesome icon="fas fa-plus" class="me-1"></font-awesome>
+                                        Tambah Menu
                                     </button>
                                 </div>
 
@@ -60,7 +63,7 @@
             </draggable>
 
             <div>
-                <button v-on:click.prevent="save" type="button" class="btn btn-primary">
+                <button v-on:click.prevent="saveList" type="button" class="btn btn-primary">
                     <font-awesome icon="fas fa-save" class="me-1"></font-awesome>
                     Simpan Susunan Menu
                 </button>
@@ -74,6 +77,9 @@
         <!-- UPDATE GROUP MODAL -->
         <menu-group-update-modal ref="groupUpdateModal" v-bind:updateData="groupUpdateData"></menu-group-update-modal>
 
+        <!-- CREATE MENU MODAL -->
+        <menu-create-modal ref="menuCreateModal" v-bind:groupId="menuCreateGroupId" v-bind:groupName="menuCreateGroupName"></menu-create-modal>
+
     </main>
 </template>
 
@@ -81,6 +87,7 @@
 
 import MenuGroupCreateModal from '../Modal/MenuGroupCreateModal.vue'
 import MenuGroupUpdateModal from '../Modal/MenuGroupUpdateModal.vue'
+import MenuCreateModal from '../Modal/MenuCreateModal.vue'
 import { checkAxiosError, panelUrl } from '@/libraries/Function'
 import draggableMenuComponent from '@/components/DraggableMenuComponent.vue'
 import draggable from 'vuedraggable'
@@ -95,6 +102,7 @@ export default {
         'draggable-menu-component': draggableMenuComponent,
         'menu-group-update-modal': MenuGroupUpdateModal,
         'menu-group-create-modal': MenuGroupCreateModal,
+        'menu-create-modal': MenuCreateModal
     },
     data: function() {
         return {
@@ -104,7 +112,9 @@ export default {
                 id: 0,
                 name: '',
                 status: 'Aktif'
-            }
+            },
+            menuCreateGroupId: 0,
+            menuCreateGroupName: 'Grup'
         }
     },
     methods: {
@@ -164,6 +174,11 @@ export default {
                     app.hideLoader()
                     checkAxiosError(res.request.status)
                 })
+        },
+        createMenuModalOpen: function(index) {
+            this.menuCreateGroupId = this.menus[index].id
+            this.menuCreateGroupName = this.menus[index].name
+            this.$refs.menuCreateModal.$refs.modalOpenButton.click()
         },
         createGroupModalOpen: function() {
             this.$refs.groupCreateModal.$refs.modalOpenButton.click()
