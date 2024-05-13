@@ -16,10 +16,7 @@ class MenuController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // get menu groups
@@ -96,10 +93,7 @@ class MenuController extends BaseController
 
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // create ORM instance
@@ -131,10 +125,7 @@ class MenuController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         $data = [
@@ -197,16 +188,27 @@ class MenuController extends BaseController
 
     //================================================================================================
 
+    public function create(): ResponseInterface
+    {
+        $permission = $this->checkPermission('menuCreate');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+
+    }
+
+    //================================================================================================
+
     public function groupCreate(): ResponseInterface
     {
         $permission = $this->checkPermission('menuCreate');
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // validate data
@@ -246,10 +248,7 @@ class MenuController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // validate data
@@ -299,10 +298,7 @@ class MenuController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // validate data
@@ -351,10 +347,7 @@ class MenuController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // validate data

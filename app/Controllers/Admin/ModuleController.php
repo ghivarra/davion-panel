@@ -45,10 +45,7 @@ class ModuleController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // create model instance
@@ -122,10 +119,7 @@ class ModuleController extends BaseController
 
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // create ORM instance
@@ -148,10 +142,7 @@ class ModuleController extends BaseController
 
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // create ORM instance
@@ -183,10 +174,7 @@ class ModuleController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // validate data
@@ -230,10 +218,7 @@ class ModuleController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // create model instance
@@ -291,10 +276,7 @@ class ModuleController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // validate data
@@ -334,10 +316,7 @@ class ModuleController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // validate data

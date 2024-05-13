@@ -16,10 +16,7 @@ class WebsiteController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // get data
@@ -41,10 +38,7 @@ class WebsiteController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // get post data
@@ -162,10 +156,7 @@ class WebsiteController extends BaseController
         
         if (!$permission)
         {
-            return $this->response->setStatusCode(403)->setJSON([
-                'status'  => 'error',
-                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
-            ]);
+            return cannotAccessModule();
         }
 
         // validate file
