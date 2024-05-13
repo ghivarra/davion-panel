@@ -14,6 +14,9 @@
  * @see: https://codeigniter.com/user_guide/extending/common.html
  */
 
+use CodeIgniter\HTTP\ResponseInterface;
+use Config\Services;
+
 function imageUrl($slug = '', $width = NULL, $height = NULL, $priority = 'width'): string
 {
     $url = base_url("assets/images/{$slug}?priority={$priority}");
@@ -48,4 +51,14 @@ function prettyPrint($var): void
     echo '<pre>';
     var_dump($var);
     echo '</pre>';
+}
+
+function cannotAccessModule($status = 'error', $message = 'Anda tidak memiliki izin untuk mengakses halaman ini.'): ResponseInterface
+{
+    $response = Services::response();
+
+    return $response->setStatusCode(403)->setJSON([
+        'status'  => $status,
+        'message' => $message
+    ]);
 }
