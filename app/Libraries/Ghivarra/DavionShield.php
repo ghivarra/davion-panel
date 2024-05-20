@@ -74,29 +74,36 @@ class DavionShield
         // set new admin data 
         $this->session->set('accountData', $accountData);
 
-        // check if session ttl needed to be regenerate
-        $TTL = time() - $_ENV['SESSION_LOGIN_TTL'];
+        // check request type
+        $request = Services::request();
 
-        if ($TTL > $this->session->get('lastRegenerate'))
+        // only regenerate on non ajax request to prevent session racing
+        if (!$request->isAJAX())
         {
-            // store old id
-            $oldId = $session['id'];
-            
-            // regenerate
-            $this->session->regenerate();
-
-            // load services and models
-            $request = Services::request();
-
-            // update old id to new id
-            $adminSessionModel->where('id', $oldId)
-                              ->set([
-                                'name'       => $this->session->session_id,
-                                'admin_id'   => $accountId,
-                                'useragent'  => json_encode($this->parseUserAgent($request)),
-                                'ip_address' => $request->getIPAddress()
-                              ])
-                              ->update();
+            // check if session ttl needed to be regenerate
+            $TTL = time() - $_ENV['SESSION_LOGIN_TTL'];
+    
+            if ($TTL > $this->session->get('lastRegenerate'))
+            {
+                // store old id
+                $oldId = $session['id'];
+                
+                // regenerate
+                $this->session->regenerate();
+    
+                // load services and models
+                $request = Services::request();
+    
+                // update old id to new id
+                $adminSessionModel->where('id', $oldId)
+                                ->set([
+                                    'name'       => $this->session->session_id,
+                                    'admin_id'   => $accountId,
+                                    'useragent'  => json_encode($this->parseUserAgent($request)),
+                                    'ip_address' => $request->getIPAddress()
+                                ])
+                                ->update();
+            }
         }
         
         // return
