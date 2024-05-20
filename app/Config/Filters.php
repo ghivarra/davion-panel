@@ -79,7 +79,7 @@ class Filters extends BaseConfig
             'before' => [ PANEL_PAGE . '/', PANEL_PAGE . '/*' ]
         ],
         'loggedIn' => [
-            'before' => [ LOGIN_PAGE . '/', LOGIN_PAGE . '/*' ]
+            'before' => [ LOGIN_PAGE . '/' ]
         ],
         'csrf' => [
             'before' => [ LOGIN_PAGE . '/', LOGIN_PAGE . '/*' ]

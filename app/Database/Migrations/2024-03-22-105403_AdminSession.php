@@ -16,6 +16,11 @@ class AdminSession extends Migration
     {
         // set fields
         $fields = [
+            'id' => [
+                'type'           => 'BIGINT',
+                'unsigned'       => true,
+                'auto_increment' => true
+            ],
             'name' => [
                 'type'       => 'VARCHAR',
                 'constraint' => 255,
@@ -48,9 +53,10 @@ class AdminSession extends Migration
         $this->forge->addField($fields);
 
         // add primary key
-        $this->forge->addKey('name', true);
+        $this->forge->addKey('id', true);
 
         // add indexes
+        $this->forge->addKey('name');
         $this->forge->addKey('admin_id');
         
         // add foreign key

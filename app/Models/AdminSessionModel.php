@@ -7,8 +7,8 @@ use CodeIgniter\Model;
 class AdminSessionModel extends Model
 {
     protected $table            = 'admin_session';
-    protected $primaryKey       = 'name';
-    protected $useAutoIncrement = false;
+    protected $primaryKey       = 'id';
+    protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;

@@ -44,7 +44,6 @@ class DavionShield
             return false;
         }
 
-
         // update account data
         $adminModel        = new AdminModel();
         $adminSessionModel = new AdminSessionModel();
@@ -52,7 +51,7 @@ class DavionShield
         $accountId         = $accountData['id'];
 
         // check if session exist
-        $session = $adminSessionModel->where('name', $this->session->session_id)->first();
+        $session = $adminSessionModel->select('id')->where('name', $this->session->session_id)->first();
 
         if (empty($session))
         {
@@ -81,7 +80,7 @@ class DavionShield
         if ($TTL > $this->session->get('lastRegenerate'))
         {
             // store old id
-            $oldId = $this->session->session_id;
+            $oldId = $session['id'];
             
             // regenerate
             $this->session->regenerate();
@@ -90,7 +89,7 @@ class DavionShield
             $request = Services::request();
 
             // update old id to new id
-            $adminSessionModel->where('name', $oldId)
+            $adminSessionModel->where('id', $oldId)
                               ->set([
                                 'name'       => $this->session->session_id,
                                 'admin_id'   => $accountId,
@@ -156,7 +155,7 @@ class DavionShield
         
         // save login data in admin_session
         $adminSessionModel = new AdminSessionModel();
-        $adminSessionModel->insert([
+        $adminSessionModel->save([
             'name'       => $this->session->session_id,
             'admin_id'   => $accountData['id'],
             'useragent'  => json_encode($this->parseUserAgent($request)),
