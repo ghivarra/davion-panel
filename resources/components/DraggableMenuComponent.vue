@@ -156,7 +156,26 @@ export default {
                 })
         },
         deleteMenu: function(id) {
-            console.log(id, 'delete')
+            let app = this
+            let form = new FormData()
+
+            app.showLoader()
+            form.append('id', id)
+
+            // update status
+            axios.post(panelUrl('menu/delete'), form)  
+                .then(function(res) {
+                    res = res.data
+                    if (res.status !== 'success') {
+                        app.hideLoader()
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        window.location.reload()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
         }
     }
 
