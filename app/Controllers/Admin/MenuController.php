@@ -296,6 +296,103 @@ class MenuController extends BaseController
 
     //================================================================================================
 
+    public function updateStatus(): ResponseInterface
+    {
+        $permission = $this->checkPermission('menuUpdate');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // validate data
+        $rules = [
+            'id'     => ['label' => 'Menu', 'rules' => 'required|numeric|is_not_unique[admin_menu.id]'],
+            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        // HARD CODE SO DEFAULT NOT GET DELETED, NONACTIVED, OR CHANGED
+        if (intval($data['id']) === 1)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // save
+        $orm = new AdminMenuModel();
+        $orm->save($data);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Status data berhasil diperbaharui'
+        ]);
+    }
+
+    //================================================================================================
+
+    public function delete(): ResponseInterface
+    {
+        $permission = $this->checkPermission('menuUpdate');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // validate data
+        $rules = [
+            'id' => ['label' => 'Menu', 'rules' => 'required|numeric|is_not_unique[admin_menu.id]']
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        // HARD CODE SO DEFAULT NOT GET DELETED, NONACTIVED, OR CHANGED
+        if (intval($data['id']) === 1)
+        {
+            return $this->response->setStatusCode(403)->setJSON([
+                'status'  => 'error',
+                'message' => 'Anda tidak memiliki izin untuk mengakses halaman ini'
+            ]);
+        }
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // save
+        $orm = new AdminMenuModel();
+        $orm->delete($data['id']);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Menu berhasil dihapus'
+        ]);
+    }
+
+    //================================================================================================
+
     public function groupCreate(): ResponseInterface
     {
         $permission = $this->checkPermission('menuCreate');
