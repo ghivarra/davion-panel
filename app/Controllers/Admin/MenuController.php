@@ -244,6 +244,58 @@ class MenuController extends BaseController
 
     //================================================================================================
 
+    public function update(): ResponseInterface
+    {
+        $permission = $this->checkPermission('menuCreate');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        $type  = $this->request->getPost('type');
+        $rules = [
+            'id'                  => ['label' => 'Menu', 'rules' => 'required|is_not_unique[admin_menu.id]'],
+            'title'               => ['label' => 'Label', 'rules' => 'required|max_length[200]'],
+            'status'              => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+        ];
+
+        if ($type !== 'Child')
+        {
+            $rules['icon'] = ['label' => 'Icon', 'rules' => 'required|max_length[100]'];
+        }
+
+        if ($type !== 'Parent')
+        {
+            $rules['router_name'] = ['label' => 'Nama Router', 'rules' => 'required|max_length[200]'];
+        }
+
+        // create data and validate
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // save
+        $orm = new AdminMenuModel();
+        $orm->save($data);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Menu berhasil diperbaharui'
+        ]);
+    }
+
+    //================================================================================================
+
     public function groupCreate(): ResponseInterface
     {
         $permission = $this->checkPermission('menuCreate');

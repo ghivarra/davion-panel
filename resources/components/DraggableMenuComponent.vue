@@ -16,7 +16,7 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <button type="button" class="dropdown-item">
+                            <button v-on:click="setUpdateMenuId(element.id)" type="button" class="dropdown-item">
                                 <font-awesome icon="fas fa-pen-to-square" class="text-primary"></font-awesome>
                                 Edit
                             </button>
@@ -53,7 +53,8 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <button type="button" class="dropdown-item">
+                                        <button v-on:click="setUpdateMenuId(element.id)" type="button"
+                                            class="dropdown-item">
                                             <font-awesome icon="fas fa-pen-to-square"
                                                 class="text-primary"></font-awesome>
                                             Edit
@@ -100,6 +101,10 @@ export default {
         groupName: {
             required: true,
             type: String
+        },
+        setUpdateMenuId: {
+            required: true,
+            type: Function
         }
     },
     components: {

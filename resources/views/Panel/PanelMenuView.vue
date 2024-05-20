@@ -4,7 +4,7 @@
 
         <!-- TOP ACTION BUTTON -->
         <section class="mb-4">
-            <button v-on:click.prevent="createGroupModalOpen" type="button" class="btn btn-dark me-3">
+            <button v-on:click.prevent="createGroupModalOpen" type="button" class="btn btn-primary me-3">
                 <font-awesome icon="fas fa-plus" class="me-1"></font-awesome>
                 Tambah Grup
             </button>
@@ -47,14 +47,15 @@
                                         <font-awesome icon="fas fa-trash-can" class="me-1"></font-awesome>
                                         Hapus
                                     </button>
-                                    <button v-on:click.prevent="createMenuModalOpen(index)"
-                                        type="button" class="btn btn-sm btn-dark">
+                                    <button v-on:click.prevent="createMenuModalOpen(index)" type="button"
+                                        class="btn btn-sm btn-dark">
                                         <font-awesome icon="fas fa-plus" class="me-1"></font-awesome>
                                         Tambah Menu
                                     </button>
                                 </div>
 
-                                <draggable-menu-component v-bind:child="element.child" groupName="menus"
+                                <draggable-menu-component v-bind:child="element.child"
+                                    v-bind:setUpdateMenuId="setUpdateMenuId" groupName="menus"
                                     itemKey="id"></draggable-menu-component>
                             </div>
                         </div>
@@ -78,7 +79,11 @@
         <menu-group-update-modal ref="groupUpdateModal" v-bind:updateData="groupUpdateData"></menu-group-update-modal>
 
         <!-- CREATE MENU MODAL -->
-        <menu-create-modal ref="menuCreateModal" v-bind:groupId="menuCreateGroupId" v-bind:groupName="menuCreateGroupName"></menu-create-modal>
+        <menu-create-modal ref="menuCreateModal" v-bind:groupId="menuCreateGroupId"
+            v-bind:groupName="menuCreateGroupName"></menu-create-modal>
+
+        <!-- UPDATE MENU MODAL -->
+        <menu-update-modal ref="menuUpdateModal" v-bind:menuId="menuUpdateId"></menu-update-modal>
 
     </main>
 </template>
@@ -88,6 +93,7 @@
 import MenuGroupCreateModal from '../Modal/MenuGroupCreateModal.vue'
 import MenuGroupUpdateModal from '../Modal/MenuGroupUpdateModal.vue'
 import MenuCreateModal from '../Modal/MenuCreateModal.vue'
+import MenuUpdateModal from '../Modal/MenuUpdateModal.vue'
 import { checkAxiosError, panelUrl } from '@/libraries/Function'
 import draggableMenuComponent from '@/components/DraggableMenuComponent.vue'
 import draggable from 'vuedraggable'
@@ -102,7 +108,8 @@ export default {
         'draggable-menu-component': draggableMenuComponent,
         'menu-group-update-modal': MenuGroupUpdateModal,
         'menu-group-create-modal': MenuGroupCreateModal,
-        'menu-create-modal': MenuCreateModal
+        'menu-create-modal': MenuCreateModal,
+        'menu-update-modal': MenuUpdateModal
     },
     data: function() {
         return {
@@ -114,10 +121,15 @@ export default {
                 status: 'Aktif'
             },
             menuCreateGroupId: 0,
-            menuCreateGroupName: 'Grup'
+            menuCreateGroupName: 'Grup',
+            menuUpdateId: 0
         }
     },
     methods: {
+        setUpdateMenuId: function(id) {
+            this.menuUpdateId = id
+            this.$refs.menuUpdateModal.$refs.modalOpenButton.click()
+        },
         saveList: function() {
             let app = this
             let form = new FormData()
@@ -151,6 +163,7 @@ export default {
                                 form.append(`menu[${menuIterator}][sort_order]`, (x + 1))
                                 form.append(`menu[${menuIterator}][type]`, 'Child')
                                 form.append(`menu[${menuIterator}][admin_menu_parent_id]`, menu.id)
+                                form.append(`menu[${menuIterator}][admin_menu_group_id]`, group.id)
                             }
 
                         } else {
