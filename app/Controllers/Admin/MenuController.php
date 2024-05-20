@@ -98,7 +98,10 @@ class MenuController extends BaseController
 
         // create ORM instance
         $orm  = new AdminMenuModel();
-        $data = $orm->where('id', $this->request->getGet('id'))->first();
+        $data = $orm->select(['admin_menu.id', 'admin_menu.status', 'title', 'router_name', 'icon', 'type', 'admin_menu_parent_id', 'admin_menu_group_id', 'name as admin_menu_group_name'])
+                    ->join('admin_menu_group', 'admin_menu_group_id = admin_menu_group.id', 'left')
+                    ->where('admin_menu.id', $this->request->getGet('id'))
+                    ->first();
 
         if (empty($data) OR !$data)
         {
