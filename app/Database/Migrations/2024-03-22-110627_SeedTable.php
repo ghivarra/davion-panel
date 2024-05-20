@@ -165,7 +165,7 @@ class SeedTable extends Migration
                 'sort_order'           => 1,
                 'created_at'           => $now, 
                 'updated_at'           => $now,
-                'admin_menu_group_id'  => NULL,
+                'admin_menu_group_id'  => $pengaturanGroupId,
                 'admin_menu_parent_id' => $adminParent['id'],
             ], [
                 'title'                => 'Role', 
@@ -175,7 +175,7 @@ class SeedTable extends Migration
                 'sort_order'           => 2,
                 'created_at'           => $now, 
                 'updated_at'           => $now,
-                'admin_menu_group_id'  => NULL,
+                'admin_menu_group_id'  => $pengaturanGroupId,
                 'admin_menu_parent_id' => $adminParent['id'],
             ], [
                 'title'                => 'Modul', 
@@ -185,7 +185,7 @@ class SeedTable extends Migration
                 'sort_order'           => 1,
                 'created_at'           => $now, 
                 'updated_at'           => $now,
-                'admin_menu_group_id'  => NULL,
+                'admin_menu_group_id'  => $pengaturanGroupId,
                 'admin_menu_parent_id' => $halamanParent['id'],
             ], [
                 'title'                => 'Menu', 
@@ -195,7 +195,7 @@ class SeedTable extends Migration
                 'sort_order'           => 2,
                 'created_at'           => $now, 
                 'updated_at'           => $now,
-                'admin_menu_group_id'  => NULL,
+                'admin_menu_group_id'  => $pengaturanGroupId,
                 'admin_menu_parent_id' => $halamanParent['id'],
             ]
         ]);
