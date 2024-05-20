@@ -87,7 +87,10 @@ export default {
     },
     methods: {
         clearForm: function() {
-            this.data.name = ''
+            this.data.title = ''
+            this.data.type = 'Primary'
+            this.data.icon = ''
+            this.data.router_name = ''
             this.data.status = 'Aktif'
         },
         submitForm: function() {
@@ -97,22 +100,18 @@ export default {
             app.showLoader()
             
             let form = new FormData()
+            form.append('admin_menu_group_id', app.data.groupId)
+            form.append('type', app.data.type)
+            form.append('title', app.data.title)
+            form.append('status', app.data.status)
 
-            switch (app.data.type) {
-                case 'Parent':
-                    
-                    break;
-
-                case 'Child':
-                    
-                    break;
-            
-                default:
-                    break;
+            if (app.data.title !== 'Child') {
+                form.append('icon', app.data.icon)
             }
 
-            form.append('name', app.data.name)
-            form.append('status', app.data.status)
+            if (app.data.title !== 'Parent') {
+                form.append('router_name', app.data.router_name)
+            }
 
             // save data
             axios.post(panelUrl('menu/create'), form)  
