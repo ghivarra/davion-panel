@@ -44,19 +44,33 @@ class DavionShield
             return false;
         }
 
+
         // update account data
         $adminModel        = new AdminModel();
         $adminSessionModel = new AdminSessionModel();
         $accountData       = $this->session->get('accountData');
         $accountId         = $accountData['id'];
 
-        // get from db
+        // check if session exist
+        $session = $adminSessionModel->where('name', $this->session->session_id)->first();
+
+        if (empty($session))
+        {
+            return false;
+        }
+
+        // check if account exist
         $accountData = $adminModel->select(['admin.id', 'username', 'admin.name', 'email', 'email_verified_at', 'admin.status', 'admin_role_id', 'admin_role.name as admin_role_name', 'is_superadmin', 'photo'])
                                   ->join('admin_role', 'admin_role_id = admin_role.id', 'inner')
                                   ->where('admin.id', $accountId)
                                   ->where('admin.status', 'Aktif')
                                   ->where('email_verified_at IS NOT', NULL)
                                   ->first();
+
+        if (empty($accountData))
+        {
+            return false;
+        }
 
         // set new admin data 
         $this->session->set('accountData', $accountData);
