@@ -197,7 +197,46 @@ class MenuController extends BaseController
             return cannotAccessModule();
         }
 
+        $type  = $this->request->getPost('type');
+        $rules = [
+            'type'                => ['label' => 'Tipe', 'rules' => 'required|in_list[Primary,Parent,Child]'],
+            'title'               => ['label' => 'Label', 'rules' => 'required|max_length[200]'],
+            'status'              => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+            'admin_menu_group_id' => ['label' => 'Grup', 'rules' => 'required|is_not_unique[admin_menu_group.id]'],
+        ];
 
+        if ($type !== 'Child')
+        {
+            $rules['icon'] = ['label' => 'Icon', 'rules' => 'required|max_length[100]'];
+        }
+
+        if ($type !== 'Parent')
+        {
+            $rules['router_name'] = ['label' => 'Nama Router', 'rules' => 'required|max_length[200]'];
+        }
+
+        // create data and validate
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // save
+        $orm = new AdminMenuModel();
+        $orm->save($data);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Menu berhasil ditambah'
+        ]);
     }
 
     //================================================================================================
