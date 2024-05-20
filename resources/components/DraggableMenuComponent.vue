@@ -16,20 +16,22 @@
                     </button>
                     <ul class="dropdown-menu">
                         <li>
-                            <button v-on:click="setUpdateMenuId(element.id)" type="button" class="dropdown-item">
+                            <button v-on:click.prevent="setUpdateMenuId(element.id)" type="button"
+                                class="dropdown-item">
                                 <font-awesome icon="fas fa-pen-to-square" class="text-primary"></font-awesome>
                                 Edit
                             </button>
                         </li>
-                        <li>
-                            <button type="button" class="dropdown-item">
+                        <li v-if="element.id !== '1'">
+                            <button v-on:click.prevent="toggleStatusMenu(element.id, element.status)" type="button"
+                                class="dropdown-item">
                                 <font-awesome icon="fas fa-sliders"
                                     v-bind:class="(element.status === 'Aktif') ? 'text-warning' : 'text-success'"></font-awesome>
                                 {{ (element.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan' }}
                             </button>
                         </li>
-                        <li>
-                            <button type="button" class="dropdown-item">
+                        <li v-if="element.id !== '1'">
+                            <button v-on:click.prevent="deleteMenu(element.id)" type="button" class="dropdown-item">
                                 <font-awesome icon="fas fa-trash-can" class="text-danger"></font-awesome>
                                 Hapus
                             </button>
@@ -53,22 +55,24 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <button v-on:click="setUpdateMenuId(element.id)" type="button"
+                                        <button v-on:click.prevent="setUpdateMenuId(element.id)" type="button"
                                             class="dropdown-item">
                                             <font-awesome icon="fas fa-pen-to-square"
                                                 class="text-primary"></font-awesome>
                                             Edit
                                         </button>
                                     </li>
-                                    <li>
-                                        <button type="button" class="dropdown-item">
+                                    <li v-if="element.id !== '1'">
+                                        <button v-on:click.prevent="toggleStatusMenu(element.id, element.status)"
+                                            type="button" class="dropdown-item">
                                             <font-awesome icon="fas fa-sliders"
                                                 v-bind:class="(element.status === 'Aktif') ? 'text-warning' : 'text-success'"></font-awesome>
                                             {{ (element.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan' }}
                                         </button>
                                     </li>
-                                    <li>
-                                        <button type="button" class="dropdown-item">
+                                    <li v-if="element.id !== '1'">
+                                        <button v-on:click.prevent="deleteMenu(element.id)" type="button"
+                                            class="dropdown-item">
                                             <font-awesome icon="fas fa-trash-can" class="text-danger"></font-awesome>
                                             Hapus
                                         </button>
@@ -86,10 +90,14 @@
 
 <script>
 
+import { panelUrl, checkAxiosError } from '@/libraries/Function'
 import draggable from 'vuedraggable'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default {
     name: 'draggable-menu-component',
+    inject: ['showLoader', 'hideLoader'],
     props: {
         child: {
             required: true,
@@ -121,6 +129,34 @@ export default {
         checkMove: function(event) {
             let child = event.dragged.getElementsByClassName('child-menu-area')
             return (child.length > 0 && event.to.classList.contains('child-drag-area')) ? false : true
+        },
+        toggleStatusMenu: function(id, status) {
+            let app = this
+            let form = new FormData()
+            let targetStatus = (status === 'Aktif') ? 'Nonaktif' : 'Aktif'
+
+            app.showLoader()
+            
+            form.append('id', id)
+            form.append('status', targetStatus)
+
+            // update status
+            axios.post(panelUrl('menu/update-status'), form)  
+                .then(function(res) {
+                    res = res.data
+                    if (res.status !== 'success') {
+                        app.hideLoader()
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        window.location.reload()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
+        },
+        deleteMenu: function(id) {
+            console.log(id, 'delete')
         }
     }
 
