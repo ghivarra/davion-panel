@@ -27,6 +27,11 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
         $routes->match(['options', 'post'], 'menu/search', 'Admin\\PublicController::searchMenu');
     });
 
+    // Account routes
+    $routes->group('account', static function($routes) {
+        $routes->match(['options', 'post'], 'change-password', 'Admin\\AccountController::changePassword');
+    });
+
     // Website routes
     $routes->group('website', static function($routes) {
         $routes->match(['options', 'get'], 'data', 'Admin\\WebsiteController::data');
