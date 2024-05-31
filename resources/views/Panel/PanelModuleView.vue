@@ -105,7 +105,7 @@
         <section ref="moduleTableSection">
             <vue-table id="module-table" ref="moduleTable" v-bind:defaultLength="25" v-bind:lengthOptions="[10,25,50]"
                 v-bind:url="table.url" v-bind:order="table.order" v-bind:columns="table.columns"
-                v-bind:processData="processData">
+                v-bind:processData="processData" v-on:afterCreate="$emit('loaded')">
                 <template v-slot:header>
                     <tr>
                         <th></th>
@@ -369,10 +369,6 @@ export default {
     },
     mounted: function() {
         let app = this
-
-        app.$nextTick(function() {
-            app.$emit('loaded')
-        })
 
         app.$refs.moduleTableSection.addEventListener('click', (event) => {
             event.preventDefault()

@@ -169,10 +169,6 @@ export default {
 
         let app = this
 
-        app.$nextTick(function() {
-            app.$emit('loaded')
-        })
-
         // get website data
         axios.get(panelUrl('website/data'))
             .then(function(res) {
@@ -180,6 +176,8 @@ export default {
                 app.mainForm = res.data
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
+            }).finally(function() {
+                app.$emit('loaded')
             })
     }
 }

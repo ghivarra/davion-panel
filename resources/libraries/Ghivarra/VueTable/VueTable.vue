@@ -327,11 +327,13 @@ export default {
             }
         },
         init: function() {
-            this.length = this.defaultLength
-            this.orderColumn = this.order.column
-            this.orderDir = this.order.dir
+            let app = this
+            app.length = app.defaultLength
+            app.orderColumn = app.order.column
+            app.orderDir = app.order.dir
 
-            this.draw()
+            // return new promise functions
+            return app.draw();
         },
         draw: function() {
             if (!this.idle) {
@@ -359,7 +361,8 @@ export default {
             // build column and append
             data = buildColumn(data, app.columns)
 
-            fetch(app.url, {
+            // return new promise
+            return fetch(app.url, {
                 method: 'POST',
                 headers: app.headers,
                 body: data
@@ -381,9 +384,11 @@ export default {
         }
     },
     created: function() {
-        this.$emit('beforeCreate')
-        this.init()
-        this.$emit('afterCreate')
+        let app = this
+        app.$emit('beforeCreate')
+        app.init().finally(() => {
+            app.$emit('afterCreate')
+        })
     }
 }
 
