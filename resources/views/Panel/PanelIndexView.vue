@@ -2,6 +2,9 @@
 
     <div class="d-flex">
 
+        <!-- BACKDROP FOR SIDEBAR -->
+        <div v-if="showSidebar" v-on:click.prevent="toggleSidebar" id="sidebarBackdrop"></div>
+
         <!-- SIDEBAR -->
         <aside>
             <panel-sidebar-component v-bind:activeMenu="activeMenuId" v-bind:activeParentMenu="activeParentMenuId"
@@ -252,6 +255,17 @@ table {
         }
         
     }
+}
+
+#sidebarBackdrop {
+    background-color: #000000;
+    min-width: 100%;
+    min-height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    opacity: .2;
 }
 
 </style>
