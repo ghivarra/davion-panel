@@ -144,6 +144,16 @@ export default {
                     app.loaderState = false
                 })
             }
+        },
+        updateAdminData: function() {
+            let app = this
+            return axios.get(panelUrl('public/session-data'))
+                .then(function(res) {
+                    res = res.data
+                    app.admin = res.data
+                }).catch(function(res) {
+                    checkAxiosError(res.request.status)
+                })
         }
     },
     provide: function() {
@@ -161,6 +171,9 @@ export default {
             },
             hideLoader: function() {
                 app.loaderState = false
+            },
+            updateAdminData: function() {
+                app.updateAdminData()
             }
         }
     },
@@ -168,13 +181,7 @@ export default {
         let app = this
 
         // get account data
-        axios.get(panelUrl('public/session-data'))
-            .then(function(res) {
-                res = res.data
-                app.admin = res.data
-            }).catch(function(res) {
-                checkAxiosError(res.request.status)
-            })
+        app.updateAdminData()
 
         // get menu
         axios.get(panelUrl('public/menu'))
