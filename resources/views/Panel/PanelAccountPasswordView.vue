@@ -2,7 +2,7 @@
     <main role="main" class="mb-4">
         <slot name="breadcrumb"></slot>
 
-        <!-- INFORMASI FORM -->
+        <!-- CHANGE PASSWORD FORM -->
         <section class="panel-box bg-white mb-4">
             <header class="panel-box-header">
                 Ubah Password
