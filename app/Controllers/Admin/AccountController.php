@@ -60,4 +60,83 @@ class AccountController extends BaseController
     }
 
     //================================================================================================
+
+    public function update(): ResponseInterface
+    {
+        $auth    = new DavionShield();
+        $account = $auth->getAccountData();
+
+        // validate data
+        $data = [
+            'name'  => $this->request->getPost('name'),
+            'email' => $this->request->getPost('email'),
+            'photo' => $this->request->getFile('photo')
+        ];
+
+        $rules = [
+            'name'  => ['label' => 'Nama Lengkap', 'rules' => 'required|max_length[100]'],
+            'email' => ['label' => 'Email', 'rules' => 'required|valid_email'],
+        ];
+
+        // check if email is changed
+        if ($account['email'] !== $data['email'])
+        {
+            $rules['email'] = ['label' => 'Email', 'rules' => 'required|valid_email|is_unique[admin.email]'];
+        }
+
+        // run validation
+        $validator = Services::validation();
+        $validator->setRules($rules);
+
+        // check
+        if (!$validator->run($data))
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => implode(', ', $validator->getErrors()),
+            ]);
+        }
+
+        // check if photo is changed
+        if ($data['photo']->isValid())
+        {
+            $validImage = $this->validateData([], [
+                'photo' => ['label' => 'Foto', 'rules' => 'uploaded[photo]|max_size[photo,4096]|is_image[photo]|mime_in[photo,image/png,image/gif,image/jpeg]']
+            ]);
+
+            if (!$validImage)
+            {
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'message' => implode(', ', $validator->getErrors()),
+                ]);
+            }
+        }
+
+        // lanjut save
+        $savedData = [
+            'id'    => $account['id'],
+            'name'  => $data['name'],
+            'email' => $data['email'],
+        ];
+
+        // if uploaded
+        if ($data['photo']->isValid())
+        {
+            $savedData['photo'] = $data['photo']->getRandomName();
+            $data['photo']->move(WRITEPATH . 'app/images/admin', $savedData['photo']);
+        }
+
+        // save
+        $admin = new AdminModel();
+        $admin->save($savedData);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Akun anda berhasil diperbaharui',
+        ]);
+    }
+
+    //================================================================================================
 }
