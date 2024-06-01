@@ -9,7 +9,7 @@
 
 export default {
     name: 'panel-profile-view',
-    inject: ['showLoader', 'hideLoader'],
+    inject: ['showLoader', 'hideLoader', 'admin', 'updateAdminData'],
     data: function() {
         return {
             name: 'Profile'
