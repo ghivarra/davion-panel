@@ -16,9 +16,11 @@
         <div class="panel-body px-4 py-3">
 
             <!-- PRELOADER -->
-            <Transition name="loader">
-                <preload-component v-if="loaderState"></preload-component>
-            </Transition>
+            <div v-show="useLoader">
+                <Transition name="loader">
+                    <preload-component v-if="loaderState"></preload-component>
+                </Transition>
+            </div>
 
             <!-- HEADER -->
             <panel-header-component v-on:sidebarToggleClick="toggleSidebar"></panel-header-component>
@@ -79,6 +81,7 @@ export default {
             pageTitle: this.title,
             admin: {},
             menu: [],
+            useLoader: (import.meta.env.VITE_USE_LOADER == 'true'),
             firstLoad: true,
             loaderState: true,
             showSidebar: false,
@@ -92,8 +95,11 @@ export default {
             this.updateMetaData()
             this.activateMenu()
             this.breadcrumbs = generateBreadcrumb(this.$router)
-            this.loaderState = true
             this.showSidebar = false
+
+            if (import.meta.env.VITE_LOADER_ON_CHANGE_PAGE == 'true') {
+                this.loaderState = true
+            }
         }
     },
     methods: {

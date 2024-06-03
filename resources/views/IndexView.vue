@@ -1,7 +1,9 @@
 <template>
-    <Transition name="loader">
-        <preload-component v-if="loaderState"></preload-component>
-    </Transition>
+    <div v-show="useLoader">
+        <Transition name="loader">
+            <preload-component v-if="loaderState"></preload-component>
+        </Transition>
+    </div>
     <router-view v-bind:token="csrfToken" v-bind:hash="csrfHash"></router-view>
 </template>
 
@@ -23,6 +25,7 @@ export default {
             webInfo: this.website,
             pageTitle: this.title,
             firstLoad: true,
+            useLoader: (import.meta.env.VITE_USE_LOADER == 'true'),
             loaderState: true
         }
     },
