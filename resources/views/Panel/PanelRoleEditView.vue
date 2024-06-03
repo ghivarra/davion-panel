@@ -7,6 +7,10 @@
 
 <script>
 
+import { panelUrl, checkAxiosError } from '@/libraries/Function'
+import Swal from 'sweetalert2'
+import axios from 'axios'
+
 export default {
     name: 'panel-role-edit-view',
     inject: ['showLoader', 'hideLoader'],
@@ -16,11 +20,18 @@ export default {
         }
     },
     created: function() {
+        let app = this
+
         // get role data
-        
-    },
-    mounted: function() {
-        console.log(this.$route.params.roleId)
+        axios.get(panelUrl(`role/get?id=${app.$route.params.roleId}`))
+            .then(function(res) {
+                res = res.data
+                console.log(res)
+            }).catch(function(res) {
+                checkAxiosError(res.request.status)
+            }).finally(function() {
+                app.hideLoader()
+            })
     }
 }
 

@@ -48,7 +48,7 @@ class RoleController extends BaseController
         $permissionCreate = $this->checkPermission('roleCreate');
         $permissionUpdate = $this->checkPermission('roleUpdate');
         
-        if (!$permissionCreate OR !$permissionUpdate)
+        if (!$permissionCreate && !$permissionUpdate)
         {
             return cannotAccessModule();
         }
@@ -134,7 +134,7 @@ class RoleController extends BaseController
         $permissionCreate = $this->checkPermission('roleCreate');
         $permissionUpdate = $this->checkPermission('roleUpdate');
         
-        if (!$permissionCreate OR !$permissionUpdate)
+        if (!$permissionCreate && !$permissionUpdate)
         {
             return cannotAccessModule();
         }
@@ -422,6 +422,58 @@ class RoleController extends BaseController
         return $this->response->setJSON([
             'status'  => 'success',
             'message' => 'Data berhasil dihapus'
+        ]);
+    }
+
+    //================================================================================================
+
+    public function get(): ResponseInterface
+    {
+        $viewPermission   = $this->checkPermission('roleView');
+        $updatePermission = $this->checkPermission('roleUpdate');
+        
+        if (!$viewPermission OR !$updatePermission)
+        {
+            return cannotAccessModule();
+        }
+
+        // id
+        $id = $this->request->getGet('id');
+
+        // get data
+        $orm = new AdminRoleModel();
+        $get = $orm->select(['id', 'name', 'is_superadmin'])->find($id);
+
+        if (empty($get))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Role tidak ditemukan'
+            ]);
+        }
+
+        // search modules
+        $roleModule = new AdminRoleModuleModel();
+        $allModule  = $roleModule->select(['admin_module_id'])
+                                 ->where('admin_role_id', $id)
+                                 ->find();
+
+        $get['modules'] = empty($allModule) ? [] : array_column($allModule, 'admin_module_id');
+
+        // search menus
+        $roleMenu = new AdminRoleMenuModel();
+        $allMenu  = $roleMenu->select(['admin_menu_id'])
+                             ->where('admin_role_id', $id)
+                             ->find();
+
+        $get['menus'] = empty($allMenu) ? [] : array_column($allMenu, 'admin_menu_id');
+
+        // send response
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => $get
         ]);
     }
 
