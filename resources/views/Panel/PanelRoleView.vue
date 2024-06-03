@@ -1,6 +1,13 @@
 <template>
     <main role="main" class="mb-4">
         <slot name="breadcrumb"></slot>
+
+        <section id="create-table" class="mb-4">
+            <router-link v-bind:to="{ name: 'panel.role.create' }" class="btn btn-primary">
+                <font-awesome icon="fas fa-plus" class="me-2"></font-awesome>
+                Tambah Role
+            </router-link>
+        </section>
         
         <!-- TABLE -->
         <section ref="roleTableSection">
@@ -39,6 +46,9 @@
 
 <script>
 
+const env = import.meta.env
+const ADMINPAGE = env.VITE_PANEL_PAGE
+
 import { panelUrl, checkAxiosError } from '@/libraries/Function'
 import VueTable from '@/libraries/Ghivarra/VueTable/VueTable.vue'
 import axios from 'axios'
@@ -66,6 +76,8 @@ export default {
                     { query: '', text: 'Status', key: 'status', class: ['col-secondary'] },
                 ]
             },
+            tableData: [],
+            editPage: `/${ADMINPAGE}/role/edit`,
         }
     },
     methods: {
@@ -171,6 +183,15 @@ export default {
     },
     mounted: function() {
         let app = this
+
+        // edit
+        app.$refs.roleTableSection.addEventListener('click', function(event) {
+            if (event.target.closest('.edit-button')) {
+                event.preventDefault()
+                let key = event.target.getAttribute('data-key')
+                app.$router.push({ path: `${app.editPage}/${app.tableData[key].id}` })
+            }
+        })
 
         // update status
         app.$refs.roleTableSection.addEventListener('click', function(event) {

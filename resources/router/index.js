@@ -17,6 +17,10 @@ export default [
     { path: `/${env.VITE_PANEL_PAGE}/module`, name: 'panel.module', component: () => import('../views/Panel/PanelModuleView.vue'), meta: { 'pageName': 'Modul & Fitur' } },
     { path: `/${env.VITE_PANEL_PAGE}/menu`, name: 'panel.menu', component: () => import('../views/Panel/PanelMenuView.vue'), meta: { 'pageName': 'Tampilan Menu' } },
     { path: `/${env.VITE_PANEL_PAGE}/website`, name: 'panel.website', component: () => import('../views/Panel/PanelWebsiteView.vue'), meta: { 'pageName': 'Pengaturan Website' } },
+
+    // Role Create & Update
+    { path: `/${env.VITE_PANEL_PAGE}/role/create`, name: 'panel.role.create', component: () => import('../views/Panel/PanelRoleCreateView.vue'), meta: { 'pageName': 'Buat Role Baru' } },
+    { path: `/${env.VITE_PANEL_PAGE}/role/edit/:roleId`, name: 'panel.role.edit', component: () => import('../views/Panel/PanelRoleEditView.vue'), meta: { 'pageName': 'Edit Role' } },
     
     // Catch All / 404 Page
     { path: '/:pathMatch(.*)*', name: 'pageNotFound', component: () => import('../components/PageNotFoundComponent.vue'), meta: { 'pageName': 'Halaman Tidak Ditemukan' } },
