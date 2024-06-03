@@ -20,7 +20,7 @@ export default [
 
     // Role Create & Update
     { path: `/${env.VITE_PANEL_PAGE}/role/create`, name: 'panel.role.create', component: () => import('../views/Panel/PanelRoleCreateView.vue'), meta: { 'pageName': 'Buat Role Baru' } },
-    { path: `/${env.VITE_PANEL_PAGE}/role/edit/:roleId`, name: 'panel.role.edit', component: () => import('../views/Panel/PanelRoleEditView.vue'), meta: { 'pageName': 'Edit Role' } },
+    { path: `/${env.VITE_PANEL_PAGE}/role/edit/:roleId`, name: 'panel.role.edit.id', component: () => import('../views/Panel/PanelRoleEditView.vue'), meta: { 'pageName': 'Edit Role' } },
     
     // Catch All / 404 Page
     { path: '/:pathMatch(.*)*', name: 'pageNotFound', component: () => import('../components/PageNotFoundComponent.vue'), meta: { 'pageName': 'Halaman Tidak Ditemukan' } },

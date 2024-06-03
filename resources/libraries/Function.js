@@ -92,11 +92,13 @@ function generateBreadcrumb(router) {
     currentPath.forEach((item) => {
         eachPath += `/${item}`
         let resolvedPath = router.resolve(eachPath)
-        breadcrumbs.push({
-            path: eachPath,
-            name: (typeof resolvedPath.name === 'undefined') ? null : resolvedPath.name,
-            title: (typeof resolvedPath.meta.pageName === 'undefined') ? null : resolvedPath.meta.pageName
-        })
+        if (resolvedPath.name !== 'pageNotFound') {
+            breadcrumbs.push({
+                path: eachPath,
+                name: (typeof resolvedPath.name === 'undefined') ? null : resolvedPath.name,
+                title: (typeof resolvedPath.meta.pageName === 'undefined') ? null : resolvedPath.meta.pageName
+            })
+        }
     })
 
     // return
