@@ -11,39 +11,6 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class PublicController extends BaseController
 {
-    public function singlePageApplication(): ResponseInterface | string
-    {
-        if ($this->request->isAjax())
-        {
-            return $this->response->setJSON([
-                'status'  => 'error',
-                'message' => 'Halaman tidak ditemukan',
-            ])->setStatusCode(404);
-        }
-
-        $websiteModel = new WebsiteModel();
-
-        // return and render vue
-        return $this->vue->render('Panel/PanelIndexView', [
-            'title'   => $_ENV['VITE_APP_NAME'],
-            'website' => $websiteModel->getAllData()
-        ]);
-    }
-
-    //================================================================================================
-
-    public function sessionData(): ResponseInterface
-    {
-        $davionShield = new DavionShield();
-        return $this->response->setJSON([
-            'status'  => 'success',
-            'message' => 'Data berhasil diambil',
-            'data'    => $davionShield->getAccountData()
-        ]);
-    }
-
-    //================================================================================================
-
     public function logout(): ResponseInterface
     {
         $davionShield = new DavionShield();
@@ -171,6 +138,39 @@ class PublicController extends BaseController
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
             'data'    => $adminMenu
+        ]);
+    }
+
+    //================================================================================================
+
+    public function sessionData(): ResponseInterface
+    {
+        $davionShield = new DavionShield();
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil diambil',
+            'data'    => $davionShield->getAccountData()
+        ]);
+    }
+
+    //================================================================================================
+
+    public function singlePageApplication(): ResponseInterface | string
+    {
+        if ($this->request->isAjax())
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Halaman tidak ditemukan',
+            ])->setStatusCode(404);
+        }
+
+        $websiteModel = new WebsiteModel();
+
+        // return and render vue
+        return $this->vue->render('Panel/PanelIndexView', [
+            'title'   => $_ENV['VITE_APP_NAME'],
+            'website' => $websiteModel->getAllData()
         ]);
     }
 

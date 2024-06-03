@@ -8,42 +8,6 @@ function baseUrl(uri) {
 }
 
 /**
- * @param {string} uri
- */
-function panelUrl(uri) {
-    return import.meta.env.VITE_URL + '/' + import.meta.env.VITE_PANEL_PAGE + `/${uri}`
-}
-
-/**
- * @param {string} uri
- */
-function loginUrl(uri) {
-    return import.meta.env.VITE_URL + '/' + import.meta.env.VITE_LOGIN_PAGE + `/${uri}`
-}
-
-/**
- * @param {string} uri
- * @param {string|null|integer} width
- * @param {string|null|integer} height
- * @param {string} priority
- */
-function imageUrl(uri, width = null, height = null, priority = 'width') {
-    let url = baseUrl(`assets/images/${uri}?priority=${priority}`)
-
-    if (width !== null)
-    {
-        url += `&width=${width}`
-    }
-
-    if (height !== null)
-    {
-        url += `&height=${height}`
-    }
-
-    return url
-}
-
-/**
  * @param {interface} status
  */
 function checkAxiosError(status) {
@@ -106,6 +70,43 @@ function generateBreadcrumb(router) {
 }
 
 /**
+ * @param {string} uri
+ * @param {string|null|integer} width
+ * @param {string|null|integer} height
+ * @param {string} priority
+ */
+function imageUrl(uri, width = null, height = null, priority = 'width') {
+    let url = baseUrl(`assets/images/${uri}?priority=${priority}`)
+
+    if (width !== null)
+    {
+        url += `&width=${width}`
+    }
+
+    if (height !== null)
+    {
+        url += `&height=${height}`
+    }
+
+    return url
+}
+
+/**
+ * @param {string} uri
+ */
+function loginUrl(uri) {
+    return import.meta.env.VITE_URL + '/' + import.meta.env.VITE_LOGIN_PAGE + `/${uri}`
+}
+
+/**
+ * @param {string} uri
+ */
+function panelUrl(uri) {
+    return import.meta.env.VITE_URL + '/' + import.meta.env.VITE_PANEL_PAGE + `/${uri}`
+}
+
+
+/**
  * @param {array} parentsElement
  */
 function parents(child, parent) {
@@ -119,4 +120,4 @@ function parents(child, parent) {
 }
 
 // export functions
-export { baseUrl, panelUrl, loginUrl, imageUrl, checkAxiosError, generateBreadcrumb, parents }
+export { baseUrl, checkAxiosError, generateBreadcrumb, imageUrl, loginUrl, panelUrl, parents }

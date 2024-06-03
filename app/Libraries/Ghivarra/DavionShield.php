@@ -34,6 +34,69 @@ class DavionShield
 
     //================================================================================================
 
+    public function attempt(): bool
+    {
+        $request    = Services::request();
+        $adminModel = new AdminModel();
+
+        // credentials
+        $account  = $request->getPost('account');
+        $password = $request->getPost('password');
+
+        if (empty($account) OR empty($password))
+        {
+            return false;
+        }
+
+        // get account data
+        $accountData = $adminModel->select(['admin.id', 'username', 'password', 'admin.name', 'email', 'email_verified_at', 'admin.status', 'admin_role_id', 'admin_role.name as admin_role_name', 'is_superadmin', 'photo'])
+                                  ->join('admin_role', 'admin_role_id = admin_role.id', 'inner')
+                                  ->where('username', $account)
+                                  ->where('admin.status', 'Aktif')
+                                  ->where('email_verified_at IS NOT', NULL)
+                                  ->orWhere('email', $account)
+                                  ->where('admin.status', 'Aktif')
+                                  ->where('email_verified_at IS NOT', NULL)
+                                  ->first();
+
+        // account not found
+        if (empty($accountData))
+        {
+            return false;
+        }
+
+        // auth failed, wrong password
+        if (!password_verify($password, $accountData['password']))
+        {
+            return false;
+        }
+
+        // auth success, regenerate session id
+        $this->session->regenerate();
+
+        // clear private data and put admin data + login token in sessions
+        unset($accountData['password']);
+        $this->session->set([
+            'lastRegenerate'             => time(),
+            'accountData'                => $accountData,
+            $_ENV['SESSION_LOGIN_PARAM'] => md5($_ENV['SESSION_LOGIN_TOKEN'])
+        ]);
+        
+        // save login data in admin_session
+        $adminSessionModel = new AdminSessionModel();
+        $adminSessionModel->save([
+            'name'       => $this->session->session_id,
+            'admin_id'   => $accountData['id'],
+            'useragent'  => json_encode($this->parseUserAgent($request)),
+            'ip_address' => $request->getIPAddress()
+        ]);
+
+        // auth success
+        return true;
+    }
+
+    //================================================================================================
+
     public function check(): bool
     {
         $sessionToken = $this->session->get($_ENV['SESSION_LOGIN_PARAM']);
@@ -112,84 +175,6 @@ class DavionShield
 
     //================================================================================================
 
-    public function attempt(): bool
-    {
-        $request    = Services::request();
-        $adminModel = new AdminModel();
-
-        // credentials
-        $account  = $request->getPost('account');
-        $password = $request->getPost('password');
-
-        if (empty($account) OR empty($password))
-        {
-            return false;
-        }
-
-        // get account data
-        $accountData = $adminModel->select(['admin.id', 'username', 'password', 'admin.name', 'email', 'email_verified_at', 'admin.status', 'admin_role_id', 'admin_role.name as admin_role_name', 'is_superadmin', 'photo'])
-                                  ->join('admin_role', 'admin_role_id = admin_role.id', 'inner')
-                                  ->where('username', $account)
-                                  ->where('admin.status', 'Aktif')
-                                  ->where('email_verified_at IS NOT', NULL)
-                                  ->orWhere('email', $account)
-                                  ->where('admin.status', 'Aktif')
-                                  ->where('email_verified_at IS NOT', NULL)
-                                  ->first();
-
-        // account not found
-        if (empty($accountData))
-        {
-            return false;
-        }
-
-        // auth failed, wrong password
-        if (!password_verify($password, $accountData['password']))
-        {
-            return false;
-        }
-
-        // auth success, regenerate session id
-        $this->session->regenerate();
-
-        // clear private data and put admin data + login token in sessions
-        unset($accountData['password']);
-        $this->session->set([
-            'lastRegenerate'             => time(),
-            'accountData'                => $accountData,
-            $_ENV['SESSION_LOGIN_PARAM'] => md5($_ENV['SESSION_LOGIN_TOKEN'])
-        ]);
-        
-        // save login data in admin_session
-        $adminSessionModel = new AdminSessionModel();
-        $adminSessionModel->save([
-            'name'       => $this->session->session_id,
-            'admin_id'   => $accountData['id'],
-            'useragent'  => json_encode($this->parseUserAgent($request)),
-            'ip_address' => $request->getIPAddress()
-        ]);
-
-        // auth success
-        return true;
-    }
-
-    //================================================================================================
-
-    public function logout(): bool
-    {
-        $sessionId = $this->session->session_id;
-
-        // remove active session
-        $adminSessionModel = new AdminSessionModel();
-        $adminSessionModel->where('name', $sessionId)->delete();
-
-        // invalidate session and return
-        $this->session->destroy();
-        return true;
-    }
-
-    //================================================================================================
-
     public function getAccountData(): array
     {
         return $this->session->get('accountData');
@@ -224,6 +209,21 @@ class DavionShield
             'access_type' => $moduleList['type'],
             'parameter'   => empty($moduleList['parameter']) ? null : json_decode($moduleList['parameter'], true)
         ];
+    }
+
+    //================================================================================================
+
+    public function logout(): bool
+    {
+        $sessionId = $this->session->session_id;
+
+        // remove active session
+        $adminSessionModel = new AdminSessionModel();
+        $adminSessionModel->where('name', $sessionId)->delete();
+
+        // invalidate session and return
+        $this->session->destroy();
+        return true;
     }
 
     //================================================================================================

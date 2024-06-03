@@ -15,10 +15,12 @@ export default {
             name: 'Panel Edit Create'
         }
     },
+    created: function() {
+        // get role data
+        
+    },
     mounted: function() {
-        this.$nextTick(function() {
-            this.$emit('loaded')
-        })
+        console.log(this.$route.params.roleId)
     }
 }
 

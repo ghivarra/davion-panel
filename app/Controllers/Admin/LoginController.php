@@ -10,21 +10,6 @@ use CodeIgniter\HTTP\ResponseInterface;
 
 class LoginController extends BaseController
 {
-    public function index(): string
-    {
-        $websiteModel = new WebsiteModel();
-
-        // return and render vue
-        return $this->vue->render('IndexView', [
-            'title'     => 'Halaman Login',
-            'website'   => $websiteModel->getAllData(),
-            'csrfToken' => csrf_token(),
-            'csrfHash'  => csrf_hash()
-        ]);
-    }
-
-    //================================================================================================
-
     public function authenticate(): ResponseInterface
     {
         $davionShield = new DavionShield();
@@ -47,6 +32,21 @@ class LoginController extends BaseController
                 'message' => 'Otentikasi berhasil, anda akan dialihkan ke halaman panel dalam beberapa detik'
             ]);
         }
+    }
+
+    //================================================================================================
+    
+    public function index(): string
+    {
+        $websiteModel = new WebsiteModel();
+
+        // return and render vue
+        return $this->vue->render('IndexView', [
+            'title'     => 'Halaman Login',
+            'website'   => $websiteModel->getAllData(),
+            'csrfToken' => csrf_token(),
+            'csrfHash'  => csrf_hash()
+        ]);
     }
 
     //================================================================================================

@@ -32,7 +32,7 @@ class WebsiteController extends BaseController
 
     //================================================================================================
 
-    public function mainFormUpdate(): ResponseInterface
+    public function iconUpdate(): ResponseInterface
     {
         $permission = $this->checkPermission('websiteUpdate');
         
@@ -41,26 +41,74 @@ class WebsiteController extends BaseController
             return cannotAccessModule();
         }
 
-        // get post data
-        $input = [
-            [
-                'name' => 'name', 
-                'value' => $this->request->getPost('name')
-            ], [
-                'name' => 'tagline', 
-                'value' => $this->request->getPost('tagline')
-            ], [
-                'name' => 'app_version', 
-                'value' => $this->request->getPost('app_version')
-            ], [
-                'name' => 'description', 
-                'value' => $this->request->getPost('description')
-            ]
-        ];
+        // validate file
+        $validation = $this->validate([
+            'icon' => 'uploaded[icon]|max_size[icon,4096]|is_image[icon]|mime_in[icon,image/png]'
+        ]);
+
+        if (!$validation)
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data gagal diperbaharui',
+                'reasons' => $this->validator->getErrors()
+            ]);
+        }
+
+        // get file
+        $file = $this->request->getFile('icon');
+
+        // store original file with new name
+        $newName = $file->getRandomName();
+        $newPath = IMAGEPATH . "icon/{$newName}";
+        $file->move(IMAGEPATH . 'icon', $newName);
+
+        // create model instance
+        $websiteModel = new WebsiteModel();
+
+        // get logo version
+        $data    = $websiteModel->select('value')->where('name', 'icon_version')->first();
+        $version = explode('.', $data['value']);
+        $version = array_map('intval', $version);
+
+        // update version
+        if ($version[2] >= 10)
+        {
+            $version[2] = 0;
+            $version[1]++;
+            
+            if ($version[1] >= 10)
+            {
+                $version[1] = 0;
+                $version[0]++;
+            }
+
+        } else {
+
+            $version[2]++;
+        }
+
+        // delete old favicon and create new favicon
+        $faviconPath = FCPATH . 'favicon.ico';
+
+        if (file_exists($faviconPath) && is_really_writable($faviconPath))
+        {
+            unlink($faviconPath);
+        }
+
+        $phpIco = new PHP_ICO($newPath, [[32, 32]]);
+        $phpIco->save_ico($faviconPath);
 
         // update
-        $websiteModel = new WebsiteModel();
-        $websiteModel->updateBatch($input, 'name');
+        $websiteModel->updateBatch([
+            [
+                'name' => 'icon',
+                'value' => $newName 
+            ], [
+                'name' => 'icon_version',
+                'value' => implode('.', $version)
+            ]
+        ], 'name');
 
         // return
         return $this->response->setJSON([
@@ -150,7 +198,7 @@ class WebsiteController extends BaseController
 
     //================================================================================================
 
-    public function iconUpdate(): ResponseInterface
+    public function mainFormUpdate(): ResponseInterface
     {
         $permission = $this->checkPermission('websiteUpdate');
         
@@ -159,74 +207,26 @@ class WebsiteController extends BaseController
             return cannotAccessModule();
         }
 
-        // validate file
-        $validation = $this->validate([
-            'icon' => 'uploaded[icon]|max_size[icon,4096]|is_image[icon]|mime_in[icon,image/png]'
-        ]);
-
-        if (!$validation)
-        {
-            return $this->response->setJSON([
-                'status'  => 'error',
-                'message' => 'Data gagal diperbaharui',
-                'reasons' => $this->validator->getErrors()
-            ]);
-        }
-
-        // get file
-        $file = $this->request->getFile('icon');
-
-        // store original file with new name
-        $newName = $file->getRandomName();
-        $newPath = IMAGEPATH . "icon/{$newName}";
-        $file->move(IMAGEPATH . 'icon', $newName);
-
-        // create model instance
-        $websiteModel = new WebsiteModel();
-
-        // get logo version
-        $data    = $websiteModel->select('value')->where('name', 'icon_version')->first();
-        $version = explode('.', $data['value']);
-        $version = array_map('intval', $version);
-
-        // update version
-        if ($version[2] >= 10)
-        {
-            $version[2] = 0;
-            $version[1]++;
-            
-            if ($version[1] >= 10)
-            {
-                $version[1] = 0;
-                $version[0]++;
-            }
-
-        } else {
-
-            $version[2]++;
-        }
-
-        // delete old favicon and create new favicon
-        $faviconPath = FCPATH . 'favicon.ico';
-
-        if (file_exists($faviconPath) && is_really_writable($faviconPath))
-        {
-            unlink($faviconPath);
-        }
-
-        $phpIco = new PHP_ICO($newPath, [[32, 32]]);
-        $phpIco->save_ico($faviconPath);
+        // get post data
+        $input = [
+            [
+                'name' => 'name', 
+                'value' => $this->request->getPost('name')
+            ], [
+                'name' => 'tagline', 
+                'value' => $this->request->getPost('tagline')
+            ], [
+                'name' => 'app_version', 
+                'value' => $this->request->getPost('app_version')
+            ], [
+                'name' => 'description', 
+                'value' => $this->request->getPost('description')
+            ]
+        ];
 
         // update
-        $websiteModel->updateBatch([
-            [
-                'name' => 'icon',
-                'value' => $newName 
-            ], [
-                'name' => 'icon_version',
-                'value' => implode('.', $version)
-            ]
-        ], 'name');
+        $websiteModel = new WebsiteModel();
+        $websiteModel->updateBatch($input, 'name');
 
         // return
         return $this->response->setJSON([

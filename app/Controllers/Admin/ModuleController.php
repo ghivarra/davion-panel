@@ -40,6 +40,50 @@ class ModuleController extends BaseController
 
     //================================================================================================
 
+    public function create(): ResponseInterface
+    {
+        $permission = $this->checkPermission('moduleCreate');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // validate data
+        $rules = [
+            'group'  => ['label' => 'Grup', 'rules' => 'required|max_length[100]'],
+            'alias'  => ['label' => 'Alias', 'rules' => 'required|max_length[200]|is_unique[admin_module.alias]'],
+            'name'   => ['label' => 'Nama', 'rules' => 'required|max_length[200]'],
+            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // create model instance
+        $orm = new AdminModuleModel();
+
+        // insert data
+        $orm->save($data);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil diinput'
+        ]);
+    }
+
+    //================================================================================================
+
     public function datatable(): ResponseInterface
     {
         $permission = $this->checkPermission('moduleView');
@@ -114,24 +158,48 @@ class ModuleController extends BaseController
 
     //================================================================================================
 
-    public function groupList(): ResponseInterface
+    public function delete(): ResponseInterface
     {
-        $permission = $this->checkPermission('moduleView');
-
+        $permission = $this->checkPermission('moduleDelete');
+        
         if (!$permission)
         {
             return cannotAccessModule();
         }
 
-        // create ORM instance
-        $orm  = new AdminModuleModel();
-        $data = $orm->select('group')->distinct()->find();
+        // validate data
+        $rules = [
+            'id' => ['label' => 'Modul', 'rules' => 'required|numeric|is_not_unique[admin_module.id]']
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // delete data
+        $orm = new AdminModuleModel();
+
+        // change unique alias, we use rawsql
+        $updatedAlias = new RawSql("CONCAT(admin_module.alias, '--deleted-at-". time() ."')");
+
+        $orm->set('alias', $updatedAlias, false);
+        $orm->where('id', $data['id'])->update();
+
+        // delete
+        $orm->delete($data['id']);
 
         // return
         return $this->response->setJSON([
             'status'  => 'success',
-            'message' => 'Data berhasil ditarik',
-            'data'    => array_column($data, 'group')
+            'message' => 'Data berhasil dihapus'
         ]);
     }
 
@@ -169,45 +237,24 @@ class ModuleController extends BaseController
 
     //================================================================================================
 
-    public function create(): ResponseInterface
+    public function groupList(): ResponseInterface
     {
-        $permission = $this->checkPermission('moduleCreate');
-        
+        $permission = $this->checkPermission('moduleView');
+
         if (!$permission)
         {
             return cannotAccessModule();
         }
 
-        // validate data
-        $rules = [
-            'group'  => ['label' => 'Grup', 'rules' => 'required|max_length[100]'],
-            'alias'  => ['label' => 'Alias', 'rules' => 'required|max_length[200]|is_unique[admin_module.alias]'],
-            'name'   => ['label' => 'Nama', 'rules' => 'required|max_length[200]'],
-            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
-        ];
-
-        $data = $this->request->getPost(array_keys($rules));
-
-        if (!$this->validateData($data, $rules))
-        {
-            // return
-            return $this->response->setJSON([
-                'status'  => 'error',
-                'message' => 'Data tidak tervalidasi',
-                'data'    => $this->validator->getErrors()
-            ]);
-        }
-
-        // create model instance
-        $orm = new AdminModuleModel();
-
-        // insert data
-        $orm->save($data);
+        // create ORM instance
+        $orm  = new AdminModuleModel();
+        $data = $orm->select('group')->distinct()->find();
 
         // return
         return $this->response->setJSON([
             'status'  => 'success',
-            'message' => 'Data berhasil diinput'
+            'message' => 'Data berhasil ditarik',
+            'data'    => array_column($data, 'group')
         ]);
     }
 
@@ -306,53 +353,6 @@ class ModuleController extends BaseController
         return $this->response->setJSON([
             'status'  => 'success',
             'message' => 'Status data berhasil diperbaharui'
-        ]);
-    }
-
-    //================================================================================================
-
-    public function delete(): ResponseInterface
-    {
-        $permission = $this->checkPermission('moduleDelete');
-        
-        if (!$permission)
-        {
-            return cannotAccessModule();
-        }
-
-        // validate data
-        $rules = [
-            'id' => ['label' => 'Modul', 'rules' => 'required|numeric|is_not_unique[admin_module.id]']
-        ];
-
-        $data = $this->request->getPost(array_keys($rules));
-
-        if (!$this->validateData($data, $rules))
-        {
-            // return
-            return $this->response->setJSON([
-                'status'  => 'error',
-                'message' => 'Data tidak tervalidasi',
-                'data'    => $this->validator->getErrors()
-            ]);
-        }
-
-        // delete data
-        $orm = new AdminModuleModel();
-
-        // change unique alias, we use rawsql
-        $updatedAlias = new RawSql("CONCAT(admin_module.alias, '--deleted-at-". time() ."')");
-
-        $orm->set('alias', $updatedAlias, false);
-        $orm->where('id', $data['id'])->update();
-
-        // delete
-        $orm->delete($data['id']);
-
-        // return
-        return $this->response->setJSON([
-            'status'  => 'success',
-            'message' => 'Data berhasil dihapus'
         ]);
     }
 

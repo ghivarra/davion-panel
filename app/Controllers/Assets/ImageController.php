@@ -21,6 +21,16 @@ class ImageController extends BaseController
     }
     
     //================================================================================================
+
+    protected function fallback(string $etags): string
+    {
+        $fallbackImagePath = IMAGEPATH . 'no-image.png';
+
+        // return fallback image
+        return $this->render($fallbackImagePath, "{$etags}_ImageNotFound");
+    }
+
+    //================================================================================================
     
     protected function render(string $path, string $etags): string
     {
@@ -32,16 +42,6 @@ class ImageController extends BaseController
         
         // get and return image
         return file_get_contents($path);
-    }
-
-    //================================================================================================
-
-    protected function fallback(string $etags): string
-    {
-        $fallbackImagePath = IMAGEPATH . 'no-image.png';
-
-        // return fallback image
-        return $this->render($fallbackImagePath, "{$etags}_ImageNotFound");
     }
 
     //================================================================================================

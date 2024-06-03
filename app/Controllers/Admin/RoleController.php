@@ -43,70 +43,139 @@ class RoleController extends BaseController
 
     //================================================================================================
 
-    public function datatable(): ResponseInterface
+    public function allMenuList(): ResponseInterface
     {
-        $permission = $this->checkPermission('roleView');
+        $permissionCreate = $this->checkPermission('roleCreate');
+        $permissionUpdate = $this->checkPermission('roleUpdate');
         
-        if (!$permission)
+        if (!$permissionCreate OR !$permissionUpdate)
         {
             return cannotAccessModule();
         }
 
-        // create model instance
-        $orm = new AdminRoleModel();
+        $orm = new AdminMenuModel();
+        $all = $orm->select(['admin_menu.id', 'admin_menu.title', 'type', 'admin_menu_group.name as group_name', 'admin_menu_parent_id'])
+                   ->join('admin_menu_group', 'admin_menu_group_id = admin_menu_group.id', 'left')
+                   ->orderBy('admin_menu.title', 'ASC')
+                   ->find();
 
-        // get input
-        $draw    = $this->request->getPost('draw');
-        $all     = $this->request->getPost('all');
-        $limit   = intval($this->request->getPost('limit'));
-        $offset  = intval($this->request->getPost('offset'));
-        $order   = $this->request->getPost('order');
-        $columns = $this->request->getPost('columns');
-        $select  = ['id', 'name', 'is_superadmin', 'status'];
+        // parse data
+        $groups =  array_unique(array_column($all, 'group_name'));
+        sort($groups);
 
-        // set order column and dir
-        $defaultOrderCol = 'name';
-        $defaultOrderDir = 'ASC';
-        $orderColumn     = isset($order['column']) ? $order['column'] : 'name';
-        $orderDir        = isset($order['dir']) ? strtoupper($order['dir']) : 'ASC';
-
-        // get total
-        $total = $orm->countAllResults();
-
-        // no query
-        $orm = $orm->select($select)
-                   ->orderBy($orderColumn, $orderDir)
-                   ->orderBy($defaultOrderCol, $defaultOrderDir);
-        
-        if ($all !== 'true')
+        // search child menu
+        foreach ($all as $key => $item)
         {
-            $orm = $orm->limit($limit, $offset);
+            // add new key
+            $all[$key]['checked'] = false;
+
+            // search child
+            if ($item['type'] === 'Child')
+            {
+                // search parent
+                foreach ($all as $n => $menu)
+                {
+                    if ($menu['id'] === $item['admin_menu_parent_id'])
+                    {
+                        if (!isset($all[$n]['childs']))
+                        {
+                            $all[$n]['childs'] = [];
+                        }
+
+                        array_push($all[$n]['childs'], $all[$key]);
+                    }
+                }
+
+                // unset
+                unset($all[$key]);
+
+            } else {
+
+                if (!isset($all[$key]['childs']))
+                {
+                    $all[$key]['childs'] = [];
+                }
+
+            }
         }
 
-        // get filtered total
-        $orm           = $this->buildSearchQuery($orm, $columns);
-        $filteredTotal = $orm->countAllResults(false);
-        
-        if ($all !== 'true')
-        {
-            $orm = $orm->limit($limit, $offset);
-        }
+        // input parsed menu to groups
+        $result = [];
 
-        // get data
-        $orm  = $this->buildSearchQuery($orm, $columns);
-        $data = $orm->find();
+        foreach ($groups as $key => $name):
+
+            $result[$key]['name']  = $name;
+            $result[$key]['menus'] = [];
+
+            // search primary and parent menu
+            foreach ($all as $n => $item)
+            {
+                if ($item['group_name'] === $name && ($item['type'] === 'Primary' OR $item['type'] === 'Parent'))
+                {
+                    array_push($result[$key]['menus'], $item);
+                    unset($all[$n]);
+                }
+            }
+
+        endforeach;
 
         // return
         return $this->response->setJSON([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => [
-                'draw'            => $draw,
-                'length'          => count($data),
-                'recordsTotal'    => $total,
-                'recordsFiltered' => $filteredTotal,
-                'row'             => numbering($data, $offset)
-            ]
+            'data'    => $result
+        ]);
+    }
+
+    //================================================================================================
+
+    public function allModuleList(): ResponseInterface
+    {
+        $permissionCreate = $this->checkPermission('roleCreate');
+        $permissionUpdate = $this->checkPermission('roleUpdate');
+        
+        if (!$permissionCreate OR !$permissionUpdate)
+        {
+            return cannotAccessModule();
+        }
+
+        $orm = new AdminModuleModel();
+        $all = $orm->select(['id', 'name', 'group'])
+                   ->orderBy('name', 'ASC')
+                   ->find();
+
+        // parse data
+        $groups =  array_unique(array_column($all, 'group'));
+        sort($groups);
+
+        // 
+        $result = [];
+
+        foreach ($groups as $key => $name):
+
+            $result[$key]['name']    = $name;
+            $result[$key]['checked'] = false;
+            $result[$key]['modules'] = [];
+
+            // search
+            foreach ($all as $n => $item)
+            {
+                $item['checked'] = false;
+
+                if ($item['group'] === $name)
+                {
+                    array_push($result[$key]['modules'], $item);
+                    unset($all[$n]);
+                }
+            }
+
+        endforeach;
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => $result
         ]);
     }
 
@@ -250,41 +319,70 @@ class RoleController extends BaseController
 
     //================================================================================================
 
-    public function updateStatus(): ResponseInterface
+    public function datatable(): ResponseInterface
     {
-        $permission = $this->checkPermission('roleUpdate');
+        $permission = $this->checkPermission('roleView');
         
         if (!$permission)
         {
             return cannotAccessModule();
         }
 
-        // validate data
-        $rules = [
-            'id'     => ['label' => 'Role', 'rules' => 'required|numeric|is_not_unique[admin_role.id]'],
-            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
-        ];
+        // create model instance
+        $orm = new AdminRoleModel();
 
-        $data = $this->request->getPost(array_keys($rules));
+        // get input
+        $draw    = $this->request->getPost('draw');
+        $all     = $this->request->getPost('all');
+        $limit   = intval($this->request->getPost('limit'));
+        $offset  = intval($this->request->getPost('offset'));
+        $order   = $this->request->getPost('order');
+        $columns = $this->request->getPost('columns');
+        $select  = ['id', 'name', 'is_superadmin', 'status'];
 
-        if (!$this->validateData($data, $rules))
+        // set order column and dir
+        $defaultOrderCol = 'name';
+        $defaultOrderDir = 'ASC';
+        $orderColumn     = isset($order['column']) ? $order['column'] : 'name';
+        $orderDir        = isset($order['dir']) ? strtoupper($order['dir']) : 'ASC';
+
+        // get total
+        $total = $orm->countAllResults();
+
+        // no query
+        $orm = $orm->select($select)
+                   ->orderBy($orderColumn, $orderDir)
+                   ->orderBy($defaultOrderCol, $defaultOrderDir);
+        
+        if ($all !== 'true')
         {
-            // return
-            return $this->response->setJSON([
-                'status'  => 'error',
-                'message' => 'Data tidak tervalidasi',
-                'data'    => $this->validator->getErrors()
-            ]);
+            $orm = $orm->limit($limit, $offset);
         }
 
-        // save data
-        $orm = new AdminRoleModel();
-        $orm->save($data);
+        // get filtered total
+        $orm           = $this->buildSearchQuery($orm, $columns);
+        $filteredTotal = $orm->countAllResults(false);
+        
+        if ($all !== 'true')
+        {
+            $orm = $orm->limit($limit, $offset);
+        }
+
+        // get data
+        $orm  = $this->buildSearchQuery($orm, $columns);
+        $data = $orm->find();
 
         // return
         return $this->response->setJSON([
             'status'  => 'success',
-            'message' => 'Status data berhasil diperbaharui'
+            'message' => 'Data berhasil ditarik',
+            'data'    => [
+                'draw'            => $draw,
+                'length'          => count($data),
+                'recordsTotal'    => $total,
+                'recordsFiltered' => $filteredTotal,
+                'row'             => numbering($data, $offset)
+            ]
         ]);
     }
 
@@ -329,139 +427,41 @@ class RoleController extends BaseController
 
     //================================================================================================
 
-    public function allModuleList(): ResponseInterface
+    public function updateStatus(): ResponseInterface
     {
-        $permissionCreate = $this->checkPermission('roleCreate');
-        $permissionUpdate = $this->checkPermission('roleUpdate');
+        $permission = $this->checkPermission('roleUpdate');
         
-        if (!$permissionCreate OR !$permissionUpdate)
+        if (!$permission)
         {
             return cannotAccessModule();
         }
 
-        $orm = new AdminModuleModel();
-        $all = $orm->select(['id', 'name', 'group'])
-                   ->orderBy('name', 'ASC')
-                   ->find();
+        // validate data
+        $rules = [
+            'id'     => ['label' => 'Role', 'rules' => 'required|numeric|is_not_unique[admin_role.id]'],
+            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+        ];
 
-        // parse data
-        $groups =  array_unique(array_column($all, 'group'));
-        sort($groups);
+        $data = $this->request->getPost(array_keys($rules));
 
-        // 
-        $result = [];
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
 
-        foreach ($groups as $key => $name):
-
-            $result[$key]['name']    = $name;
-            $result[$key]['checked'] = false;
-            $result[$key]['modules'] = [];
-
-            // search
-            foreach ($all as $n => $item)
-            {
-                $item['checked'] = false;
-
-                if ($item['group'] === $name)
-                {
-                    array_push($result[$key]['modules'], $item);
-                    unset($all[$n]);
-                }
-            }
-
-        endforeach;
+        // save data
+        $orm = new AdminRoleModel();
+        $orm->save($data);
 
         // return
         return $this->response->setJSON([
             'status'  => 'success',
-            'message' => 'Data berhasil ditarik',
-            'data'    => $result
-        ]);
-    }
-
-    //================================================================================================
-
-    public function allMenuList(): ResponseInterface
-    {
-        $permissionCreate = $this->checkPermission('roleCreate');
-        $permissionUpdate = $this->checkPermission('roleUpdate');
-        
-        if (!$permissionCreate OR !$permissionUpdate)
-        {
-            return cannotAccessModule();
-        }
-
-        $orm = new AdminMenuModel();
-        $all = $orm->select(['admin_menu.id', 'admin_menu.title', 'type', 'admin_menu_group.name as group_name', 'admin_menu_parent_id'])
-                   ->join('admin_menu_group', 'admin_menu_group_id = admin_menu_group.id', 'left')
-                   ->orderBy('admin_menu.title', 'ASC')
-                   ->find();
-
-        // parse data
-        $groups =  array_unique(array_column($all, 'group_name'));
-        sort($groups);
-
-        // search child menu
-        foreach ($all as $key => $item)
-        {
-            // add new key
-            $all[$key]['checked'] = false;
-
-            // search child
-            if ($item['type'] === 'Child')
-            {
-                // search parent
-                foreach ($all as $n => $menu)
-                {
-                    if ($menu['id'] === $item['admin_menu_parent_id'])
-                    {
-                        if (!isset($all[$n]['childs']))
-                        {
-                            $all[$n]['childs'] = [];
-                        }
-
-                        array_push($all[$n]['childs'], $all[$key]);
-                    }
-                }
-
-                // unset
-                unset($all[$key]);
-
-            } else {
-
-                if (!isset($all[$key]['childs']))
-                {
-                    $all[$key]['childs'] = [];
-                }
-
-            }
-        }
-
-        // input parsed menu to groups
-        $result = [];
-
-        foreach ($groups as $key => $name):
-
-            $result[$key]['name']  = $name;
-            $result[$key]['menus'] = [];
-
-            // search primary and parent menu
-            foreach ($all as $n => $item)
-            {
-                if ($item['group_name'] === $name && ($item['type'] === 'Primary' OR $item['type'] === 'Parent'))
-                {
-                    array_push($result[$key]['menus'], $item);
-                    unset($all[$n]);
-                }
-            }
-
-        endforeach;
-
-        // return
-        return $this->response->setJSON([
-            'status'  => 'success',
-            'message' => 'Data berhasil ditarik',
-            'data'    => $result
+            'message' => 'Status data berhasil diperbaharui'
         ]);
     }
 
