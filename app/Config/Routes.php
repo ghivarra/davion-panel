@@ -74,6 +74,8 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
     // Role Routes
     $routes->group('role', static function($routes) {
         $routes->match(['options', 'get'], 'get', 'Admin\\RoleController::get');
+        $routes->match(['options', 'get'], 'get-module', 'Admin\\RoleController::allModuleList');
+        $routes->match(['options', 'get'], 'get-menu', 'Admin\\RoleController::allMenuList');
         $routes->match(['options', 'post'], 'datatable', 'Admin\\RoleController::datatable');
         $routes->match(['options', 'post'], 'create', 'Admin\\RoleController::create');
         $routes->match(['options', 'post'], 'update', 'Admin\\RoleController::update');
