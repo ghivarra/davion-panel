@@ -106,10 +106,63 @@ export default {
                 name: '',
                 is_superadmin: '0',
             },
-            role: {}
+            role: {
+                menus: [],
+                modules: []
+            }
         }
     },
     methods: {
+        updateMenuCheck: function() {
+            let app = this
+            if (app.menus.length < 1 || app.role.menus.length < 1) {
+                return false
+            }
+
+            app.menus.forEach(function(group) {
+                if (group.menus.length > 0) {
+                    group.menus.forEach(function(parent) {
+                        if (app.role.menus.indexOf(parent.id) >= 0) {
+                            parent.checked = true
+                        }
+                        if (parent.childs.length > 0) {
+                            parent.childs.forEach(function(menu) {
+                                if (app.role.menus.indexOf(menu.id) >= 0) {
+                                    menu.checked = true
+                                }
+                            })
+                        }
+                    })
+                }
+            })
+        },
+        updateModuleCheck: function() {
+            let app = this
+            if (app.modules.length < 1 || app.role.modules.length < 1) {
+                return false
+            }
+
+            app.modules.forEach(function(group) {
+
+                if (group.modules.length > 0) {
+                    var allChecked = true
+
+                    for (let i = 0; i < group.modules.length; i++) {
+                        const modul = group.modules[i];
+                        if (app.role.modules.indexOf(modul.id) >= 0) {
+                            modul.checked = true
+                        } else {
+                            allChecked = false
+                        }
+                    }
+
+                    if (allChecked) {
+                        group.checked = true
+                    }
+                }
+
+            })
+        },
         childCheck: function(menu) {
             // check if there are any childs
             menu.checked = true
@@ -197,13 +250,14 @@ export default {
 
             // input
             let form = new FormData()
+            form.append('id', app.$route.params.roleId)
             form.append('name', app.data.name)
             form.append('is_superadmin', app.data.is_superadmin)
             form.append('menus', JSON.stringify(menus))
             form.append('modules', JSON.stringify(modules))
 
             // save data
-            axios.post(panelUrl('role/create'), form)  
+            axios.post(panelUrl('role/update'), form)  
                 .then(function(res) {
                     res = res.data
                     app.hideLoader()
@@ -216,6 +270,20 @@ export default {
                     app.hideLoader()
                     checkAxiosError(res.request.status)
                 })
+        }
+    },
+    watch: {
+        'role.menus': function() {
+            this.updateMenuCheck()
+        },
+        'role.modules': function() {
+            this.updateModuleCheck()
+        },
+        menus: function() {
+            this.updateMenuCheck()
+        },
+        modules: function() {
+            this.updateModuleCheck()
         }
     },
     created: function() {
@@ -231,6 +299,8 @@ export default {
                     })
                 } else {
                     app.role = res.data
+                    app.data.name = res.data.name
+                    app.data.is_superadmin = res.data.is_superadmin
                 }
             }).catch(function(res) {
                 checkAxiosError(res.request.status)

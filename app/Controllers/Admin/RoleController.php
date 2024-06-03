@@ -479,6 +479,149 @@ class RoleController extends BaseController
 
     //================================================================================================
 
+    public function update(): ResponseInterface
+    {
+        $permission = $this->checkPermission('roleUpdate');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // data
+        $data = [
+            'id'            => $this->request->getPost('id'),
+            'name'          => $this->request->getPost('name'),
+            'is_superadmin' => $this->request->getPost('is_superadmin')
+        ];
+
+        // set rules
+        $rules = [
+            'id'            => ['label' => 'Role', 'rules' => 'required|is_not_unique[admin_role.id]'],
+            'name'          => ['label' => 'Nama Role', 'rules' => 'required|max_length[150]'],
+            'is_superadmin' => ['label' => 'Tipe Role', 'rules' => 'required|in_list[0,1]'],
+        ];
+
+        // if not superadmin, update rules and modules
+        if ($data['is_superadmin'] === '0')
+        {
+            $data['modules'] = json_decode($this->request->getPost('modules'), true);
+            $data['menus']   = json_decode($this->request->getPost('menus'), true);
+
+            // get all modules & menu so we not n+1           
+            if (!empty($data['modules']))
+            {
+                $adminModule = new AdminModuleModel();
+                $allModules  = implode(',', array_column($adminModule->select('id')->find(), 'id'));
+                
+                $rules['modules.*'] = ['label' => 'Pilihan Modul', 'rules' => 'in_list['. $allModules .']'];
+            }
+
+            if (!empty($data['menus']))
+            {
+                $adminMenu = new AdminMenuModel();
+                $allMenus  = implode(',', array_column($adminMenu->select('id')->find(), 'id'));
+
+                $rules['menus.*'] = ['label' => 'Pilihan Menu', 'rules' => 'in_list['. $allMenus .']'];
+            }
+        }
+
+        // validator
+        $validator = Services::validation();
+        $validator->setRules($rules);
+
+        if (!$validator->run($data))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => implode(', ', $validator->getErrors())
+            ]);
+        }
+        
+        // if valid
+        $db = \Config\Database::connect();
+
+        // transaction start
+        $db->transStart();
+
+        $adminRole = new AdminRoleModel();
+        $adminRole->save([
+            'id'            => $data['id'],
+            'name'          => $data['name'],
+            'is_superadmin' => intval($data['is_superadmin']),
+            'status'        => 'Aktif'
+        ]);
+
+        // get last id
+        $roleId = $data['id'];
+
+        // insert menus
+        if (!empty($data['menus']))
+        {
+            $menus = [];
+
+            foreach ($data['menus'] as $menu):
+
+                array_push($menus, [
+                    'admin_role_id' => $roleId,
+                    'admin_menu_id' => $menu
+                ]);
+
+            endforeach;
+
+            // delete old and save new list
+            $adminRoleMenu = new AdminRoleMenuModel();
+            $adminRoleMenu->where('admin_role_id', $roleId)->delete();
+            $adminRoleMenu->insertBatch($menus);
+        }
+
+        // insert modules
+        if (!empty($data['modules']))
+        {
+            $modules = [];
+
+            foreach ($data['modules'] as $modul):
+
+                array_push($modules, [
+                    'admin_role_id'   => $roleId,
+                    'admin_module_id' => $modul
+                ]);
+
+            endforeach;
+
+            // delete old and save new list
+            $adminRoleModule = new AdminRoleModuleModel();
+            $adminRoleModule->where('admin_role_id', $roleId)->delete();
+            $adminRoleModule->insertBatch($modules);
+        }
+
+        // check transaction status
+        if ($db->transStatus() === false)
+        {
+            // rollback
+            $db->transRollback();
+
+            // early return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => 'Gagal menginput data, ada error di database'
+            ]);
+        }
+
+        $db->transCommit();
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Role berhasil diinput',
+        ]);
+    }
+
+    //================================================================================================
+
     public function updateStatus(): ResponseInterface
     {
         $permission = $this->checkPermission('roleUpdate');
