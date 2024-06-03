@@ -2,9 +2,10 @@
 
 namespace App\Controllers\Admin;
 
-use CodeIgniter\HTTP\ResponseInterface;
-use App\Controllers\BaseController;
 use App\Models\AdminModuleModel;
+use App\Controllers\BaseController;
+use CodeIgniter\Database\RawSql;
+use CodeIgniter\HTTP\ResponseInterface;
 use Config\Services;
 
 class ModuleController extends BaseController
@@ -338,6 +339,14 @@ class ModuleController extends BaseController
 
         // delete data
         $orm = new AdminModuleModel();
+
+        // change unique alias, we use rawsql
+        $updatedAlias = new RawSql("CONCAT(admin_module.alias, '--deleted-at-". time() ."')");
+
+        $orm->set('alias', $updatedAlias, false);
+        $orm->where('id', $data['id'])->update();
+
+        // delete
         $orm->delete($data['id']);
 
         // return
