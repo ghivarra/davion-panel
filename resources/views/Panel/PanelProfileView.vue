@@ -8,7 +8,7 @@
                 <h2 class="h3 fw-bold text-white">{{ admin.name }}</h2>
             </div>
             <div class="panel-profile-box py-3">
-                <img class="panel-profile-box-image" v-bind:src="profilePicture" v-bind:alt="admin.name">
+                <img class="panel-profile-box-image rounded-circle" v-bind:src="profilePicture" v-bind:alt="admin.name">
                 <div class="d-md-flex pe-3">
                     <p class="mb-1 text-secondary me-3">
                         <font-awesome icon="fas fa-user-tie" class="text-primary me-1"></font-awesome>
@@ -43,7 +43,6 @@ export default {
         }
     },
     mounted: function() {
-        console.log(this.admin)
         this.$nextTick(function() {
             this.$emit('loaded')
         })
