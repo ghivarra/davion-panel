@@ -296,7 +296,7 @@ export default {
             if (statusCode === 401) {
                 alert('Anda harus login untuk mengakses data')
             } else if (statusCode === 403) {
-                alert('Anda tiodak memiliki izin untuk mengakses data')
+                alert('Anda tidak memiliki izin untuk mengakses data')
             } else if (statusCode === 404) {
                 alert('URL data tidak ditemukan')
             } else if (statusCode >= 500) {
