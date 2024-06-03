@@ -246,7 +246,7 @@ class MenuController extends BaseController
 
     public function update(): ResponseInterface
     {
-        $permission = $this->checkPermission('menuCreate');
+        $permission = $this->checkPermission('menuUpdate');
         
         if (!$permission)
         {
@@ -347,7 +347,7 @@ class MenuController extends BaseController
 
     public function delete(): ResponseInterface
     {
-        $permission = $this->checkPermission('menuUpdate');
+        $permission = $this->checkPermission('menuDelete');
         
         if (!$permission)
         {
@@ -534,7 +534,7 @@ class MenuController extends BaseController
 
     public function groupDelete(): ResponseInterface
     {
-        $permission = $this->checkPermission('menuUpdate');
+        $permission = $this->checkPermission('menuDelete');
         
         if (!$permission)
         {
