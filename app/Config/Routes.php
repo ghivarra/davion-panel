@@ -73,12 +73,12 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
 
     // Role Routes
     $routes->group('role', static function($routes) {
-        $routes->match(['options', 'get'], 'get', 'Admin\\ModuleController::get');
-        $routes->match(['options', 'post'], 'datatable', 'Admin\\ModuleController::datatable');
-        $routes->match(['options', 'post'], 'create', 'Admin\\ModuleController::create');
-        $routes->match(['options', 'post'], 'update', 'Admin\\ModuleController::update');
-        $routes->match(['options', 'post'], 'update-status', 'Admin\\ModuleController::updateStatus');
-        $routes->match(['options', 'post'], 'delete', 'Admin\\ModuleController::delete');
+        $routes->match(['options', 'get'], 'get', 'Admin\\RoleController::get');
+        $routes->match(['options', 'post'], 'datatable', 'Admin\\RoleController::datatable');
+        $routes->match(['options', 'post'], 'create', 'Admin\\RoleController::create');
+        $routes->match(['options', 'post'], 'update', 'Admin\\RoleController::update');
+        $routes->match(['options', 'post'], 'update-status', 'Admin\\RoleController::updateStatus');
+        $routes->match(['options', 'post'], 'delete', 'Admin\\RoleController::delete');
     });
 
     // fallback SPA routes
