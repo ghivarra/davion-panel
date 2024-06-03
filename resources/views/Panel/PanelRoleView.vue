@@ -3,8 +3,8 @@
         <slot name="breadcrumb"></slot>
         
         <!-- TABLE -->
-        <section ref="moduleTableSection">
-            <vue-table id="module-table" ref="moduleTable" v-bind:defaultLength="25" v-bind:lengthOptions="[10,25,50]"
+        <section ref="roleTableSection">
+            <vue-table id="role-table" ref="roleTable" v-bind:defaultLength="25" v-bind:lengthOptions="[10,25,50]"
                 v-bind:url="table.url" v-bind:order="table.order" v-bind:columns="table.columns"
                 v-bind:processData="processData" v-on:afterCreate="$emit('loaded')">
                 <template v-slot:header>
@@ -39,8 +39,10 @@
 
 <script>
 
-import { panelUrl } from '@/libraries/Function'
+import { panelUrl, checkAxiosError } from '@/libraries/Function'
 import VueTable from '@/libraries/Ghivarra/VueTable/VueTable.vue'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default {
     name: 'panel-role-view',
@@ -103,18 +105,54 @@ export default {
                                             </li>
                                         </ul>
                                     </div>`
-                data.row[i].groupDefault = item.group
                 data.row[i].statusDefault = item.status
-                data.row[i].group = `<p class="m-0 fw-bold">${item.group}</p>`
                 data.row[i].status = (item.status === 'Aktif') ? `<span class="bg-success text-white py-2 px-3 rounded-pill fw-bold">${item.status}</span>` : `<span class="bg-warning py-2 px-3 text-white rounded-pill fw-bold">${item.status}</span>`
+                data.row[i].superadminDefault = item.is_superadmin
+                data.row[i].is_superadmin = (item.is_superadmin === '1') ? `<span class="bg-success text-white py-2 px-3 rounded-pill fw-bold">Ya</span>` : `<span class="bg-warning py-2 px-3 text-white rounded-pill fw-bold">Bukan</span>`
             })
 
+            // return
             return data
         },
+        updateStatus: function(key) {
+            this.showLoader()
+
+            // set status
+            let app = this
+            let data = app.tableData[key]
+            let targetStatus = (data.statusDefault === 'Aktif') ? 'Nonaktif' : 'Aktif'
+            
+            // create form
+            let form = new FormData()
+            form.append('id', data.id)
+            form.append('status', targetStatus)
+
+            // save data
+            axios.post(panelUrl('role/update-status'), form)  
+                .then(function(res) {
+                    res = res.data
+                    app.hideLoader()
+                    if (res.status !== 'success') {
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        app.$refs.roleTable.draw()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
+        },
+        delete: function(key) {
+
+        }
     },
     mounted: function() {
-        this.$nextTick(function() {
-            this.$emit('loaded')
+        let app = this
+        app.$refs.roleTableSection.addEventListener('click', function(event) {
+            if (event.target.closest('.status-button')) {
+                event.preventDefault()
+                app.updateStatus(event.target.getAttribute('data-key'))
+            }
         })
     }
 }

@@ -107,4 +107,44 @@ class RoleController extends BaseController
     }
 
     //================================================================================================
+
+    public function updateStatus(): ResponseInterface
+    {
+        $permission = $this->checkPermission('roleView');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // validate data
+        $rules = [
+            'id'     => ['label' => 'Role', 'rules' => 'required|numeric|is_not_unique[admin_role.id]'],
+            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // save data
+        $orm = new AdminRoleModel();
+        $orm->save($data);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Status data berhasil diperbaharui'
+        ]);
+    }
+
+    //================================================================================================
 }
