@@ -13,7 +13,7 @@ class ModuleController extends BaseController
     {
         foreach ($columns as $column):
 
-            if (!empty($column['query']))
+            if (strlen($column['query']) > 0)
             {
                 if ($column['key'] === 'status')
                 {
