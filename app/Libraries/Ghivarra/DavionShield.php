@@ -4,7 +4,7 @@ namespace App\Libraries\Ghivarra;
 
 use Config\Services;
 use App\Models\AdminModel;
-use App\Models\AdminModuleListModel;
+use App\Models\AdminRoleModuleModel;
 use App\Models\AdminSessionModel;
 
 class DavionShield
@@ -208,11 +208,12 @@ class DavionShield
         }
 
         // get
-        $adminModuleListModel = new AdminModuleListModel();
-        $moduleList           = $adminModuleListModel->select(['type', 'parameter'])
-                                                     ->where('admin_module_alias', $moduleAlias)
-                                                     ->where('admin_role_id', $roleId)
-                                                     ->first();
+        $orm        = new AdminRoleModuleModel();
+        $moduleList = $orm->select(['type', 'parameter'])
+                          ->join('admin_module', 'admin_module_id = admin_module.id', 'left')
+                          ->where('alias', $moduleAlias)
+                          ->where('admin_role_id', $roleId)
+                          ->first();
         
         if (empty($moduleList))
         {
