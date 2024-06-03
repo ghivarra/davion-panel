@@ -23,7 +23,8 @@ class AdminModule extends Migration
             ],
             'alias' => [
                 'type'       => 'VARCHAR',
-                'constraint' => 100
+                'constraint' => 100,
+                'unique'     => true
             ],
             'name' => [
                 'type'       => 'VARCHAR',

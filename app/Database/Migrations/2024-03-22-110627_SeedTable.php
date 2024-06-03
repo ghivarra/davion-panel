@@ -251,6 +251,34 @@ class SeedTable extends Migration
                 'status'     => 'Aktif',
                 'created_at' => $now,
                 'updated_at' => $now,
+            ], [
+                'alias'      => 'menuView',
+                'name'       => 'Pengaturan Menu - View',
+                'group'      => 'Menu',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'menuCreate',
+                'name'       => 'Pengaturan Menu - Create',
+                'group'      => 'Menu',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'menuUpdate',
+                'name'       => 'Pengaturan Menu - Update',
+                'group'      => 'Menu',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'menuDelete',
+                'name'       => 'Pengaturan Menu - Delete',
+                'group'      => 'Menu',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
             ],
         ]);
     }
