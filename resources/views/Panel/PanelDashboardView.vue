@@ -1,7 +1,7 @@
 <template>
     <main role="main" class="mb-4">
         <slot name="breadcrumb"></slot>
-        Hello ini {{ name }}
+        Hello this is {{ name }} page. I made it blank so anyone can edit this page easily.
     </main>
 </template>
 
