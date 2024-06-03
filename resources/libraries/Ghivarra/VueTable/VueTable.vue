@@ -262,7 +262,7 @@ export default {
             return new Intl.NumberFormat(this.language).format(this.response.recordsFiltered)
         },
         pageItemsTotal: function() {
-            return new Intl.NumberFormat(this.language).format(this.response.recordsFiltered)
+            return new Intl.NumberFormat(this.language).format(this.response.recordsTotal)
         }
     },
     watch: {

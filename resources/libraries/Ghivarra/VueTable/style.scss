@@ -7,13 +7,12 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 1.5rem;
     }
 
     &-body {
+        overflow-x: auto;
         max-width: 100%;
-        overflow: auto;
-        margin-bottom: 1.5rem;
+        padding: 2rem 0;
     }
 
     thead,
@@ -93,6 +92,7 @@
     }
 
     &-wrapper {
+
         thead, tfoot {
             background-color: #585858;
             background: linear-gradient(180deg, #585858 0, #212529);
