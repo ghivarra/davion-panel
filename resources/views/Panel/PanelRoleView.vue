@@ -143,15 +143,48 @@ export default {
                 })
         },
         delete: function(key) {
+            this.showLoader()
 
+            // set status
+            let app = this
+            let data = app.tableData[key]
+
+            // create form
+            let form = new FormData()
+            form.append('id', data.id)
+
+            // send
+            axios.post(panelUrl('role/delete'), form)  
+                .then(function(res) {
+                    res = res.data
+                    app.hideLoader()
+                    if (res.status !== 'success') {
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        app.$refs.roleTable.draw()
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
         }
     },
     mounted: function() {
         let app = this
+
+        // update status
         app.$refs.roleTableSection.addEventListener('click', function(event) {
             if (event.target.closest('.status-button')) {
                 event.preventDefault()
                 app.updateStatus(event.target.getAttribute('data-key'))
+            }
+        })
+
+        // delete
+        app.$refs.roleTableSection.addEventListener('click', function(event) {
+            if (event.target.closest('.delete-button')) {
+                event.preventDefault()
+                app.delete(event.target.getAttribute('data-key'))
             }
         })
     }

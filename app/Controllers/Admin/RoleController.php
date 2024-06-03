@@ -110,7 +110,7 @@ class RoleController extends BaseController
 
     public function updateStatus(): ResponseInterface
     {
-        $permission = $this->checkPermission('roleView');
+        $permission = $this->checkPermission('roleUpdate');
         
         if (!$permission)
         {
@@ -143,6 +143,45 @@ class RoleController extends BaseController
         return $this->response->setJSON([
             'status'  => 'success',
             'message' => 'Status data berhasil diperbaharui'
+        ]);
+    }
+
+    //================================================================================================
+
+    public function delete(): ResponseInterface
+    {
+        $permission = $this->checkPermission('roleDelete');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // validate data
+        $rules = [
+            'id' => ['label' => 'Role', 'rules' => 'required|numeric|is_not_unique[admin_role.id]']
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // delete data
+        $orm = new AdminRoleModel();
+        $orm->delete($data['id']);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil dihapus'
         ]);
     }
 
