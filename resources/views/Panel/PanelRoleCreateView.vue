@@ -31,19 +31,19 @@
                         <div class="fw-bold mb-3 border-bottom pb-2">Pilihan Menu:</div>
                         <div>
                             <div v-for="(group, n) in menus" v-bind:key="n" class="mb-3">
-                                <h6 class="text-secondary fw-bold border-start border-3 ps-2 mb-2">{{ group.name }}</h6>
-                                <div>
-                                    <div v-for="(menu, i) in group.menus" v-bind:key="i" class="mb-2">
+                                <h6 class="text-secondary fw-bold border-start border-3 ps-2 mb-3">{{ group.name }}</h6>
+                                <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4">
+                                    <div v-for="(menu, i) in group.menus" v-bind:key="i" class="mb-2 col">
                                         <div class="form-check">
                                             <input v-model="menu.checked" v-bind:checked="menu.checked" v-bind:id="`check${menu.id}`" v-bind:value="menu.id" v-on:change="parentCheck(menu)" class="form-check-input" type="checkbox">
-                                            <label v-bind:for="`check${menu.id}`" class="form-check-label">
+                                            <label v-bind:for="`check${menu.id}`" class="form-check-label pe-2">
                                                 {{ menu.title }}
                                             </label>
                                         </div>
                                         <div v-show="(menu.childs.length > 0)" class="ps-4 mb-2">
                                             <div v-for="(child, x) in menu.childs" v-bind:key="x" class="form-check">
                                                 <input v-model="child.checked" v-bind:checked="child.checked" v-bind:id="`check${child.id}`" v-bind:value="child.id" v-on:change="childCheck(menu)" class="form-check-input" type="checkbox">
-                                                <label v-bind:for="`check${child.id}`" class="form-check-label">
+                                                <label v-bind:for="`check${child.id}`" class="form-check-label pe-2">
                                                     {{ child.title }}
                                                 </label>
                                             </div>
@@ -57,18 +57,18 @@
                     <div v-if="(data.is_superadmin === '0')" class="mb-4">
                         <div class="fw-bold mb-3 border-bottom pb-2">Pilihan Modul:</div>
                         <div>
-                            <div>
-                                <div v-for="(group, i) in modules" v-bind:key="i" class="mb-2">
+                            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-2">
+                                <div v-for="(group, i) in modules" v-bind:key="i" class="mb-2 col">
                                     <div class="form-check">
                                         <input v-model="group.checked" v-bind:checked="group.checked" v-bind:id="`moduleCheck${group.name}`" v-bind:value="group.name" v-on:change="moduleGroupCheck(group)" class="form-check-input" type="checkbox">
-                                        <label v-bind:for="`moduleCheck${group.name}`" class="form-check-label">
+                                        <label v-bind:for="`moduleCheck${group.name}`" class="form-check-label pe-2">
                                             {{ group.name }}
                                         </label>
                                     </div>
                                     <div v-show="(group.modules.length > 0)" class="ps-4 mb-2">
                                         <div v-for="(modul, x) in group.modules" v-bind:key="x" class="form-check">
                                             <input v-model="modul.checked" v-bind:checked="modul.checked" v-bind:id="`moduleCheck${modul.id}`" v-bind:value="modul.id" v-on:change="moduleCheck(group)" class="form-check-input" type="checkbox">
-                                            <label v-bind:for="`moduleCheck${modul.id}`" class="form-check-label">
+                                            <label v-bind:for="`moduleCheck${modul.id}`" class="form-check-label pe-2">
                                                 {{ modul.name }}
                                             </label>
                                         </div>
@@ -224,7 +224,6 @@ export default {
         axios.get(panelUrl('role/get-menu'))
             .then(function(res) {
                 res = res.data
-                console.log(res.data)
                 app.menus = res.data
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
@@ -234,16 +233,11 @@ export default {
         axios.get(panelUrl('role/get-module'))
             .then(function(res) {
                 res = res.data
-                console.log(res.data)
                 app.modules = res.data
+                app.$emit('loaded')
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
             })
-    },
-    mounted: function() {
-        this.$nextTick(function() {
-            this.$emit('loaded')
-        })
     }
 }
 
