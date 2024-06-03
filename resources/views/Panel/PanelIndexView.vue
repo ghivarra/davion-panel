@@ -58,6 +58,7 @@ import { dom } from '@fortawesome/fontawesome-svg-core'
 import { computed } from 'vue'
 import { panelUrl, checkAxiosError, generateBreadcrumb } from '../../libraries/Function'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faBars, faPenToSquare, faSliders, faTrashCan, faPlus, faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight, faSave, faEllipsisVertical, faEye, faEyeSlash, faEnvelope } from '@fortawesome/free-solid-svg-icons'
 
@@ -150,7 +151,13 @@ export default {
             return axios.get(panelUrl('public/session-data'))
                 .then(function(res) {
                     res = res.data
-                    app.admin = res.data
+                    if (res.status !== 'success') {
+                        Swal.fire('Whoopss!!', res.message, 'warning').then(function() {
+                            window.location.reload()
+                        })
+                    } else {
+                        app.admin = res.data
+                    }
                 }).catch(function(res) {
                     checkAxiosError(res.request.status)
                 })
@@ -187,7 +194,13 @@ export default {
         axios.get(panelUrl('public/menu'))
             .then(function(res) {
                 res = res.data
-                app.menu = res.data
+                if (res.status !== 'success') {
+                    Swal.fire('Whoopss!!', res.message, 'warning').then(function() {
+                        window.location.reload()
+                    })
+                } else {
+                    app.menu = res.data
+                }
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
             })
