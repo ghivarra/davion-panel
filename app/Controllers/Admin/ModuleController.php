@@ -126,12 +126,7 @@ class ModuleController extends BaseController
 
         // get filtered total
         $orm           = $this->buildSearchQuery($orm, $columns);
-        $filteredTotal = $orm->countAllResults();
-
-        // build query again
-        $orm = $orm->select($select)
-                   ->orderBy($orderColumn, $orderDir)
-                   ->orderBy($defaultOrderCol, $defaultOrderDir);
+        $filteredTotal = $orm->countAllResults(false);
         
         if ($all !== 'true')
         {
