@@ -279,7 +279,63 @@ class SeedTable extends Migration
                 'status'     => 'Aktif',
                 'created_at' => $now,
                 'updated_at' => $now,
-            ],
+            ], [
+                'alias'      => 'roleView',
+                'name'       => 'Pengaturan Role - View',
+                'group'      => 'Role',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'roleCreate',
+                'name'       => 'Pengaturan Role - Create',
+                'group'      => 'Role',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'roleUpdate',
+                'name'       => 'Pengaturan Role - Update',
+                'group'      => 'Role',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'roleDelete',
+                'name'       => 'Pengaturan Role - Delete',
+                'group'      => 'Role',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'administratorView',
+                'name'       => 'Pengaturan Administrator - View',
+                'group'      => 'Administrator',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'administratorCreate',
+                'name'       => 'Pengaturan Administrator - Create',
+                'group'      => 'Administrator',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'administratorUpdate',
+                'name'       => 'Pengaturan Administrator - Update',
+                'group'      => 'Administrator',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ], [
+                'alias'      => 'administratorDelete',
+                'name'       => 'Pengaturan Administrator - Delete',
+                'group'      => 'Administrator',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]
         ]);
     }
 
