@@ -12,30 +12,30 @@
                         <th></th>
                         <th></th>
                         <th>
-                            <input v-model="table.columns[2].query" type="text" class="form-control">
+                            <input v-model="table.columns[2].query" name="searchInput1" type="text" class="form-control">
                         </th>
                         <th>
-                            <input v-model="table.columns[3].query" type="text" class="form-control">
+                            <input v-model="table.columns[3].query" name="searchInput2" type="text" class="form-control">
                         </th>
                         <th>
-                            <input v-model="table.columns[4].query" type="text" class="form-control">
+                            <input v-model="table.columns[4].query" name="searchInput3" type="text" class="form-control">
                         </th>
                         <th>
-                            <select v-model="table.columns[5].query" class="form-select">
+                            <select v-model="table.columns[5].query" name="searchInput4" class="form-select">
                                 <option value="">Tampilkan Semua</option>
                                 <option value="1">Terverifikasi</option>
                                 <option value="0">Belum Verifikasi</option>
                             </select>
                         </th>
                         <th>
-                            <select v-model="table.columns[6].query" class="form-select">
+                            <select v-model="table.columns[6].query" name="searchInput5" class="form-select">
                                 <option value="">Tampilkan Semua</option>
                                 <option value="1">Ya</option>
                                 <option value="0">Bukan</option>
                             </select>
                         </th>
                         <th>
-                            <select v-model="table.columns[7].query" class="form-select">
+                            <select v-model="table.columns[7].query" name="searchInput6" class="form-select">
                                 <option value="">Tampilkan Semua</option>
                                 <option value="Aktif">Aktif</option>
                                 <option value="Nonaktif">Nonaktif</option>

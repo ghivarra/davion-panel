@@ -17,8 +17,7 @@
                         <div class="modal-body">
                             <div class="mb-3">
                                 <label for="moduleGroup" class="form-label fw-bold">Grup</label>
-                                <input list="groupList" type="text" class="form-control" id="moduleGroup" name="group"
-                                    maxlength="200" required>
+                                <input list="groupList" type="text" class="form-control" id="moduleGroup" name="group" maxlength="200" required>
                                 <datalist id="groupList">
                                     <option v-for="(item, n) in groupList" v-bind:key="n" v-bind:value="item">
                                         {{ item }}
@@ -27,13 +26,11 @@
                             </div>
                             <div class="mb-3">
                                 <label for="moduleAlias" class="form-label fw-bold">Alias</label>
-                                <input type="text" class="form-control" id="moduleAlias" name="alias" maxlength="100"
-                                    required>
+                                <input type="text" class="form-control" id="moduleAlias" name="alias" maxlength="100" required>
                             </div>
                             <div class="mb-3">
                                 <label for="moduleName" class="form-label fw-bold">Nama</label>
-                                <input type="text" class="form-control" id="moduleName" name="name" maxlength="200"
-                                    required>
+                                <input type="text" class="form-control" id="moduleName" name="name" maxlength="200" autocomplete="off" required>
                             </div>
                             <div class="mb-3">
                                 <label for="moduleStatus" class="form-label fw-bold">Status</label>
@@ -75,13 +72,11 @@
                             </div>
                             <div class="mb-3">
                                 <label for="moduleAlias" class="form-label fw-bold">Alias</label>
-                                <input v-model="updateData.alias" type="text" class="form-control" id="moduleAlias"
-                                    name="alias" maxlength="100" required>
+                                <input v-model="updateData.alias" type="text" class="form-control" id="moduleAlias" name="alias" maxlength="100" required>
                             </div>
                             <div class="mb-3">
                                 <label for="moduleName" class="form-label fw-bold">Nama</label>
-                                <input v-model="updateData.name" type="text" class="form-control" id="moduleName"
-                                    name="name" maxlength="200" required>
+                                <input v-model="updateData.name" type="text" class="form-control" id="moduleName" name="name" maxlength="200" autocomplete="off" required>
                             </div>
                             <div class="mb-3">
                                 <label for="moduleStatus" class="form-label fw-bold">Status</label>
@@ -111,16 +106,16 @@
                         <th></th>
                         <th></th>
                         <th>
-                            <input v-model="table.columns[2].query" type="text" class="form-control">
+                            <input v-model="table.columns[2].query" id="tableSearchInput1" type="text" class="form-control">
                         </th>
                         <th>
-                            <input v-model="table.columns[3].query" type="text" class="form-control">
+                            <input v-model="table.columns[3].query" id="tableSearchInput2" type="text" class="form-control">
                         </th>
                         <th>
-                            <input v-model="table.columns[4].query" type="text" class="form-control">
+                            <input v-model="table.columns[4].query" id="tableSearchInput3" type="text" class="form-control">
                         </th>
                         <th>
-                            <select v-model="table.columns[5].query" class="form-select">
+                            <select v-model="table.columns[5].query" id="tableSearchInput4" class="form-select">
                                 <option value="">Tampilkan Semua</option>
                                 <option value="Aktif">Aktif</option>
                                 <option value="Nonaktif">Nonaktif</option>

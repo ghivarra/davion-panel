@@ -19,17 +19,17 @@
                         <th></th>
                         <th></th>
                         <th>
-                            <input v-model="table.columns[2].query" type="text" class="form-control">
+                            <input v-model="table.columns[2].query" id="tableSearchInput1" type="text" class="form-control">
                         </th>
                         <th>
-                            <select v-model="table.columns[3].query" class="form-select">
+                            <select v-model="table.columns[3].query" id="tableSearchInput2" class="form-select">
                                 <option value="">Tampilkan Semua</option>
                                 <option value="1">Ya</option>
                                 <option value="0">Bukan</option>
                             </select>
                         </th>
                         <th>
-                            <select v-model="table.columns[4].query" class="form-select">
+                            <select v-model="table.columns[4].query" id="tableSearchInput3" class="form-select">
                                 <option value="">Tampilkan Semua</option>
                                 <option value="Aktif">Aktif</option>
                                 <option value="Nonaktif">Nonaktif</option>
@@ -216,7 +216,7 @@ export default {
 <style lang="scss">
 
 #role-table {
-    min-width: 1050px;
+    min-width: 700px;
 
     .col-no {
         width: 90px;

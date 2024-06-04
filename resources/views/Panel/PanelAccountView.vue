@@ -10,11 +10,11 @@
             <form v-on:submit.prevent="submitForm" class="p-3" enctype="multipart/form-data">
                 <div class="mb-3 position-relative">
                     <label for="name" class="form-label fw-bold">Nama Lengkap</label>
-                    <input v-model="data.name" name="name" id="name" type="text" class="form-control" required>
+                    <input v-model="data.name" autocomplete="off" name="name" id="name" type="text" class="form-control" required>
                 </div>
                 <div class="mb-3 position-relative">
                     <label for="email" class="form-label fw-bold">Email</label>
-                    <input v-model="data.email" name="email" id="email" type="email" class="form-control" required>
+                    <input v-model="data.email" autocomplete="off" name="email" id="email" type="email" class="form-control" required>
                 </div>
                 <div class="position-relative">
                     <label for="photo" class="form-label fw-bold">Unggah Foto Baru</label>

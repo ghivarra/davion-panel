@@ -6,7 +6,7 @@
 
             <!-- Length Options -->
             <div class="input-length-wrapper">
-                <select v-model="length" class="input-length">
+                <select v-model="length" v-bind:id="`${id}-length-selector`" class="input-length">
                     <option v-for="(option, n) in lengthOptions" v-bind:key="n" v-bind:value="option">
                         {{ (option === 0) ? 'Semua' : option }}
                     </option>
@@ -23,7 +23,7 @@
                         </path>
                     </svg>
                 </button>
-                <input v-model="pageNow" v-bind:max="pageTotal" type="number" min="1" class="paginator-input">
+                <input v-model="pageNow" v-bind:max="pageTotal" v-bind:id="`${id}-paginator-top`" type="number" min="1" class="paginator-input">
                 <button v-on:click.prevent="next" v-bind:disabled=nextButtonDisabled type="button"
                     class="next-button paginator-button">
                     <svg class="chevron chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
@@ -97,7 +97,7 @@
                         </path>
                     </svg>
                 </button>
-                <input v-model="pageNow" v-bind:max="pageTotal" type="number" min="1" class="paginator-input">
+                <input v-model="pageNow" v-bind:max="pageTotal" v-bind:id="`${id}-paginator-bottom`" type="number" min="1" class="paginator-input">
                 <button v-on:click.prevent="next" v-bind:disabled=nextButtonDisabled type="button"
                     class="next-button paginator-button">
                     <svg class="chevron chevron-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">

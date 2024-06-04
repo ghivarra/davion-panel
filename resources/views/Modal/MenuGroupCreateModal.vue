@@ -13,7 +13,7 @@
                         <div class="mb-3">
                             <label for="groupCreateName" class="form-label fw-bold">Nama</label>
                             <input v-model="data.name" type="text" class="form-control" id="groupCreateName"
-                                name="name" maxlength="200" required>
+                                name="name" autocomplete="off" maxlength="200" required>
                         </div>
                         <div class="mb-3">
                             <label for="groupCreateStatus" class="form-label fw-bold">Status</label>

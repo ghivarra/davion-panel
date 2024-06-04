@@ -10,21 +10,19 @@
             <form v-on:submit.prevent="submitMainForm" id="websiteMainForm" class="p-3">
                 <div class="mb-3">
                     <label for="formName" class="form-label fw-bold">Nama Website</label>
-                    <input v-model="mainForm.name" name="name" id="formName" type="text" class="form-control">
+                    <input v-model="mainForm.name" name="name" id="formName" type="text" class="form-control" autocomplete="off" required>
                 </div>
                 <div class="mb-3">
                     <label for="formTagline" class="form-label fw-bold">Slogan/Tagline</label>
-                    <input v-model="mainForm.tagline" name="tagline" id="formTagline" type="text" class="form-control">
+                    <input v-model="mainForm.tagline" name="tagline" id="formTagline" type="text" class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <label for="formAppVersion" class="form-label fw-bold">Versi Aplikasi</label>
-                    <input v-model="mainForm.app_version" name="app_version" id="formAppVersion" type="text"
-                        class="form-control">
+                    <input v-model="mainForm.app_version" name="app_version" id="formAppVersion" type="text" class="form-control" required>
                 </div>
                 <div class="mb-4">
                     <label for="formDescription" class="form-label fw-bold">Deskripsi</label>
-                    <textarea v-model="mainForm.description" name="description" id="formDescription"
-                        class="form-control" rows="3"></textarea>
+                    <textarea v-model="mainForm.description" name="description" id="formDescription" class="form-control" rows="3" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary d-flex align-items-center">
                     <font-awesome icon="fa-solid fa-floppy-disk" class="me-2"></font-awesome>

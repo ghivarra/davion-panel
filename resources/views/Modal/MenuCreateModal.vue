@@ -10,7 +10,7 @@
                         <h1 class="modal-title fs-5" id="menuCreateFormModalLabel">Buat Menu/Submenu</h1>
                     </div>
                     <div class="modal-body">
-                        <input v-bind:value="groupId" type="hidden" class="d-none" required>
+                        <input v-bind:value="groupId" id="group-id-create-input" type="hidden" class="d-none" required>
                         <h6 class="mb-3 fw-bold text-primary">Grup: {{ groupName }}</h6>
                         <div class="mb-3">
                             <p class="mb-2 fw-bold">Tipe</p>

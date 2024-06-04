@@ -38,6 +38,7 @@
                     v-model="searchPageValue"
                     autocomplete="off"
                     ref="searchform" 
+                    id="global-search-form"
                     name="searchpage" 
                     list="panelPages" 
                     type="text" 

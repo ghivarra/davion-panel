@@ -10,7 +10,7 @@
                         <h1 class="modal-title fs-5" id="menuUpdateFormModalLabel">Edit Menu/Submenu</h1>
                     </div>
                     <div class="modal-body">
-                        <input v-bind:value="data.groupId" type="hidden" class="d-none" required>
+                        <input v-bind:value="data.groupId" id="group-id-update-input" type="hidden" class="d-none" required>
                         <h6 class="mb-3 fw-bold text-primary">Grup: {{ data.groupName }}</h6>
                         <h6 class="mb-3 fw-bold text-primary">Tipe: {{ data.type }}</h6>
                         <div class="mb-3 d-none">
