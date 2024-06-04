@@ -83,6 +83,16 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
         $routes->match(['options', 'post'], 'delete', 'Admin\\RoleController::delete');
     });
 
+    // Administrator Routes
+    $routes->group('administrator', static function($routes) {
+        $routes->match(['options', 'get'], 'get', 'Admin\\AdministratorController::get');
+        $routes->match(['options', 'post'], 'datatable', 'Admin\\AdministratorController::datatable');
+        $routes->match(['options', 'post'], 'create', 'Admin\\AdministratorController::create');
+        $routes->match(['options', 'post'], 'update', 'Admin\\AdministratorController::update');
+        $routes->match(['options', 'post'], 'update-status', 'Admin\\AdministratorController::updateStatus');
+        $routes->match(['options', 'post'], 'delete', 'Admin\\AdministratorController::delete');
+    });
+
     // fallback SPA routes
     $routes->get('(:any)', 'Admin\\PublicController::singlePageApplication', ['as' => 'panel.fallback']);
 });
