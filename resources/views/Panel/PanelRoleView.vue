@@ -213,4 +213,20 @@ export default {
 
 </script>
 
-<style lang="scss"></style>
+<style lang="scss">
+
+#role-table {
+    min-width: 1050px;
+
+    .col-no {
+        width: 90px;
+    }
+    .col-action {
+        width: 110px;
+    }
+    .col-secondary {
+        width: 150px;
+    }
+}
+
+</style>
