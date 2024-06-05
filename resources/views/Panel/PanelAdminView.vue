@@ -10,7 +10,7 @@
         </section>
 
         <!-- ADMIN CREATE MODAL -->
-        <admin-create-modal ref="adminCreateModal" v-bind:roles="roles"></admin-create-modal>
+        <admin-create-modal ref="adminCreateModal" v-bind:roles="roles" v-on:formSubmitted="refreshTable"></admin-create-modal>
 
         <!-- TABLE -->
         <section ref="adminTableSection">
@@ -49,7 +49,7 @@
                                 <option value="">Tampilkan Semua</option>
                                 <option value="Aktif">Aktif</option>
                                 <option value="Nonaktif">Nonaktif</option>
-                                <option value="Nonaktif">Dibekukan</option>
+                                <option value="Dibekukan">Dibekukan</option>
                             </select>
                         </th>
                     </tr>
@@ -89,7 +89,7 @@ export default {
                     { query: '', text: 'Nama', key: 'name', class: ['col-primary'] },
                     { query: '', text: 'Username', key: 'username', class: ['col-secondary'] },
                     { query: '', text: 'Email', key: 'email', class: ['col-secondary'] },
-                    { query: '', text: 'Status Email', key: 'email_verified_at', class: ['col-secondary'] },
+                    { query: '', text: 'Status Email', key: 'email_verified_at', class: ['col-email-status'] },
                     { query: '', text: 'Superadmin', key: 'is_superadmin', class: ['col-secondary'] },
                     { query: '', text: 'Status Akun', key: 'status', class: ['col-secondary'] },
                 ]
@@ -165,11 +165,15 @@ export default {
                 data.row[i].is_superadmin = (item.is_superadmin === '1') ? `<span class="bg-success text-white py-2 px-3 rounded-pill fw-bold">Ya</span>` : `<span class="bg-warning py-2 px-3 text-white rounded-pill fw-bold">Bukan</span>`
 
                 data.row[i].emailStatusDefault = item.email_verified_at
-                data.row[i].email_verified_at = (item.email_verified_at === null) ? `<span class="bg-warning text-white py-2 px-3 rounded-pill fw-bold">Belum Verifikasi</span>` : `<span class="bg-success py-2 px-3 text-white rounded-pill fw-bold">Terverifikasi</span>`
+                console.log(item.email_verified_at)
+                data.row[i].email_verified_at = (item.email_verified_at === 'Belum Verifikasi') ? `<span class="bg-warning text-white py-2 px-3 rounded-pill fw-bold">Belum Verifikasi</span>` : `<span class="bg-success py-2 px-3 text-white rounded-pill fw-bold">Terverifikasi</span>`
             })
 
             // return
             return data
+        },
+        refreshTable: function() {
+            this.$refs.adminTable.draw()
         },
         adminCreateModalOpen: function() {
             this.$refs.adminCreateModal.$refs.modalOpenButton.click()
@@ -200,7 +204,7 @@ export default {
 <style lang="scss">
 
 #admin-table {
-    min-width: 1050px;
+    min-width: 1200px;
 
     .col-no {
         width: 90px;
@@ -210,6 +214,9 @@ export default {
     }
     .col-secondary {
         width: 130px;
+    }
+    .col-email-status, .col-primary {
+        width: 200px;
     }
 }
 

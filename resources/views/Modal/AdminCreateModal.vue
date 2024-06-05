@@ -3,7 +3,7 @@
         <button ref="modalOpenButton" v-on:click="clearForm" class="d-none" data-bs-toggle="modal" data-bs-target="#adminCreateFormModal"></button>
         <div class="modal fade" id="adminCreateFormModal" tabindex="-1" aria-labelledby="adminCreateFormModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <form v-on:submit.prevent="submitForm" method="POST" class="modal-content">
+                <form v-on:submit.prevent="submitForm" method="POST" class="modal-content" enctype="multipart/form-data">
                     <div class="modal-header bg-primary text-white">
                         <h1 class="modal-title fs-5" id="adminCreateFormModalLabel">Tambah Admin</h1>
                     </div>
@@ -22,7 +22,7 @@
                                 Email
                                 <span class="text-danger" title="Wajib Diisi">*</span>
                             </label>
-                            <input v-model="data.email" type="text" class="form-control" id="adminCreateEmail" name="email" autocomplete="off" maxlength="200" required>
+                            <input v-model="data.email" type="email" class="form-control" id="adminCreateEmail" name="email" autocomplete="off" maxlength="200" required>
                         </div>
 
                         <div class="mb-3">
@@ -83,6 +83,10 @@
 
 <script>
 
+import { panelUrl, checkAxiosError } from '@/libraries/Function'
+import axios from 'axios'
+import Swal from 'sweetalert2'
+
 export default {
     name: 'admin-create-modal',
     inject: ['showLoader', 'hideLoader'],
@@ -122,8 +126,27 @@ export default {
                 app.$refs.imagePreview.setAttribute('src', '')
             }
         },
-        submitForm: function() {
+        submitForm: function(event) {
+            let app = this
+            
+            // submit form
+            app.$refs.modalCloseButton.click()
+            app.showLoader()
 
+            // save data
+            axios.post(panelUrl('administrator/create'), new FormData(event.target))  
+                .then(function(res) {
+                    res = res.data
+                    if (res.status !== 'success') {
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        app.$emit('formSubmitted')
+                    }
+                }).catch(function(res) {
+                    checkAxiosError(res.request.status)
+                }).finally(function() {
+                    app.hideLoader()
+                })
         }
     }
 }

@@ -4,6 +4,7 @@ use App\Controllers\BaseController;
 use App\Libraries\Ghivarra\DavionShield;
 use App\Models\AdminModel;
 use App\Models\AdminRoleModel;
+use Config\Services;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class AdministratorController extends BaseController
@@ -36,7 +37,7 @@ class AdministratorController extends BaseController
     
                     } else {
                         
-                        $orm->like("admin_role.{$column['key']}", $column['query'], 'both', null, true);
+                        $orm->like("admin.{$column['key']}", $column['query'], 'both', null, true);
                     }
                 }
             }
@@ -44,6 +45,91 @@ class AdministratorController extends BaseController
         endforeach;
 
         return $orm;
+    }
+
+    //================================================================================================
+
+    public function create(): ResponseInterface
+    {
+        $permission = $this->checkPermission('adminCreate');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // get data
+        $data = [
+            'username'     => $this->request->getPost('username'),
+            'email'        => $this->request->getPost('email'),
+            'name'         => $this->request->getPost('fullname'),
+            'role'         => $this->request->getPost('admin_role_id'),
+            'password'     => $this->request->getPost('password'),
+            'confirmation' => $this->request->getPost('confirmation_password'),
+            'photo'        => $this->request->getFile('photo'),
+        ];
+
+        // validator
+        $validator = Services::validation();
+        $validator->setRules([
+            'username'     => ['label' => 'Username', 'rules' => 'required|max_length[100]|alpha_dash|is_unique[admin.username]'],
+            'email'        => ['label' => 'Email', 'rules' => 'required|max_length[100]|valid_email|is_unique[admin.email]'],
+            'name'         => ['label' => 'Nama Lengkap', 'rules' => 'required|max_length[200]'],
+            'role'         => ['label' => 'Role', 'rules' => 'required|is_not_unique[admin_role.id]'],
+            'password'     => ['label' => 'Password', 'rules' => 'required|min_length[10]'],
+            'confirmation' => ['label' => 'Konfirmasi Password', 'rules' => 'required|matches[password]'],
+        ]);
+
+        if (!$validator->run($data))
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => implode(', ', $validator->getErrors()),
+            ]);
+        }
+
+        // check and validate if photo is uploaded
+        if ($data['photo']->isValid())
+        {
+            $validImage = $this->validateData([], [
+                'photo' => ['label' => 'Foto', 'rules' => 'uploaded[photo]|max_size[photo,4096]|is_image[photo]|mime_in[photo,image/png,image/gif,image/jpeg]']
+            ]);
+
+            if (!$validImage)
+            {
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'message' => implode(', ', $validator->getErrors()),
+                ]);
+            }
+        }
+
+        // save
+        $savedData = [
+            'username'      => $data['username'],
+            'email'         => $data['email'],
+            'name'          => $data['name'],
+            'admin_role_id' => $data['role'],
+            'password'      => password_hash($data['password'], PASSWORD_DEFAULT),
+            'photo'         => NULL
+        ];
+
+        // if uploaded
+        if ($data['photo']->isValid())
+        {
+            $savedData['photo'] = $data['photo']->getRandomName();
+            $data['photo']->move(WRITEPATH . 'app/images/admin', $savedData['photo']);
+        }
+
+        // save
+        $admin = new AdminModel();
+        $admin->save($savedData);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Akun anda berhasil diperbaharui',
+        ]);
     }
 
     //================================================================================================
