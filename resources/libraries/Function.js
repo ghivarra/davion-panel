@@ -119,5 +119,12 @@ function parents(child, parent) {
     return parentsElement
 }
 
+/**
+ * @param {object} reactiveElement
+ */
+function restructurized(obj) {
+    return {... obj}
+}
+
 // export functions
-export { baseUrl, checkAxiosError, generateBreadcrumb, imageUrl, loginUrl, panelUrl, parents }
+export { baseUrl, checkAxiosError, generateBreadcrumb, imageUrl, loginUrl, panelUrl, parents, restructurized }

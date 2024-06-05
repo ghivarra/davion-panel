@@ -154,7 +154,7 @@
 
 <script>
 
-import { panelUrl, checkAxiosError } from '@/libraries/Function'
+import { panelUrl, checkAxiosError, restructurized } from '@/libraries/Function'
 import VueTable from '@/libraries/Ghivarra/VueTable/VueTable.vue'
 import axios from 'axios'
 import Swal from 'sweetalert2'
@@ -250,30 +250,14 @@ export default {
             return data
         },
         editData: function(key) {
-            let app = this
-            let item = app.tableData[key]
+            let item = restructurized(this.tableData[key])
 
-            // show loader
-            app.showLoader()
-
-            // get single data
-            axios.get(panelUrl(`module/get?alias=${item.alias}`))
-                .then(function(res) {
-                    res = res.data
-                    app.hideLoader()
-                    if (res.status !== 'success') {
-                        Swal.fire('Whoopss!!', res.message, 'warning')
-                    } else {
-                        app.updateData.id = parseInt(res.data.id)
-                        app.updateData.group = res.data.group
-                        app.updateData.alias = res.data.alias
-                        app.updateData.name = res.data.name
-                        app.updateData.status = res.data.status
-                        app.$refs.editFormButton.click()
-                    }
-                }).catch(function(res) {
-                    checkAxiosError(res.request.status)
-                })
+            this.updateData.id = parseInt(item.id)
+            this.updateData.group = item.groupDefault
+            this.updateData.alias = item.alias
+            this.updateData.name = item.name
+            this.updateData.status = item.statusDefault
+            this.$refs.editFormButton.click()
         },
         create: function(e) {
             let form = e.target
