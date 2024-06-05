@@ -92,8 +92,8 @@ export default {
                 let btnText = (item.status === 'Aktif') ? 'Nonaktifkan' : 'Aktifkan'
                 let btnTextColor = (item.status === 'Aktif') ? 'text-warning' : 'text-success'
                 data.row[i].action = `<div class="dropdown">
-                                        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="fa-solid fa-bars me-1"></i>
+                                        <button class="btn btn-secondary dropdown-toggle table-dropdown" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa-solid fa-list me-1"></i>
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li>
@@ -217,11 +217,8 @@ export default {
 #role-table {
     min-width: 700px;
 
-    .col-no {
+    .col-no, .col-action {
         width: 50px;
-    }
-    .col-action {
-        width: 70px;
     }
     .col-secondary {
         width: 150px;
