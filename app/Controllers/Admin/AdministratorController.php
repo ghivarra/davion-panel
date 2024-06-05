@@ -3,6 +3,7 @@
 use App\Controllers\BaseController;
 use App\Libraries\Ghivarra\DavionShield;
 use App\Models\AdminModel;
+use App\Models\AdminRoleModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class AdministratorController extends BaseController
@@ -119,6 +120,28 @@ class AdministratorController extends BaseController
                 'recordsFiltered' => $filteredTotal,
                 'row'             => numbering($data, $offset)
             ]
+        ]);
+    }
+
+    //================================================================================================
+
+    public function getRoleList(): ResponseInterface
+    {
+        $createPermission = $this->checkPermission('adminCreate');
+        $updatePermission = $this->checkPermission('adminUpdate');
+        
+        if (!$createPermission && !$updatePermission)
+        {
+            return cannotAccessModule();
+        }
+
+        $orm = new AdminRoleModel();
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => $orm->select(['id', 'name'])->find()
         ]);
     }
 
