@@ -61,8 +61,8 @@ class AdministratorController extends BaseController
         // get data
         $data = [
             'username'     => $this->request->getPost('username'),
-            'email'        => $this->request->getPost('email'),
-            'name'         => $this->request->getPost('fullname'),
+            'email'        => $this->request->getPost('admin_email'),
+            'name'         => $this->request->getPost('admin_fullname'),
             'role'         => $this->request->getPost('admin_role_id'),
             'password'     => $this->request->getPost('password'),
             'confirmation' => $this->request->getPost('confirmation_password'),

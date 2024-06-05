@@ -22,7 +22,7 @@
                                 Email
                                 <span class="text-danger" title="Wajib Diisi">*</span>
                             </label>
-                            <input v-model="data.email" type="email" class="form-control" id="adminCreateEmail" name="email" autocomplete="off" maxlength="200" required>
+                            <input v-model="data.email" type="email" class="form-control" id="adminCreateEmail" name="admin_email" autocomplete="off" maxlength="200" required>
                         </div>
 
                         <div class="mb-3">
@@ -30,7 +30,7 @@
                                 Nama Lengkap
                                 <span class="text-danger" title="Wajib Diisi">*</span>
                             </label>
-                            <input v-model="data.name" type="text" class="form-control" id="adminCreateFullname" name="fullname" autocomplete="off" maxlength="200" required>
+                            <input v-model="data.name" type="text" class="form-control" id="adminCreateFullname" name="admin_fullname" autocomplete="off" maxlength="200" required>
                         </div>
 
                         <div class="mb-3">
@@ -48,7 +48,13 @@
                                 Password
                                 <span class="text-danger" title="Wajib Diisi">*</span>
                             </label>
-                            <input v-model="data.password" type="password" class="form-control" id="adminCreatePassword" name="password" autocomplete="new-password" required>
+                            <div class="position-relative">
+                                <input v-model="data.password" v-bind:type="passwordInputType" class="form-control" id="adminCreatePassword" name="password" autocomplete="new-password" required>
+                                <button v-on:click.prevent="passwordToggle('passwordInputType')" type="button" class="btn btn-link text-secondary password-toggle">
+                                    <font-awesome v-if="passwordInputType === 'password'" icon="fas fa-eye"></font-awesome>
+                                    <font-awesome v-if="passwordInputType === 'text'" icon="fas fa-eye-slash"></font-awesome>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -56,7 +62,13 @@
                                 Konfirmasi Password
                                 <span class="text-danger" title="Wajib Diisi">*</span>
                             </label>
-                            <input v-model="data.passwordConfirmation" type="password" class="form-control" id="adminCreatePasswordConfirmation" name="confirmation_password" autocomplete="new-password" required>
+                            <div class="position-relative">
+                                <input v-model="data.passwordConfirmation" v-bind:type="passwordConfInputType" class="form-control" id="adminCreatePasswordConfirmation" name="confirmation_password" autocomplete="new-password" required>
+                                <button v-on:click.prevent="passwordToggle('passwordConfInputType')" type="button" class="btn btn-link text-secondary password-toggle">
+                                    <font-awesome v-show="passwordConfInputType === 'password'" icon="fas fa-eye"></font-awesome>
+                                    <font-awesome v-show="passwordConfInputType === 'text'" icon="fas fa-eye-slash"></font-awesome>
+                                </button>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -102,6 +114,8 @@ export default {
                 adminRoleId: '1'
             },
             showImagePreview: false,
+            passwordInputType: 'password',
+            passwordConfInputType: 'password'
         }
     },
     methods: {
@@ -125,6 +139,10 @@ export default {
                 app.showImagePreview = false
                 app.$refs.imagePreview.setAttribute('src', '')
             }
+        },
+        passwordToggle: function(key) {
+            let type = this[key]
+            this[key] = (type === 'text') ? 'password' : 'text'
         },
         submitForm: function(event) {
             let app = this
@@ -157,6 +175,12 @@ export default {
 
 .admin-image-preview {
     max-width: 200px;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
 }
 
 </style>

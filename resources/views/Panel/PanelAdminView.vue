@@ -31,25 +31,25 @@
                             <input v-model="table.columns[4].query" name="searchInput3" type="text" class="form-control">
                         </th>
                         <th>
-                            <select v-model="table.columns[5].query" name="searchInput4" class="form-select">
+                            <select v-model="table.columns[7].query" name="searchInput6" class="form-select">
+                                <option value="">Tampilkan Semua</option>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Nonaktif">Nonaktif</option>
+                                <option value="Dibekukan">Dibekukan</option>
+                            </select>
+                        </th>
+                        <th>
+                            <select v-model="table.columns[6].query" name="searchInput4" class="form-select">
                                 <option value="">Tampilkan Semua</option>
                                 <option value="1">Terverifikasi</option>
                                 <option value="0">Belum Verifikasi</option>
                             </select>
                         </th>
                         <th>
-                            <select v-model="table.columns[6].query" name="searchInput5" class="form-select">
+                            <select v-model="table.columns[7].query" name="searchInput5" class="form-select">
                                 <option value="">Tampilkan Semua</option>
                                 <option value="1">Ya</option>
                                 <option value="0">Bukan</option>
-                            </select>
-                        </th>
-                        <th>
-                            <select v-model="table.columns[7].query" name="searchInput6" class="form-select">
-                                <option value="">Tampilkan Semua</option>
-                                <option value="Aktif">Aktif</option>
-                                <option value="Nonaktif">Nonaktif</option>
-                                <option value="Dibekukan">Dibekukan</option>
                             </select>
                         </th>
                     </tr>
@@ -89,9 +89,9 @@ export default {
                     { query: '', text: 'Nama', key: 'name', class: ['col-primary'] },
                     { query: '', text: 'Username', key: 'username', class: ['col-secondary'] },
                     { query: '', text: 'Email', key: 'email', class: ['col-secondary'] },
+                    { query: '', text: 'Status', key: 'status', class: ['col-secondary'] },
                     { query: '', text: 'Status Email', key: 'email_verified_at', class: ['col-email-status'] },
                     { query: '', text: 'Superadmin', key: 'is_superadmin', class: ['col-secondary'] },
-                    { query: '', text: 'Status Akun', key: 'status', class: ['col-secondary'] },
                 ]
             },
             tableData: [],
@@ -203,10 +203,10 @@ export default {
 <style lang="scss">
 
 #admin-table {
-    min-width: 1200px;
+    min-width: 1150px;
 
     .col-no {
-        width: 90px;
+        width: 50px;
     }
     .col-action {
         width: 110px;

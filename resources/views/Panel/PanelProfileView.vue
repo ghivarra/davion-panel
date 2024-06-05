@@ -3,7 +3,7 @@
         <slot name="breadcrumb"></slot>
         
         <!-- PROFILE -->
-        <section class="panel-profile w-100 overflow-hidden rounded-2 panel-box">
+        <section class="panel-profile w-100 overflow-hidden rounded-2 panel-box mb-4">
             <div class="panel-profile-background pb-2">
                 <h2 class="h3 fw-bold text-white">{{ admin.name }}</h2>
             </div>
@@ -19,6 +19,16 @@
                         {{ admin.email }}
                     </p>
                 </div>
+            </div>
+        </section>
+
+        <!-- SESSIONS -->
+        <section>
+            <header class="panel-box-header rounded-2 panel-box">
+                Sesi Login
+            </header>
+            <div class="p-3">
+
             </div>
         </section>
 
