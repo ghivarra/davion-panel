@@ -39,7 +39,7 @@ class Toolbar extends BaseConfig
         Logs::class,
         Views::class,
         // \CodeIgniter\Debug\Toolbar\Collectors\Cache::class,
-        Files::class,
+        // Files::class,
         Routes::class,
         Events::class,
     ];
