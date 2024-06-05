@@ -165,7 +165,6 @@ export default {
                 data.row[i].is_superadmin = (item.is_superadmin === '1') ? `<span class="bg-success text-white py-2 px-3 rounded-pill fw-bold">Ya</span>` : `<span class="bg-warning py-2 px-3 text-white rounded-pill fw-bold">Bukan</span>`
 
                 data.row[i].emailStatusDefault = item.email_verified_at
-                console.log(item.email_verified_at)
                 data.row[i].email_verified_at = (item.email_verified_at === 'Belum Verifikasi') ? `<span class="bg-warning text-white py-2 px-3 rounded-pill fw-bold">Belum Verifikasi</span>` : `<span class="bg-success py-2 px-3 text-white rounded-pill fw-bold">Terverifikasi</span>`
             })
 
