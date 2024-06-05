@@ -11,12 +11,18 @@
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="groupUpdateName" class="form-label fw-bold">Nama</label>
+                            <label for="groupUpdateName" class="form-label fw-bold">
+                                Nama
+                                <span class="text-danger" title="Wajib Diisi">*</span>
+                            </label>
                             <input v-model="data.name" type="text" class="form-control" id="groupUpdateName" name="name"
                                 maxlength="200" autocomplete="off" required>
                         </div>
                         <div class="mb-3">
-                            <label for="groupUpdateStatus" class="form-label fw-bold">Status</label>
+                            <label for="groupUpdateStatus" class="form-label fw-bold">
+                                Status
+                                <span class="text-danger" title="Wajib Diisi">*</span>
+                            </label>
                             <select v-model="data.status" name="status" id="groupUpdateStatus" class="form-select"
                                 required>
                                 <option value="Aktif">Aktif</option>

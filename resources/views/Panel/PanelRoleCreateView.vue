@@ -6,7 +6,10 @@
         <section class="panel-box bg-white mb-4">
             <form v-on:submit.prevent="submitForm" class="p-3">
                 <div class="mb-3">
-                    <label for="roleName" class="form-label fw-bold">Nama Role</label>
+                    <label for="roleName" class="form-label fw-bold">
+                        Nama Role
+                        <span class="text-danger" title="Wajib Diisi">*</span>
+                    </label>
                     <input v-model="data.name" name="name" id="roleName" type="text" class="form-control" autocomplete="off" required>
                 </div>
                 <div class="mb-3">

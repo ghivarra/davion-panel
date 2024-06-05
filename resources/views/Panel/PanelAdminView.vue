@@ -2,6 +2,16 @@
     <main role="main" class="mb-4">
         <slot name="breadcrumb"></slot>
 
+        <section id="create-table" class="mb-4">
+            <button v-on:click="adminCreateModalOpen" type="button" class="btn btn-primary">
+                <font-awesome icon="fas fa-plus" class="me-2"></font-awesome>
+                Tambah Admin
+            </button>
+        </section>
+
+        <!-- ADMIN CREATE MODAL -->
+        <admin-create-modal ref="adminCreateModal" v-bind:roles="roles"></admin-create-modal>
+
         <!-- TABLE -->
         <section ref="adminTableSection">
             <vue-table id="admin-table" ref="adminTable" v-bind:defaultLength="25" v-bind:lengthOptions="[10,25,50]"
@@ -52,14 +62,18 @@
 
 <script>
 
-import { panelUrl } from '@/libraries/Function'
+import { panelUrl, checkAxiosError } from '@/libraries/Function'
 import VueTable from '@/libraries/Ghivarra/VueTable/VueTable.vue'
+import AdminCreateModal from '@/views/Modal/AdminCreateModal.vue'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default {
     name: 'panel-admin-view',
     inject: ['showLoader', 'hideLoader'],
     components: {
-        'vue-table': VueTable
+        'vue-table': VueTable,
+        'admin-create-modal': AdminCreateModal
     },
     data: function() {
         return {
@@ -81,6 +95,7 @@ export default {
                 ]
             },
             tableData: [],
+            roles: []
         }
     },
     methods: {
@@ -102,7 +117,7 @@ export default {
                                         <ul class="dropdown-menu">
                                             <li>
                                                 <button data-key="${i}" class="check-button dropdown-item" type="button" title="Cek Sesi Login">
-                                                    <i class="fa-solid fa-clock-rotate-left me-1 text-primary"></i>
+                                                    <i class="fa-solid fa-clock-rotate-left me-1 text-dark"></i>
                                                     Sesi Login
                                                 </button>
                                             </li>
@@ -156,7 +171,28 @@ export default {
             // return
             return data
         },
+        adminCreateModalOpen: function() {
+            this.$refs.adminCreateModal.$refs.modalOpenButton.click()
+        }
     },
+    mounted: function() {
+        let app = this
+
+        // get roles
+        axios.get(panelUrl('administrator/get-role'))
+            .then(function(res) {
+                res = res.data
+                if (res.status !== 'success') {
+                    Swal.fire('Whoopss!!', res.message, 'warning').then(function() {
+                        window.location.reload()
+                    })
+                } else {
+                    app.roles = res.data
+                }
+            }).catch(function(res) {
+                checkAxiosError(res.request.status)
+            })
+    }
 }
 
 </script>
@@ -173,7 +209,7 @@ export default {
         width: 110px;
     }
     .col-secondary {
-        width: 110px;
+        width: 130px;
     }
 }
 

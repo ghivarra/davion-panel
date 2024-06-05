@@ -29,22 +29,34 @@
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label for="menuCreateLabel" class="form-label fw-bold">Label</label>
+                            <label for="menuCreateLabel" class="form-label fw-bold">
+                                Label
+                                <span class="text-danger" title="Wajib Diisi">*</span>
+                            </label>
                             <input v-model="data.title" type="text" class="form-control" id="menuCreateLabel"
                                 name="title" maxlength="200" required>
                         </div>
                         <div v-if="data.type !== 'Parent'" class="mb-3">
-                            <label for="menuCreateRouterName" class="form-label fw-bold">Nama Routes</label>
+                            <label for="menuCreateRouterName" class="form-label fw-bold">
+                                Nama Routes
+                                <span class="text-danger" title="Wajib Diisi">*</span>
+                            </label>
                             <input v-model="data.router_name" type="text" class="form-control" id="menuCreateRouterName"
                                 name="router_name" maxlength="200" required>
                         </div>
                         <div v-if="data.type !== 'Child'" class="mb-3">
-                            <label for="menuCreateIcon" class="form-label fw-bold">Icon</label>
+                            <label for="menuCreateIcon" class="form-label fw-bold">
+                                Icon
+                                <span class="text-danger" title="Wajib Diisi">*</span>
+                            </label>
                             <input v-model="data.icon" type="text" class="form-control" id="menuCreateIcon" name="icon"
                                 maxlength="100" required>
                         </div>
                         <div class="mb-3">
-                            <label for="menuCreateStatus" class="form-label fw-bold">Status</label>
+                            <label for="menuCreateStatus" class="form-label fw-bold">
+                                Status
+                                <span class="text-danger" title="Wajib Diisi">*</span>
+                            </label>
                             <select v-model="data.status" name="status" id="menuCreateStatus" class="form-select"
                                 required>
                                 <option value="Aktif">Aktif</option>

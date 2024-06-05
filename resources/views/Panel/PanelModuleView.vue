@@ -16,7 +16,10 @@
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="moduleGroup" class="form-label fw-bold">Grup</label>
+                                <label for="moduleGroup" class="form-label fw-bold">
+                                    Grup
+                                    <span class="text-danger" title="Wajib Diisi">*</span>
+                                </label>
                                 <input list="groupList" type="text" class="form-control" id="moduleGroup" name="group" maxlength="200" required>
                                 <datalist id="groupList">
                                     <option v-for="(item, n) in groupList" v-bind:key="n" v-bind:value="item">
@@ -25,15 +28,24 @@
                                 </datalist>
                             </div>
                             <div class="mb-3">
-                                <label for="moduleAlias" class="form-label fw-bold">Alias</label>
+                                <label for="moduleAlias" class="form-label fw-bold">
+                                    Alias
+                                    <span class="text-danger" title="Wajib Diisi">*</span>
+                                </label>
                                 <input type="text" class="form-control" id="moduleAlias" name="alias" maxlength="100" required>
                             </div>
                             <div class="mb-3">
-                                <label for="moduleName" class="form-label fw-bold">Nama</label>
+                                <label for="moduleName" class="form-label fw-bold">
+                                    Nama
+                                    <span class="text-danger" title="Wajib Diisi">*</span>
+                                </label>
                                 <input type="text" class="form-control" id="moduleName" name="name" maxlength="200" autocomplete="off" required>
                             </div>
                             <div class="mb-3">
-                                <label for="moduleStatus" class="form-label fw-bold">Status</label>
+                                <label for="moduleStatus" class="form-label fw-bold">
+                                    Status
+                                    <span class="text-danger" title="Wajib Diisi">*</span>
+                                </label>
                                 <select name="status" id="moduleStatus" class="form-select" required>
                                     <option value="Aktif">Aktif</option>
                                     <option value="Nonaktif">Nonaktif</option>
@@ -61,7 +73,10 @@
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <label for="moduleGroup" class="form-label fw-bold">Grup</label>
+                                <label for="moduleGroup" class="form-label fw-bold">
+                                    Grup
+                                    <span class="text-danger" title="Wajib Diisi">*</span>
+                                </label>
                                 <input v-model="updateData.group" list="groupList" type="text" class="form-control"
                                     id="moduleGroup" name="group" maxlength="200" required>
                                 <datalist id="groupList">
@@ -71,15 +86,24 @@
                                 </datalist>
                             </div>
                             <div class="mb-3">
-                                <label for="moduleAlias" class="form-label fw-bold">Alias</label>
+                                <label for="moduleAlias" class="form-label fw-bold">
+                                    Alias
+                                    <span class="text-danger" title="Wajib Diisi">*</span>
+                                </label>
                                 <input v-model="updateData.alias" type="text" class="form-control" id="moduleAlias" name="alias" maxlength="100" required>
                             </div>
                             <div class="mb-3">
-                                <label for="moduleName" class="form-label fw-bold">Nama</label>
+                                <label for="moduleName" class="form-label fw-bold">
+                                    Nama
+                                    <span class="text-danger" title="Wajib Diisi">*</span>
+                                </label>
                                 <input v-model="updateData.name" type="text" class="form-control" id="moduleName" name="name" maxlength="200" autocomplete="off" required>
                             </div>
                             <div class="mb-3">
-                                <label for="moduleStatus" class="form-label fw-bold">Status</label>
+                                <label for="moduleStatus" class="form-label fw-bold">
+                                    Status
+                                    <span class="text-danger" title="Wajib Diisi">*</span>
+                                </label>
                                 <select v-model="updateData.status" name="status" id="moduleStatus" class="form-select"
                                     required>
                                     <option value="Aktif">Aktif</option>
