@@ -114,7 +114,9 @@ class DavionShield
         $accountId         = $accountData['id'];
 
         // check if session exist
-        $session = $adminSessionModel->select('id')->where('name', $this->session->session_id)->first();
+        $session = $adminSessionModel->select(['id', 'useragent', 'ip_address'])
+                                     ->where('name', $this->session->session_id)
+                                     ->first();
 
         if (empty($session))
         {
@@ -139,6 +141,20 @@ class DavionShield
 
         // check request type
         $request = Services::request();
+
+        // update user agent
+        $userAgent = json_encode($this->parseUserAgent($request));
+        $ipAddress = $request->getIPAddress();
+
+        // update if different
+        if ($session['useragent'] !== $userAgent OR $session['ip_address'] !== $ipAddress)
+        {
+            $adminSessionModel->save([
+                'id'         => $session['id'],
+                'useragent'  => $userAgent,
+                'ip_address' => $ipAddress
+            ]);
+        }
 
         // only regenerate on non ajax request to prevent session racing
         if (!$request->isAJAX())
