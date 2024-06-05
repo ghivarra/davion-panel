@@ -38,49 +38,53 @@
         <!-- Vue Table Body -->
         <div class="ghivarra-vue-table-body">
 
-            <table v-bind:id="id" class="ghivarra-vue-table">
+            <div class="ghivarra-vue-table-overflow-wrapper">
 
-                <thead>
-                    <slot name="header"></slot>
-                    <tr>
-                        <th v-for="(item, key) in columns" v-bind:key="key"
-                            v-on:click.prevent="sort(item, (item.key === orderColumn) ? orderDir : 'none')"
-                            v-bind:class="(typeof item.sortable === 'undefined' || item.sortable === true) ? 'sortable' : '' + item.class.join(' ')"
-                            v-bind:data-sort="(item.key === orderColumn) ? orderDir : 'none'">
-                            {{ item.text }}
-                        </th>
-                    </tr>
-                </thead>
+                <table v-bind:id="id" class="ghivarra-vue-table">
 
-                <tbody v-if="status === 'loading'">
-                    <tr>
-                        <td v-bind:colspan="columns.length">{{ loadingText }}</td>
-                    </tr>
-                </tbody>
+                    <thead>
+                        <slot name="header"></slot>
+                        <tr>
+                            <th v-for="(item, key) in columns" v-bind:key="key"
+                                v-on:click.prevent="sort(item, (item.key === orderColumn) ? orderDir : 'none')"
+                                v-bind:class="(typeof item.sortable === 'undefined' || item.sortable === true) ? 'sortable' : '' + item.class.join(' ')"
+                                v-bind:data-sort="(item.key === orderColumn) ? orderDir : 'none'">
+                                {{ item.text }}
+                            </th>
+                        </tr>
+                    </thead>
 
-                <tbody v-if="status === 'loaded'">
-                    <tr v-if="response.row.length < 1">
-                        <td v-bind:colspan="columns.length">{{ emptyText }}</td>
-                    </tr>
-                    <tr v-else v-for="(item, n) in response.row" v-bind:key="n">
-                        <td v-for="(column, b) in columns" v-bind:key="b" v-bind:class="column.class"
-                            v-html="item[column.key]"></td>
-                    </tr>
-                </tbody>
+                    <tbody v-if="status === 'loading'">
+                        <tr>
+                            <td v-bind:colspan="columns.length">{{ loadingText }}</td>
+                        </tr>
+                    </tbody>
 
-                <tfoot>
-                    <tr>
-                        <th v-for="(item, key) in columns" v-bind:key="key"
-                            v-on:click.prevent="sort(item, (item.key === orderColumn) ? orderDir : 'none')"
-                            v-bind:class="(typeof item.sortable === 'undefined' || item.sortable === true) ? 'sortable' : '' + item.class.join(' ')"
-                            v-bind:data-key="item.key"
-                            v-bind:data-sort="(item.key === orderColumn) ? orderDir : 'none'">
-                            {{ item.text }}
-                        </th>
-                    </tr>
-                </tfoot>
+                    <tbody v-if="status === 'loaded'">
+                        <tr v-if="response.row.length < 1">
+                            <td v-bind:colspan="columns.length">{{ emptyText }}</td>
+                        </tr>
+                        <tr v-else v-for="(item, n) in response.row" v-bind:key="n">
+                            <td v-for="(column, b) in columns" v-bind:key="b" v-bind:class="column.class"
+                                v-html="item[column.key]"></td>
+                        </tr>
+                    </tbody>
 
-            </table>
+                    <tfoot>
+                        <tr>
+                            <th v-for="(item, key) in columns" v-bind:key="key"
+                                v-on:click.prevent="sort(item, (item.key === orderColumn) ? orderDir : 'none')"
+                                v-bind:class="(typeof item.sortable === 'undefined' || item.sortable === true) ? 'sortable' : '' + item.class.join(' ')"
+                                v-bind:data-key="item.key"
+                                v-bind:data-sort="(item.key === orderColumn) ? orderDir : 'none'">
+                                {{ item.text }}
+                            </th>
+                        </tr>
+                    </tfoot>
+
+                </table>
+
+            </div>
 
         </div>
 

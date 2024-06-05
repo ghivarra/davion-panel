@@ -1,5 +1,5 @@
 .ghivarra-vue-table {
-    border: collapse;
+    border-collapse: collapse;
     border-spacing: 0;
     width: 100%;
 
@@ -10,9 +10,18 @@
     }
 
     &-body {
-        overflow-x: auto;
         max-width: 100%;
         padding: 2rem 0;
+        overflow-y: visible;
+    }
+
+    &-overflow-wrapper {
+        overflow-x: scroll;
+        overflow-y: hidden;
+
+        .dropdown {
+            position: inherit;
+        }
     }
 
     thead,
