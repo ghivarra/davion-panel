@@ -112,19 +112,24 @@ export default {
                 data.row[i].action = `<div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="fa-solid fa-bars me-1"></i>
-                                            Aksi
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li>
-                                                <button data-key="${i}" class="check-button dropdown-item" type="button" title="Cek Sesi Login">
-                                                    <i class="fa-solid fa-clock-rotate-left me-1 text-dark"></i>
-                                                    Sesi Login
+                                                <button data-key="${i}" class="detail-button dropdown-item" type="button" title="Cek Sesi Login">
+                                                    <i class="fa-solid fa-circle-info me-1 text-primary"></i>
+                                                    Detail
                                                 </button>
                                             </li>
                                             <li>
                                                 <button data-key="${i}" class="edit-button dropdown-item" type="button" title="Edit Data">
                                                     <i class="fa-solid fa-pen-to-square me-1 text-primary"></i>
                                                     Edit
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button data-key="${i}" class="check-session-button dropdown-item" type="button" title="Cek Sesi Login">
+                                                    <i class="fa-solid fa-clock-rotate-left me-1 text-primary"></i>
+                                                    Sesi Login
                                                 </button>
                                             </li>
                                             <li>
@@ -209,7 +214,7 @@ export default {
         width: 50px;
     }
     .col-action {
-        width: 110px;
+        width: 70px;
     }
     .col-secondary {
         width: 130px;

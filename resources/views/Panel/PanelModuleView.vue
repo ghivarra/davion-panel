@@ -219,7 +219,6 @@ export default {
                 data.row[i].action = `<div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="fa-solid fa-bars me-1"></i>
-                                            Aksi
                                         </button>
                                         <ul class="dropdown-menu">
                                             <li>
@@ -419,10 +418,10 @@ export default {
     min-width: 800px;
     width: 100%;
     .col-no {
-        width: 90px;
+        width: 50px;
     }
     .col-action {
-        width: 110px;
+        width: 70px;
     }
     .col-secondary {
         width: 160px;
