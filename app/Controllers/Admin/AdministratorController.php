@@ -16,18 +16,17 @@ class AdministratorController extends BaseController
             if ($column['key'] === 'status' OR $column['key'] === 'name')
             {
                 $column['key'] = "admin.{$column['key']}";
+
+            } elseif ($column['key'] === 'admin_role_name') {
+
+                $column['key'] = 'admin_role_id';
             }
 
             if (strlen($column['query']) > 0)
             {
-                if ($column['key'] === 'admin.status' OR $column['key'] === 'is_superadmin')
+                if ($column['key'] === 'admin.status' OR $column['key'] === 'admin_role_id')
                 {
                     $orm->where($column['key'], $column['query']);
-
-                } elseif ($column['key'] === 'email_verified_at') {
-
-                    $query = empty($column['query']) ? 'IS NULL' : 'IS NOT NULL';
-                    $orm->where("{$column['key']} {$query}");
 
                 } else {
 
@@ -153,7 +152,7 @@ class AdministratorController extends BaseController
         $offset  = intval($this->request->getPost('offset'));
         $order   = $this->request->getPost('order');
         $columns = $this->request->getPost('columns');
-        $select  = ['admin.id', 'admin.name', 'username', 'is_superadmin', 'admin.status', 'email', 'email_verified_at', 'admin_role_id', 'photo'];
+        $select  = ['admin.id', 'admin.name', 'username', 'is_superadmin', 'admin.status', 'email', 'email_verified_at', 'admin_role_id', 'admin_role.name as admin_role_name', 'photo'];
 
         // set order column and dir
         $defaultOrderCol = 'name';

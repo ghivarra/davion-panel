@@ -31,25 +31,19 @@
                             <input v-model="table.columns[4].query" name="searchInput3" type="text" class="form-control">
                         </th>
                         <th>
-                            <select v-model="table.columns[7].query" name="searchInput6" class="form-select">
+                            <select v-model="table.columns[5].query" name="searchInput4" class="form-select">
+                                <option value="">Tampilkan Semua</option>
+                                <option v-for="(role, n) in roles" v-bind:key="n" v-bind:value="role.id">
+                                    {{ role.name }}
+                                </option>
+                            </select>
+                        </th>
+                        <th>
+                            <select v-model="table.columns[6].query" name="searchInput6" class="form-select">
                                 <option value="">Tampilkan Semua</option>
                                 <option value="Aktif">Aktif</option>
                                 <option value="Nonaktif">Nonaktif</option>
                                 <option value="Dibekukan">Dibekukan</option>
-                            </select>
-                        </th>
-                        <th>
-                            <select v-model="table.columns[6].query" name="searchInput4" class="form-select">
-                                <option value="">Tampilkan Semua</option>
-                                <option value="1">Terverifikasi</option>
-                                <option value="0">Belum Verifikasi</option>
-                            </select>
-                        </th>
-                        <th>
-                            <select v-model="table.columns[7].query" name="searchInput5" class="form-select">
-                                <option value="">Tampilkan Semua</option>
-                                <option value="1">Ya</option>
-                                <option value="0">Bukan</option>
                             </select>
                         </th>
                     </tr>
@@ -89,9 +83,8 @@ export default {
                     { query: '', text: 'Nama', key: 'name', class: ['col-primary'] },
                     { query: '', text: 'Username', key: 'username', class: ['col-secondary'] },
                     { query: '', text: 'Email', key: 'email', class: ['col-secondary'] },
+                    { query: '', text: 'Role', key: 'admin_role_name', class: ['col-email-status'] },
                     { query: '', text: 'Status', key: 'status', class: ['col-secondary'] },
-                    { query: '', text: 'Status Email', key: 'email_verified_at', class: ['col-email-status'] },
-                    { query: '', text: 'Superadmin', key: 'is_superadmin', class: ['col-secondary'] },
                 ]
             },
             tableData: [],
@@ -168,9 +161,6 @@ export default {
 
                 data.row[i].superadminDefault = item.is_superadmin
                 data.row[i].is_superadmin = (item.is_superadmin === '1') ? `<span class="bg-success text-white py-2 px-3 rounded-pill fw-bold">Ya</span>` : `<span class="bg-warning py-2 px-3 text-white rounded-pill fw-bold">Bukan</span>`
-
-                data.row[i].emailStatusDefault = item.email_verified_at
-                data.row[i].email_verified_at = (item.email_verified_at === 'Belum Verifikasi') ? `<span class="bg-warning text-white py-2 px-3 rounded-pill fw-bold">Belum Verifikasi</span>` : `<span class="bg-success py-2 px-3 text-white rounded-pill fw-bold">Terverifikasi</span>`
             })
 
             // return
@@ -208,7 +198,7 @@ export default {
 <style lang="scss">
 
 #admin-table {
-    min-width: 1150px;
+    min-width: 900px;
 
     .col-no, .col-action {
         width: 50px;
