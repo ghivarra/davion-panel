@@ -1,11 +1,12 @@
 <?php namespace App\Controllers\Admin;
 
-use App\Controllers\BaseController;
-use App\Libraries\Ghivarra\DavionShield;
 use App\Models\AdminModel;
 use App\Models\AdminRoleModel;
-use Config\Services;
+use App\Controllers\BaseController;
+use App\Libraries\Ghivarra\DavionShield;
+use CodeIgniter\Database\RawSql;
 use CodeIgniter\HTTP\ResponseInterface;
+use Config\Services;
 
 class AdministratorController extends BaseController
 {
@@ -210,6 +211,56 @@ class AdministratorController extends BaseController
 
     //================================================================================================
 
+    public function delete(): ResponseInterface
+    {
+        $permission = $this->checkPermission('adminDelete');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // validate data
+        $rules = [
+            'id' => ['label' => 'Admin', 'rules' => 'required|numeric|is_not_unique[admin.id]']
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // delete data
+        $orm = new AdminModel();
+
+        // change unique alias, we use rawsql
+        $updatedEmail    = new RawSql("CONCAT(admin.email, '--deleted-at-". time() ."')");
+        $updatedUsername = new RawSql("CONCAT(admin.username, '--deleted-at-". time() ."')");
+
+        // update
+        $orm->set('email', $updatedEmail, false);
+        $orm->set('username', $updatedUsername, false);
+        $orm->where('id', $data['id'])->update();
+
+        // delete
+        $orm->delete($data['id']);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil dihapus'
+        ]);
+    }
+
+    //================================================================================================
+
     public function getRoleList(): ResponseInterface
     {
         $createPermission = $this->checkPermission('adminCreate');
@@ -227,6 +278,46 @@ class AdministratorController extends BaseController
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
             'data'    => $orm->select(['id', 'name'])->find()
+        ]);
+    }
+
+    //================================================================================================
+
+    public function updateStatus(): ResponseInterface
+    {
+        $permission = $this->checkPermission('adminUpdate');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // validate data
+        $rules = [
+            'id'     => ['label' => 'Admin', 'rules' => 'required|numeric|is_not_unique[admin.id]'],
+            'status' => ['label' => 'Status', 'rules' => 'required|in_list[Aktif,Nonaktif]'],
+        ];
+
+        $data = $this->request->getPost(array_keys($rules));
+
+        if (!$this->validateData($data, $rules))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak tervalidasi',
+                'data'    => $this->validator->getErrors()
+            ]);
+        }
+
+        // save data
+        $orm = new AdminModel();
+        $orm->save($data);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Status data berhasil diperbaharui'
         ]);
     }
 

@@ -187,6 +187,19 @@ export default {
             },
             updateAdminData: function() {
                 app.updateAdminData()
+            },
+            loggingOut: function() {
+                axios.get(panelUrl('public/logout'))
+                        .then(function(res) {
+                            let data = res.data
+                            if(typeof data.status === 'undefined' || data.status !== 'success') {
+                                Swal.fire('Whoopss!!', 'Koneksi jaringan atau server sedang bermasalah, silahkan coba lagi', 'warning')
+                            } else {
+                                window.location.reload()
+                            }
+                        }).catch(function(res) {
+                            checkAxiosError(res.request.status)
+                        })
             }
         }
     },

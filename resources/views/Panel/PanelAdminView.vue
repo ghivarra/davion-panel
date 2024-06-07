@@ -43,7 +43,6 @@
                                 <option value="">Tampilkan Semua</option>
                                 <option value="Aktif">Aktif</option>
                                 <option value="Nonaktif">Nonaktif</option>
-                                <option value="Dibekukan">Dibekukan</option>
                             </select>
                         </th>
                     </tr>
@@ -64,7 +63,7 @@ import Swal from 'sweetalert2'
 
 export default {
     name: 'panel-admin-view',
-    inject: ['showLoader', 'hideLoader'],
+    inject: ['admin', 'loggingOut', 'showLoader', 'hideLoader'],
     components: {
         'vue-table': VueTable,
         'admin-create-modal': AdminCreateModal
@@ -140,21 +139,7 @@ export default {
                                         </ul>
                                     </div>`
 
-                let statusColor;
-
-                switch (item.status) {
-                    case 'Nonaktif':
-                        statusColor = 'warning'
-                        break;
-
-                    case 'Dibekukan':
-                        statusColor = 'error'
-                        break;
-                
-                    default:
-                        statusColor = 'success'
-                        break;
-                }
+                let statusColor = (item.status === 'Aktif') ? 'success' : 'warning';
 
                 data.row[i].statusDefault = item.status
                 data.row[i].status = `<span class="bg-${statusColor} text-white py-2 px-3 rounded-pill fw-bold">${item.status}</span>`
@@ -171,6 +156,68 @@ export default {
         },
         adminCreateModalOpen: function() {
             this.$refs.adminCreateModal.$refs.modalOpenButton.click()
+        },
+        updateStatus: function(key) {
+            this.showLoader()
+
+            // set status
+            let app = this
+            let data = app.tableData[key]
+            let targetStatus = (data.statusDefault === 'Aktif') ? 'Nonaktif' : 'Aktif'
+            
+            // create form
+            let form = new FormData()
+            form.append('id', data.id)
+            form.append('status', targetStatus)
+
+            // save data
+            axios.post(panelUrl('administrator/update-status'), form)  
+                .then(function(res) {
+                    res = res.data
+                    app.hideLoader()
+                    if (res.status !== 'success') {
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        if (data.id === app.admin.id) {
+                            app.loggingOut()
+                        } else {
+                            app.$refs.adminTable.draw()
+                        }
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
+        },
+        delete: function(key) {
+            this.showLoader()
+
+            // set status
+            let app = this
+            let data = app.tableData[key]
+
+            // create form
+            let form = new FormData()
+            form.append('id', data.id)
+
+            // send
+            axios.post(panelUrl('administrator/delete'), form)  
+                .then(function(res) {
+                    res = res.data
+                    app.hideLoader()
+                    if (res.status !== 'success') {
+                        Swal.fire('Whoopss!!', res.message, 'warning')
+                    } else {
+                        if (data.id === app.admin.id) {
+                            app.loggingOut()
+                        } else {
+                            app.$refs.adminTable.draw()
+                        }
+                    }
+                }).catch(function(res) {
+                    app.hideLoader()
+                    checkAxiosError(res.request.status)
+                })
         }
     },
     mounted: function() {
@@ -190,6 +237,22 @@ export default {
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
             })
+
+        // change status
+        app.$refs.adminTableSection.addEventListener('click', (event) => {
+            event.preventDefault()
+            if (event.target.closest('.status-button')) {
+                app.updateStatus(event.target.getAttribute('data-key'))
+            }
+        })
+
+        // delete
+        app.$refs.adminTableSection.addEventListener('click', (event) => {
+            event.preventDefault()
+            if (event.target.closest('.delete-button')) {
+                app.delete(event.target.getAttribute('data-key'))
+            }
+        })
     }
 }
 
