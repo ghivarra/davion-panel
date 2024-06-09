@@ -244,7 +244,7 @@ class RoleController extends BaseController
         $db = \Config\Database::connect();
 
         // transaction start
-        $db->transStart();
+        $db->transBegin();
 
         $adminRole = new AdminRoleModel();
         $adminRole->save([
@@ -544,7 +544,7 @@ class RoleController extends BaseController
         $db = \Config\Database::connect();
 
         // transaction start
-        $db->transStart();
+        $db->transBegin();
 
         $adminRole = new AdminRoleModel();
         $adminRole->save([

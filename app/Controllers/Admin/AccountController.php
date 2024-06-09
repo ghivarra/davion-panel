@@ -61,6 +61,43 @@ class AccountController extends BaseController
 
     //================================================================================================
 
+    public function deleteSession(): ResponseInterface
+    {
+        $id       = $this->request->getPost('id');
+        $auth     = new DavionShield();
+        $sessions = array_column($auth->getSession(), 'id');
+
+        // validator
+        if (!in_array($id, $sessions))
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Sesi tidak ditemukan/tidak valid',
+            ]);
+        }
+
+        // delete
+        $deleteSession = $auth->deleteSession($id);
+
+        if (!$deleteSession)
+        {
+            // return
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Sesi gagal dihapus, ada kesalahan pada sistem. Silahkan coba lagi di lain waktu.',
+            ]);
+        }
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Sesi berhasil dihapus',
+        ]);
+    }
+
+    //================================================================================================
+
     public function getSession(): ResponseInterface
     {
         $auth     = new DavionShield();

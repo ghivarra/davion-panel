@@ -30,6 +30,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
     // Account routes
     $routes->group('account', static function($routes) {
         $routes->match(['options', 'get'], 'get-session', 'Admin\\AccountController::getSession');
+        $routes->match(['options', 'post'], 'delete-session', 'Admin\\AccountController::deleteSession');
         $routes->match(['options', 'post'], 'change-password', 'Admin\\AccountController::changePassword');
         $routes->match(['options', 'post'], 'update', 'Admin\\AccountController::update');
     });

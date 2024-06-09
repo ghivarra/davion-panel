@@ -50,7 +50,7 @@
                             <p>{{ session.ip_address }}</p>
                             <p class="fw-bold mb-0">Terakhir Aktif:</p>
                             <p>{{ session.last_update }}</p>
-                            <button v-on:click.prevent="deleteSession(session.id)" type="button" class="btn btn-link link-danger text-decoration-none ps-0" title="Logout Sesi Ini">
+                            <button v-on:click.prevent="deleteSession(session)" type="button" class="btn btn-link link-danger text-decoration-none ps-0" title="Logout Sesi Ini">
                                 <font-awesome icon="fas fa-trash-alt" class="me-1"></font-awesome>
                                 Hapus Sesi
                             </button>
@@ -85,8 +85,39 @@ export default {
         },
     },
     methods: {
-        deleteSession: function(id) {
-            console.log(`Delete Session: ${id}`)
+        deleteSession: function(session) {
+            console.log(session)
+            let app = this
+            Swal.fire({
+                html: `Apakah anda yakin akan menghapus sesi login di <b>${session.useragent.platform}</b>?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ya, Hapus',
+                cancelButtonText: 'Batalkan',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    app.showLoader()
+
+                    let form = new FormData()
+                    form.append('id', session.id)
+
+                    // send
+                    axios.post(panelUrl('account/delete-session'), form)
+                        .then(function(res) {
+                            res = res.data
+                            if (res.status !== 'success') {
+                                Swal.fire('Whoopss!!', res.message, 'warning')
+                            } else {
+                                app.updateAdminData()
+                                window.location.reload()
+                            }
+                        })
+                        .catch(function(res) {
+                            app.hideLoader()
+                            checkAxiosError(res.request.status)
+                        })
+                }
+            });
         }
     },
     mounted: function() {
@@ -115,8 +146,6 @@ export default {
                     res.data[i].last_update = date.toLocaleString('id-ID', dateOptions)
                 }
                 app.sessions = res.data
-                console.log(app.sessions)
-
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
             }).finally(function() {
