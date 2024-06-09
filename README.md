@@ -6,6 +6,7 @@ https://davion.giberamedia.com/login
 
 ## Accounts
 Username: admin
+_
 Password: S6eMKWTefKi8P8JrW5Nuc8jDMrwmyOCA
 
 The database and files keep resetting every 30 minutes, so it doesn't matter. Try it as much as you want.
