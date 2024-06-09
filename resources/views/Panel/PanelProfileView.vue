@@ -24,11 +24,39 @@
 
         <!-- SESSIONS -->
         <section>
-            <header class="panel-box-header rounded-2 panel-box">
+            <header class="panel-box-header rounded-2 panel-box mb-4">
                 Sesi Login
             </header>
-            <div class="p-3">
-
+            <div class="row row-cols-1 row-cols-md-2 g-3">
+                <div v-for="(session, n) in sessions" v-bind:key="n" class="col">
+                    <div class="p-4 panel-box bg-white">
+                        <div class="d-flex align-items-center mb-3">
+                            <div>
+                                <img v-if="session.useragent.mobile" v-bind:src="mobileIcon" alt="Mobile Icon">
+                                <img v-else v-bind:src="nonMobileIcon" alt="Non-Mobile Icon">
+                            </div>
+                            <div class="ps-3">
+                                <h5 class="fw-bold mb-1">
+                                    {{ session.useragent.os }}
+                                    <div v-if="session.current" class="badge ms-1 bg-primary">Sesi Saat Ini</div>
+                                </h5>
+                                <p class="mb-0">{{ session.useragent.platform }}</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="fw-bold mb-0">Browser:</p>
+                            <p>{{ session.useragent.browser }}</p>
+                            <p class="fw-bold mb-0">IP Address:</p>
+                            <p>{{ session.ip_address }}</p>
+                            <p class="fw-bold mb-0">Terakhir Aktif:</p>
+                            <p>{{ session.last_update }}</p>
+                            <button v-on:click.prevent="deleteSession(session.id)" type="button" class="btn btn-link link-danger text-decoration-none ps-0" title="Logout Sesi Ini">
+                                <font-awesome icon="fas fa-trash-alt" class="me-1"></font-awesome>
+                                Hapus Sesi
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -37,25 +65,63 @@
 
 <script>
 
-import { imageUrl } from '@/libraries/Function'
+import { panelUrl, checkAxiosError, imageUrl } from '@/libraries/Function'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 
 export default {
     name: 'panel-profile-view',
     inject: ['showLoader', 'hideLoader', 'admin', 'updateAdminData'],
     data: function() {
         return {
-            
+            mobileIcon: imageUrl('tablet-smartphone.png', 60),
+            nonMobileIcon: imageUrl('computer.png', 60),
+            sessions: []
         }
     },
     computed: {
         profilePicture: function() {
             return (typeof this.admin.photo === 'undefined' || this.admin.photo === null || this.admin.photo.length < 1) ? imageUrl('admin/default-user.png', 120) : imageUrl(`admin/${this.admin.photo}`, 120)
+        },
+    },
+    methods: {
+        deleteSession: function(id) {
+            console.log(`Delete Session: ${id}`)
         }
     },
     mounted: function() {
-        this.$nextTick(function() {
-            this.$emit('loaded')
-        })
+        let app = this
+
+        // get website data
+        axios.get(panelUrl('account/get-session'))
+            .then(function(res) {
+                res = res.data
+                for (let i = 0; i < res.data.length; i++) {
+                    const item = res.data[i]
+                    const date = new Date(item.last_update)
+                    const dateOptions = {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        timeZone: 'Asia/Jakarta',
+                        timeZoneName: 'short',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hourCycle: 'h24'
+                    }
+
+                    res.data[i].useragent = JSON.parse(item.useragent)
+                    res.data[i].last_update = date.toLocaleString('id-ID', dateOptions)
+                }
+                app.sessions = res.data
+                console.log(app.sessions)
+
+            }).catch(function(res) {
+                checkAxiosError(res.request.status)
+            }).finally(function() {
+                app.$emit('loaded')
+            })
     }
 }
 

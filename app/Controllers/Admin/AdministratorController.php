@@ -310,13 +310,21 @@ class AdministratorController extends BaseController
         }
 
         // get session from id
-        $auth = new DavionShield();
+        $auth     = new DavionShield();
+        $sessions = $auth->getSessionFromUser($adminId);
+
+        // delete session name for security issue
+        foreach ($sessions as $n => $session):
+
+            unset($sessions[$n]['name']);
+
+        endforeach;
         
         // return
         return $this->response->setJSON([
             'status'  => 'success',
             'message' => 'Data berhasil ditarik',
-            'data'    => $auth->getSessionFromUser($adminId)
+            'data'    => $sessions
         ]);
     }
 

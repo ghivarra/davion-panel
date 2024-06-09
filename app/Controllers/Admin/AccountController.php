@@ -63,13 +63,22 @@ class AccountController extends BaseController
 
     public function getSession(): ResponseInterface
     {
-        $auth = new DavionShield();
+        $auth     = new DavionShield();
+        $sessions = $auth->getSession();
+
+        // parse
+        foreach ($sessions as $n => $session):
+
+            $sessions[$n]['current'] = ($session['name'] === $auth->getSessionName()) ? true : false;
+            unset($sessions[$n]['name']);
+
+        endforeach;
 
         // return
         return $this->response->setJSON([
             'status'  => 'success',
-            'message' => 'Password akun anda berhasil diperbaharui',
-            'data'    => $auth->getSession()
+            'message' => 'Data berhasil ditarik',
+            'data'    => $sessions
         ]);
     }
 
