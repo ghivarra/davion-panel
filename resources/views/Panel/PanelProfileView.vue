@@ -86,7 +86,6 @@ export default {
     },
     methods: {
         deleteSession: function(session) {
-            console.log(session)
             let app = this
             Swal.fire({
                 html: `Apakah anda yakin akan menghapus sesi login di <b>${session.useragent.platform}</b>?`,
