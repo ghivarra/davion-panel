@@ -209,6 +209,29 @@ class DavionShield
 
     //================================================================================================
 
+    public function deleteSession($sessionId): bool
+    {
+        $db  = \Config\Database::connect();
+        $orm = new AdminSessionModel();
+        
+        // transaction start
+        $db->transBegin();
+        $orm->delete($sessionId);
+
+        if ($db->transStatus() === false) {
+
+            $db->transRollback();
+            return false;
+
+        } else {
+            
+            $db->transCommit();
+            return true;
+        }
+    }
+
+    //================================================================================================
+
     public function getAccountData(): array
     {
         return $this->session->get('accountData');
