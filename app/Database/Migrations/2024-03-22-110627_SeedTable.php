@@ -335,6 +335,13 @@ class SeedTable extends Migration
                 'status'     => 'Aktif',
                 'created_at' => $now,
                 'updated_at' => $now,
+            ], [
+                'alias'      => 'adminSession',
+                'name'       => 'Pengaturan Admin - Session',
+                'group'      => 'Admin',
+                'status'     => 'Aktif',
+                'created_at' => $now,
+                'updated_at' => $now,
             ]
         ]);
     }
