@@ -22,13 +22,31 @@ class DavionShield
 
     protected function parseUserAgent($request): array
     {
-        $useragent = $request->getUserAgent();
+        $useragent  = $request->getUserAgent();
+        $mobileType = $useragent->getMobile();
+
+        // change mobile type if detected
+        $raw = $useragent->getAgentString();
+        $raw = explode("(", $raw);
+        $raw = isset($raw[1]) ? $raw[1] : null;
+
+        if (!is_null($raw))
+        {
+            $raw = explode(")", $raw);
+            $raw = isset($raw[0]) ? $raw[0] : null;
+
+            if (!is_null($raw))
+            {
+                $systemInfo = array_map('trim', explode(";", $raw));
+                $mobileType = isset($systemInfo[2]) ? "{$mobileType} / {$systemInfo[2]}" : $mobileType;
+            }
+        }
 
         return [
-            'browser'  => $useragent->getBrowser() . ' ' . $useragent->getVersion(),
+            'browser'  => $useragent->getBrowser(),
             'os'       => $useragent->getPlatform(),
             'mobile'   => $useragent->isMobile(),
-            'platform' => $useragent->isMobile() ? $useragent->getMobile() : 'Non-Mobile Platform'
+            'platform' => $useragent->isMobile() ? $mobileType : 'Non-Mobile Platform'
         ];
     }
 
@@ -203,8 +221,9 @@ class DavionShield
         $accountData = $this->getAccountData();
 
         $orm = new AdminSessionModel();
-        $get = $orm->select(['id', 'name', 'useragent', 'ip_address'])
+        $get = $orm->select(['id', 'name', 'useragent', 'ip_address', 'updated_at as last_update'])
                    ->where('admin_id', $accountData['id'])
+                   ->orderBy('last_update', 'DESC')
                    ->find();
 
         // return
@@ -216,12 +235,20 @@ class DavionShield
     public function getSessionFromUser($adminId): array
     {
         $orm = new AdminSessionModel();
-        $get = $orm->select(['id', 'name', 'useragent', 'ip_address'])
+        $get = $orm->select(['id', 'name', 'useragent', 'ip_address', 'updated_at as last_update'])
                    ->where('admin_id', $adminId)
+                   ->orderBy('last_update', 'DESC')
                    ->find();
 
         // return
         return empty($get) ? [] : $get;
+    }
+
+    //================================================================================================
+
+    public function getSessionName(): string
+    {
+        return $this->session->session_id;
     }
 
     //================================================================================================
