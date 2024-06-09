@@ -17,3 +17,11 @@ select:-webkit-autofill {
 .text-small {
     font-size: 0.9em;
 }
+
+div.swal2-container button.swal2-styled.swal2-confirm {
+    background-color: var(--bs-primary);
+
+    &:focus {
+        box-shadow: 0 0 0 3px rgba(var(--bs-primary-rgb), .5);
+    }
+}
