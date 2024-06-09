@@ -25,36 +25,11 @@ class DavionShield
         $useragent  = $request->getUserAgent();
         $mobileType = $useragent->getMobile();
 
-        // change mobile type if detected
-        $raw = $useragent->getAgentString();
-        $raw = explode("(", $raw);
-        $raw = isset($raw[1]) ? $raw[1] : null;
-
-        if (!is_null($raw))
-        {
-            $raw = explode(")", $raw);
-            $raw = isset($raw[0]) ? $raw[0] : null;
-
-            if (!is_null($raw))
-            {
-                $systemInfo = array_map('trim', explode(";", $raw));
-
-                if (isset($systemInfo[2]) && strlen($systemInfo[2] < 2))
-                {
-                    $mobileType = $systemInfo[1];
-
-                } else {
-
-                    $mobileType = isset($systemInfo[2]) ? "{$mobileType} / {$systemInfo[2]}" : $mobileType;
-                }
-            }
-        }
-
         return [
             'browser'  => $useragent->getBrowser(),
             'os'       => $useragent->getPlatform(),
             'mobile'   => $useragent->isMobile(),
-            'platform' => $useragent->isMobile() ? $mobileType : 'Non-Mobile Platform'
+            'platform' => $useragent->isMobile() ? 'Mobile Platform' : 'Non-Mobile Platform'
         ];
     }
 
