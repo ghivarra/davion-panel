@@ -79,7 +79,7 @@ class DavionShield
         $this->session->set([
             'lastRegenerate'             => time(),
             'accountData'                => $accountData,
-            $_ENV['SESSION_LOGIN_PARAM'] => md5($_ENV['SESSION_LOGIN_TOKEN'])
+            $_ENV['SESSION_LOGIN_PARAM'] => $_ENV['SESSION_LOGIN_TOKEN']
         ]);
         
         // save login data in admin_session
@@ -102,7 +102,7 @@ class DavionShield
         $sessionToken = $this->session->get($_ENV['SESSION_LOGIN_PARAM']);
 
         // session is not valid
-        if (empty($sessionToken) OR !hash_equals(md5($_ENV['SESSION_LOGIN_TOKEN']), $sessionToken))
+        if (empty($sessionToken) OR $_ENV['SESSION_LOGIN_TOKEN'] !== $sessionToken)
         {
             return false;
         }
