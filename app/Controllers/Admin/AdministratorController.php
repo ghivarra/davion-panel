@@ -261,6 +261,106 @@ class AdministratorController extends BaseController
 
     //================================================================================================
 
+    public function deleteSession(): ResponseInterface
+    {
+        $permission = $this->checkPermission('adminSession');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        $data = [
+            'session_id' => $this->request->getPost('session_id'),
+            'admin_id'   => $this->request->getPost('admin_id'),
+        ];
+
+        // get session based on id
+        $auth     = new DavionShield();
+        $sessions = $auth->getSessionFromUser($data['admin_id']);
+        $sessions = empty($sessions) ? [] : array_column($sessions, 'id');
+
+        if (empty($sessions))
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Sesi Login tidak valid/tidak ditemukan',
+            ]);
+        }
+
+        // validator
+        $validator = Services::validation();
+        $validator->setRules([
+            'session_id' => ['label' => 'Sesi Login', 'rules' => 'required|in_list['. implode(',', $sessions) .']'],
+            'admin_id'   => ['label' => 'Akun Admin', 'rules' => 'required|is_not_unique[admin.id]'],
+        ]);
+
+        // check
+        if (!$validator->run($data))
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => implode(', ', $validator->getErrors()),
+            ]);
+        }
+
+        // delete
+        $deleteSession = $auth->deleteSession($data['session_id']);
+
+        // return
+        if (!$deleteSession)
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Gagal menghapus sesi login, silahkan coba lagi',
+            ]);
+
+        } else {
+
+            return $this->response->setJSON([
+                'status'  => 'success',
+                'message' => 'Sesi berhasil dihapus',
+            ]);
+        }
+    }
+
+    //================================================================================================
+
+    public function get(): ResponseInterface
+    {
+        $permission = $this->checkPermission('adminView');
+
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // create ORM instance
+        $orm  = new AdminModel();
+        $data = $orm->select(['admin.id', 'admin.name', 'username', 'is_superadmin', 'admin.status', 'email', 'email_verified_at', 'admin_role_id', 'admin_role.name as admin_role_name', 'photo'])
+                    ->join('admin_role', 'admin_role_id = admin_role.id', 'left')
+                    ->where('admin.id', $this->request->getGet('id'))
+                    ->first();
+
+        if (empty($data) OR !$data)
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Data tidak ditemukan',
+                'data'    => NULL
+            ]);
+        }
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => $data
+        ]);
+    }
+
+    //================================================================================================
+
     public function getRoleList(): ResponseInterface
     {
         $createPermission = $this->checkPermission('adminCreate');

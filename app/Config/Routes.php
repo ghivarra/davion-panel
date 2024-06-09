@@ -95,6 +95,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
         $routes->match(['options', 'post'], 'update', 'Admin\\AdministratorController::update');
         $routes->match(['options', 'post'], 'update-status', 'Admin\\AdministratorController::updateStatus');
         $routes->match(['options', 'post'], 'delete', 'Admin\\AdministratorController::delete');
+        $routes->match(['options', 'post'], 'delete-session', 'Admin\\AdministratorController::deleteSession');
     });
 
     // fallback SPA routes

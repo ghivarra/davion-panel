@@ -246,6 +246,9 @@ export default {
                     app.hideLoader()
                     checkAxiosError(res.request.status)
                 })
+        },
+        checkSession: function(key) {
+            this.$router.push({ path: `administrator/session/${this.tableData[key].id}` })
         }
     },
     mounted: function() {
@@ -265,6 +268,14 @@ export default {
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
             })
+
+        // see login session data
+        app.$refs.adminTableSection.addEventListener('click', (event) => {
+            event.preventDefault()
+            if (event.target.closest('.check-session-button')) {
+                app.checkSession(event.target.getAttribute('data-key'))
+            }
+        })
         
         // update data
         app.$refs.adminTableSection.addEventListener('click', (event) => {
