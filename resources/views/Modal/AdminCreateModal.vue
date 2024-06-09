@@ -49,7 +49,7 @@
                                 <span class="text-danger" title="Wajib Diisi">*</span>
                             </label>
                             <div class="position-relative">
-                                <input v-model="data.password" v-bind:type="passwordInputType" class="form-control" id="adminCreatePassword" name="password" autocomplete="new-password" required>
+                                <input v-model="data.password" v-bind:type="passwordInputType" class="form-control" id="adminCreatePassword" name="password" autocomplete="new-password" placeholder="*************" required>
                                 <button v-on:click.prevent="passwordToggle('passwordInputType')" type="button" class="btn btn-link text-secondary password-toggle">
                                     <font-awesome v-if="passwordInputType === 'password'" icon="fas fa-eye"></font-awesome>
                                     <font-awesome v-if="passwordInputType === 'text'" icon="fas fa-eye-slash"></font-awesome>
@@ -63,7 +63,7 @@
                                 <span class="text-danger" title="Wajib Diisi">*</span>
                             </label>
                             <div class="position-relative">
-                                <input v-model="data.passwordConfirmation" v-bind:type="passwordConfInputType" class="form-control" id="adminCreatePasswordConfirmation" name="confirmation_password" autocomplete="new-password" required>
+                                <input v-model="data.passwordConfirmation" v-bind:type="passwordConfInputType" class="form-control" id="adminCreatePasswordConfirmation" name="confirmation_password" autocomplete="new-password" placeholder="*************" required>
                                 <button v-on:click.prevent="passwordToggle('passwordConfInputType')" type="button" class="btn btn-link text-secondary password-toggle">
                                     <font-awesome v-show="passwordConfInputType === 'password'" icon="fas fa-eye"></font-awesome>
                                     <font-awesome v-show="passwordConfInputType === 'text'" icon="fas fa-eye-slash"></font-awesome>

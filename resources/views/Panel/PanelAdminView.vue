@@ -12,6 +12,9 @@
         <!-- ADMIN CREATE MODAL -->
         <admin-create-modal ref="adminCreateModal" v-bind:roles="roles" v-on:formSubmitted="refreshTable"></admin-create-modal>
 
+        <!-- ADMIN UPDATE MODAL -->
+        <admin-update-modal ref="adminUpdateModal" v-bind:admin="adminUpdate" v-bind:roles="roles" v-on:formSubmitted="refreshTable"></admin-update-modal>
+
         <!-- ADMIN DETAIL MODAL -->
          <admin-detail-modal ref="adminDetailModal" v-bind:admin="adminDetail"></admin-detail-modal>
 
@@ -61,6 +64,7 @@
 import { panelUrl, checkAxiosError, restructurized } from '@/libraries/Function'
 import VueTable from '@/libraries/Ghivarra/VueTable/VueTable.vue'
 import AdminCreateModal from '@/views/Modal/AdminCreateModal.vue'
+import AdminUpdateModal from '@/views/Modal/AdminUpdateModal.vue'
 import AdminDetailModal from '@/views/Modal/AdminDetailModal.vue'
 import axios from 'axios'
 import Swal from 'sweetalert2'
@@ -71,7 +75,8 @@ export default {
     components: {
         'vue-table': VueTable,
         'admin-create-modal': AdminCreateModal,
-        'admin-detail-modal': AdminDetailModal
+        'admin-update-modal': AdminUpdateModal,
+        'admin-detail-modal': AdminDetailModal,
     },
     data: function() {
         return {
@@ -93,7 +98,8 @@ export default {
             },
             tableData: [],
             roles: [],
-            adminDetail: {}
+            adminDetail: {},
+            adminUpdate: {}
         }
     },
     methods: {
@@ -162,6 +168,10 @@ export default {
         },
         adminCreateModalOpen: function() {
             this.$refs.adminCreateModal.$refs.modalOpenButton.click()
+        },
+        adminUpdateModalOpen: function(key) {
+            this.adminUpdate = restructurized(this.tableData[key])
+            this.$refs.adminUpdateModal.$refs.modalOpenButton.click()
         },
         adminDetailModalOpen: function(key) {
             this.adminDetail = restructurized(this.tableData[key])
@@ -247,8 +257,16 @@ export default {
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
             })
+        
+        // update data
+        app.$refs.adminTableSection.addEventListener('click', (event) => {
+            event.preventDefault()
+            if (event.target.closest('.edit-button')) {
+                app.adminUpdateModalOpen(event.target.getAttribute('data-key'))
+            }
+        })
 
-        // change status
+        // see detail
         app.$refs.adminTableSection.addEventListener('click', (event) => {
             event.preventDefault()
             if (event.target.closest('.detail-button')) {

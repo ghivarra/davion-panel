@@ -10,7 +10,7 @@
             <form v-on:submit.prevent="submitForm" class="p-3">
                 <div class="mb-3 position-relative">
                     <label for="oldPassword" class="form-label fw-bold">Password Lama</label>
-                    <input v-model="data.oldPassword" v-bind:type="(show.oldPassword) ? 'text' : 'password'" name="old_password" id="oldPassword" class="form-control" required>
+                    <input v-model="data.oldPassword" v-bind:type="(show.oldPassword) ? 'text' : 'password'" name="old_password" id="oldPassword" class="form-control" placeholder="*************" required>
                     <button v-on:click="show.oldPassword = !show.oldPassword" type="button" class="btn btn-link show-password-toggle" title="Klik untuk melihat/menutup password">
                         <font-awesome v-if="!show.oldPassword" icon="fas fa-eye"></font-awesome>
                         <font-awesome v-if="show.oldPassword" icon="fas fa-eye-slash"></font-awesome>
@@ -18,7 +18,7 @@
                 </div>
                 <div class="mb-3 position-relative">
                     <label for="newPassword" class="form-label fw-bold">Password Baru</label>
-                    <input v-model="data.newPassword" v-bind:type="(show.newPassword) ? 'text' : 'password'" name="new_password" id="newPassword" class="form-control" autocomplete="new-password" required>
+                    <input v-model="data.newPassword" v-bind:type="(show.newPassword) ? 'text' : 'password'" name="new_password" id="newPassword" class="form-control" autocomplete="new-password" placeholder="*************" required>
                     <button v-on:click="show.newPassword = !show.newPassword" type="button" class="btn btn-link show-password-toggle" title="Klik untuk melihat/menutup password">
                         <font-awesome v-if="!show.newPassword" icon="fas fa-eye"></font-awesome>
                         <font-awesome v-if="show.newPassword" icon="fas fa-eye-slash"></font-awesome>
@@ -26,7 +26,7 @@
                 </div>
                 <div class="mb-4 position-relative">
                     <label for="confPassword" class="form-label fw-bold">Konfirmasi Password Baru</label>
-                    <input v-model="data.confPassword" v-bind:type="(show.confPassword) ? 'text' : 'password'" name="conf_password" id="confPassword" class="form-control" autocomplete="new-password" required>
+                    <input v-model="data.confPassword" v-bind:type="(show.confPassword) ? 'text' : 'password'" name="conf_password" id="confPassword" class="form-control" autocomplete="new-password" placeholder="*************" required>
                     <button v-on:click="show.confPassword = !show.confPassword" type="button" class="btn btn-link show-password-toggle" title="Klik untuk melihat/menutup password">
                         <font-awesome v-if="!show.confPassword" icon="fas fa-eye"></font-awesome>
                         <font-awesome v-if="show.confPassword" icon="fas fa-eye-slash"></font-awesome>
