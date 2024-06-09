@@ -13,7 +13,7 @@
         <admin-create-modal ref="adminCreateModal" v-bind:roles="roles" v-on:formSubmitted="refreshTable"></admin-create-modal>
 
         <!-- ADMIN UPDATE MODAL -->
-        <admin-update-modal ref="adminUpdateModal" v-bind:admin="adminUpdate" v-bind:roles="roles" v-on:formSubmitted="refreshTable"></admin-update-modal>
+        <admin-update-modal ref="adminUpdateModal" v-bind:admin="adminUpdate" v-bind:roles="roles" v-on:formSubmitted="updateRefreshTable"></admin-update-modal>
 
         <!-- ADMIN DETAIL MODAL -->
          <admin-detail-modal ref="adminDetailModal" v-bind:admin="adminDetail"></admin-detail-modal>
@@ -165,6 +165,14 @@ export default {
         },
         refreshTable: function() {
             this.$refs.adminTable.draw()
+        },
+        updateRefreshTable: function(id) {
+            if (parseInt(id) === parseInt(this.admin.id))
+            {
+                window.location.reload()
+            } else {
+                this.$refs.adminTable.draw()
+            }
         },
         adminCreateModalOpen: function() {
             this.$refs.adminCreateModal.$refs.modalOpenButton.click()

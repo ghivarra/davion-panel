@@ -283,6 +283,127 @@ class AdministratorController extends BaseController
 
     //================================================================================================
 
+    public function update(): ResponseInterface
+    {
+        $permission = $this->checkPermission('adminUpdate');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // get data
+        $data = [
+            'id'           => $this->request->getPost('id'),
+            'username'     => $this->request->getPost('username'),
+            'email'        => $this->request->getPost('admin_email'),
+            'name'         => $this->request->getPost('admin_fullname'),
+            'role'         => $this->request->getPost('admin_role_id'),
+            'password'     => $this->request->getPost('password'),
+            'confirmation' => $this->request->getPost('confirmation_password'),
+            'photo'        => $this->request->getFile('photo'),
+        ];
+
+        // rules
+        $rules = [
+            'id'   => ['label' => 'Akun', 'rules' => 'required|is_not_unique[admin.id]'],
+            'name' => ['label' => 'Nama Lengkap', 'rules' => 'required|max_length[200]'],
+            'role' => ['label' => 'Role', 'rules' => 'required|is_not_unique[admin_role.id]'],
+        ];
+
+        // check if account exist and get data
+        $admin   = new AdminModel();
+        $oldData = $admin->select(['id', 'username', 'email'])->find($data['id']);
+
+        if (empty($oldData))
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Akun Tidak Ditemukan',
+            ]);
+        }
+
+        // if username changed
+        if ($data['username'] !== $oldData['username'])
+        {
+            $rules['username'] = ['label' => 'Username', 'rules' => 'required|max_length[100]|alpha_dash|is_unique[admin.username]'];
+        }
+
+        // if email changed
+        if ($data['email'] !== $oldData['email'])
+        {
+            $rules['email'] = ['label' => 'Email', 'rules' => 'required|max_length[100]|valid_email|is_unique[admin.email]'];
+        }
+
+        // check if password is changed
+        if (!empty($data['password']))
+        {
+            $rules['password']     = ['label' => 'Password', 'rules' => 'required|min_length[10]'];
+            $rules['confirmation'] = ['label' => 'Konfirmasi Password', 'rules' => 'required|matches[password]'];
+        }
+
+        // validator
+        $validator = Services::validation();
+        $validator->setRules($rules);
+        
+        if (!$validator->run($data))
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => implode(', ', $validator->getErrors()),
+            ]);
+        }
+
+        // check and validate if photo is uploaded
+        if ($data['photo']->isValid())
+        {
+            $validImage = $this->validateData([], [
+                'photo' => ['label' => 'Foto', 'rules' => 'uploaded[photo]|max_size[photo,4096]|is_image[photo]|mime_in[photo,image/png,image/gif,image/jpeg]']
+            ]);
+
+            if (!$validImage)
+            {
+                return $this->response->setJSON([
+                    'status'  => 'error',
+                    'message' => implode(', ', $validator->getErrors()),
+                ]);
+            }
+        }
+
+        // save
+        $savedData = [
+            'id'            => $data['id'],
+            'username'      => $data['username'],
+            'email'         => $data['email'],
+            'name'          => $data['name'],
+            'admin_role_id' => $data['role'],
+        ];
+
+        // if password changed
+        if (!empty($data['password']))
+        {
+            $savedData['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+        }
+
+        // if uploaded
+        if ($data['photo']->isValid())
+        {
+            $savedData['photo'] = $data['photo']->getRandomName();
+            $data['photo']->move(WRITEPATH . 'app/images/admin', $savedData['photo']);
+        }
+
+        // save
+        $admin->save($savedData);
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => "Akun {$savedData['name']} berhasil diperbaharui",
+        ]);
+    }
+
+    //================================================================================================
+
     public function updateStatus(): ResponseInterface
     {
         $permission = $this->checkPermission('adminUpdate');
