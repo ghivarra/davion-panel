@@ -12,6 +12,9 @@
         <!-- ADMIN CREATE MODAL -->
         <admin-create-modal ref="adminCreateModal" v-bind:roles="roles" v-on:formSubmitted="refreshTable"></admin-create-modal>
 
+        <!-- ADMIN DETAIL MODAL -->
+         <admin-detail-modal ref="adminDetailModal" v-bind:admin="adminDetail"></admin-detail-modal>
+
         <!-- TABLE -->
         <section ref="adminTableSection">
             <vue-table id="admin-table" ref="adminTable" v-bind:defaultLength="25" v-bind:lengthOptions="[10,25,50]"
@@ -55,9 +58,10 @@
 
 <script>
 
-import { panelUrl, checkAxiosError } from '@/libraries/Function'
+import { panelUrl, checkAxiosError, restructurized } from '@/libraries/Function'
 import VueTable from '@/libraries/Ghivarra/VueTable/VueTable.vue'
 import AdminCreateModal from '@/views/Modal/AdminCreateModal.vue'
+import AdminDetailModal from '@/views/Modal/AdminDetailModal.vue'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
@@ -66,7 +70,8 @@ export default {
     inject: ['admin', 'loggingOut', 'showLoader', 'hideLoader'],
     components: {
         'vue-table': VueTable,
-        'admin-create-modal': AdminCreateModal
+        'admin-create-modal': AdminCreateModal,
+        'admin-detail-modal': AdminDetailModal
     },
     data: function() {
         return {
@@ -87,7 +92,8 @@ export default {
                 ]
             },
             tableData: [],
-            roles: []
+            roles: [],
+            adminDetail: {}
         }
     },
     methods: {
@@ -113,15 +119,15 @@ export default {
                                                 </button>
                                             </li>
                                             <li>
-                                                <button data-key="${i}" class="edit-button dropdown-item" type="button" title="Edit Data">
-                                                    <i class="fa-solid fa-pen-to-square me-1 text-primary"></i>
-                                                    Edit
-                                                </button>
-                                            </li>
-                                            <li>
                                                 <button data-key="${i}" class="check-session-button dropdown-item" type="button" title="Cek Sesi Login">
                                                     <i class="fa-solid fa-clock-rotate-left me-1 text-primary"></i>
                                                     Sesi Login
+                                                </button>
+                                            </li>
+                                            <li>
+                                                <button data-key="${i}" class="edit-button dropdown-item" type="button" title="Edit Data">
+                                                    <i class="fa-solid fa-pen-to-square me-1 text-primary"></i>
+                                                    Edit
                                                 </button>
                                             </li>
                                             <li>
@@ -156,6 +162,10 @@ export default {
         },
         adminCreateModalOpen: function() {
             this.$refs.adminCreateModal.$refs.modalOpenButton.click()
+        },
+        adminDetailModalOpen: function(key) {
+            this.adminDetail = restructurized(this.tableData[key])
+            this.$refs.adminDetailModal.$refs.modalOpenButton.click()
         },
         updateStatus: function(key) {
             this.showLoader()
@@ -237,6 +247,14 @@ export default {
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
             })
+
+        // change status
+        app.$refs.adminTableSection.addEventListener('click', (event) => {
+            event.preventDefault()
+            if (event.target.closest('.detail-button')) {
+                app.adminDetailModalOpen(event.target.getAttribute('data-key'))
+            }
+        })
 
         // change status
         app.$refs.adminTableSection.addEventListener('click', (event) => {

@@ -191,7 +191,7 @@ class AdministratorController extends BaseController
         // parse data
         foreach ($data as $key => $item):
 
-            $data[$key]['email_verified_at'] = is_null($item['email_verified_at']) ? 'Belum Verifikasi' : 'Terverifikasi';
+            $data[$key]['email_verified_at'] = is_null($item['email_verified_at']) ? 'Belum Terverifikasi' : 'Terverifikasi';
 
         endforeach;
 
