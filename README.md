@@ -5,8 +5,7 @@ Created using CodeIgniter 4 and Vue JS 3
 https://davion.giberamedia.com/login
 
 ## Accounts
-Username: admin
-_
+Username: admin\
 Password: S6eMKWTefKi8P8JrW5Nuc8jDMrwmyOCA
 
 The database and files keep resetting every 30 minutes, so it doesn't matter. Try it as much as you want.
