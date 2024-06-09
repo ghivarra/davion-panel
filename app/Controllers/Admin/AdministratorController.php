@@ -283,6 +283,45 @@ class AdministratorController extends BaseController
 
     //================================================================================================
 
+    public function getSession(): ResponseInterface
+    {
+        $permission = $this->checkPermission('adminSession');
+        
+        if (!$permission)
+        {
+            return cannotAccessModule();
+        }
+
+        // validasi
+        $adminId = $this->request->getGet('id');
+
+        // validator
+        $validator = Services::validation();
+        $validator->setRules([
+            'id' => ['label' => 'Admin', 'rules' => 'required|is_not_unique[admin.id]']
+        ]);
+
+        if (!$validator->run(['id' => $adminId]))
+        {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => implode(', ', $validator->getErrors()),
+            ]);
+        }
+
+        // get session from id
+        $auth = new DavionShield();
+        
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Data berhasil ditarik',
+            'data'    => $auth->getSessionFromUser($adminId)
+        ]);
+    }
+
+    //================================================================================================
+
     public function update(): ResponseInterface
     {
         $permission = $this->checkPermission('adminUpdate');

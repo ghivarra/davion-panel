@@ -198,6 +198,19 @@ class DavionShield
 
     //================================================================================================
 
+    public function getSessionFromUser($adminId): array
+    {
+        $orm = new AdminSessionModel();
+        $get = $orm->select(['id', 'name', 'useragent', 'ip_address'])
+                   ->where('admin_id', $adminId)
+                   ->find();
+
+        // return
+        return empty($get) ? [] : $get;
+    }
+
+    //================================================================================================
+
     public function hasAccess($moduleAlias, $roleId, $superadmin): bool | array
     {
         if ($superadmin)
