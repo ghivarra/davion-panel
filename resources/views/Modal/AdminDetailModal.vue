@@ -11,12 +11,12 @@
                         <div class="d-flex align-items-center">
                             <img v-bind:src="profilePicture" v-bind:alt="admin.name" class="admin-info-image rounded-circle me-3 mb-3">
                             <div>
-                                <p class="h5 fw-bold mb-2">
+                                <h5 class="fw-bold mb-2">
                                     {{ admin.name }}
                                     <div class="ms-2 badge" v-bind:class="(admin.statusDefault === 'Aktif') ? 'bg-success' : 'bg-danger'">
                                         {{ admin.statusDefault }}
                                     </div>
-                                </p>
+                                </h5>
                                 <p class="mb-1">
                                     <font-awesome icon="fas fa-user-tie" class="me-2"></font-awesome>
                                     {{ admin.username }} - {{ admin.admin_role_name }}
