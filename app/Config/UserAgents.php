@@ -155,6 +155,7 @@ class UserAgents extends BaseConfig
         'vario'                => 'Vario',
         'htc'                  => 'HTC',
         'samsung'              => 'Samsung',
+        'SM-'                  => 'Samsung',
         'sharp'                => 'Sharp',
         'sie-'                 => 'Siemens',
         'alcatel'              => 'Alcatel',
@@ -179,6 +180,10 @@ class UserAgents extends BaseConfig
         'wii'                  => 'Nintendo Wii',
         'open web'             => 'Open Web',
         'openweb'              => 'OpenWeb',
+        'Pixel'                => 'Google Pixel',
+        'CPH'                  => 'Oppo',
+        'RMX'                  => 'Realme',
+        'MITO'                 => 'Mito',
 
         // Operating Systems
         'android'    => 'Android',
