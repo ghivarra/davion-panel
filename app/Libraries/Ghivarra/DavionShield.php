@@ -38,7 +38,15 @@ class DavionShield
             if (!is_null($raw))
             {
                 $systemInfo = array_map('trim', explode(";", $raw));
-                $mobileType = isset($systemInfo[2]) ? "{$mobileType} / {$systemInfo[2]}" : $mobileType;
+
+                if (isset($systemInfo[2]) && strlen($systemInfo[2] < 2))
+                {
+                    $mobileType = $systemInfo[1];
+
+                } else {
+
+                    $mobileType = isset($systemInfo[2]) ? "{$mobileType} / {$systemInfo[2]}" : $mobileType;
+                }
             }
         }
 
@@ -224,7 +232,7 @@ class DavionShield
             return false;
 
         } else {
-            
+
             $db->transCommit();
             return true;
         }
