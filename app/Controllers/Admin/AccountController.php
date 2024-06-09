@@ -10,10 +10,26 @@ use App\Models\AdminModel;
 
 class AccountController extends BaseController
 {
+    private function mainAdminFreezed(): ResponseInterface
+    {
+        return $this->response->setJSON([
+            'status'  => 'error',
+            'message' => 'Setelan akun admin utama tidak bisa dirubah. Buat admin baru untuk mencoba fitur-fitur pada Davion Panel',
+        ]);
+    }
+
+    //================================================================================================
+
     public function changePassword(): ResponseInterface
     {
         $auth    = new DavionShield();
         $account = $auth->getAccountData();
+
+        // Hard code to not change admin config
+        if (intval($account['id']) === 1) 
+        {
+            return $this->mainAdminFreezed();
+        }
 
         // validate password
         $rules = [
@@ -65,7 +81,14 @@ class AccountController extends BaseController
     {
         $id       = $this->request->getPost('id');
         $auth     = new DavionShield();
+        $account  = $auth->getAccountData();
         $sessions = array_column($auth->getSession(), 'id');
+
+        // Hard code to not change admin config
+        if (intval($account['id']) === 1) 
+        {
+            return $this->mainAdminFreezed();
+        }
 
         // validator
         if (!in_array($id, $sessions))
@@ -125,6 +148,12 @@ class AccountController extends BaseController
     {
         $auth    = new DavionShield();
         $account = $auth->getAccountData();
+
+        // Hard code to not change admin config
+        if (intval($account['id']) === 1) 
+        {
+            return $this->mainAdminFreezed();
+        }
 
         // validate data
         $data = [

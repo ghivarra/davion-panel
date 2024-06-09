@@ -10,6 +10,16 @@ use Config\Services;
 
 class AdministratorController extends BaseController
 {
+    private function mainAdminFreezed(): ResponseInterface
+    {
+        return $this->response->setJSON([
+            'status'  => 'error',
+            'message' => 'Setelan akun admin utama tidak bisa dirubah. Buat admin baru untuk mencoba fitur-fitur pada Davion Panel',
+        ]);
+    }
+
+    //================================================================================================
+
     private function buildSearchQuery($orm, $columns)
     {
         foreach ($columns as $column):
@@ -227,6 +237,12 @@ class AdministratorController extends BaseController
 
         $data = $this->request->getPost(array_keys($rules));
 
+        // Hard code to not change admin config
+        if (intval($data['id']) === 1) 
+        {
+            return $this->mainAdminFreezed();
+        }
+
         if (!$this->validateData($data, $rules))
         {
             // return
@@ -274,6 +290,12 @@ class AdministratorController extends BaseController
             'session_id' => $this->request->getPost('session_id'),
             'admin_id'   => $this->request->getPost('admin_id'),
         ];
+
+        // Hard code to not change admin config
+        if (intval($data['admin_id']) === 1) 
+        {
+            return $this->mainAdminFreezed();
+        }
 
         // get session based on id
         $auth     = new DavionShield();
@@ -451,6 +473,12 @@ class AdministratorController extends BaseController
             'photo'        => $this->request->getFile('photo'),
         ];
 
+        // Hard code to not change admin config
+        if (intval($data['id']) === 1) 
+        {
+            return $this->mainAdminFreezed();
+        }
+
         // rules
         $rules = [
             'id'   => ['label' => 'Akun', 'rules' => 'required|is_not_unique[admin.id]'],
@@ -567,6 +595,12 @@ class AdministratorController extends BaseController
         ];
 
         $data = $this->request->getPost(array_keys($rules));
+
+        // Hard code to not change admin config
+        if (intval($data['id']) === 1) 
+        {
+            return $this->mainAdminFreezed();
+        }
 
         if (!$this->validateData($data, $rules))
         {
