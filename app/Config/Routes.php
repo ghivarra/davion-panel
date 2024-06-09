@@ -29,6 +29,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
 
     // Account routes
     $routes->group('account', static function($routes) {
+        $routes->match(['options', 'get'], 'get-session', 'Admin\\AccountController::getSession');
         $routes->match(['options', 'post'], 'change-password', 'Admin\\AccountController::changePassword');
         $routes->match(['options', 'post'], 'update', 'Admin\\AccountController::update');
     });
@@ -87,7 +88,7 @@ $routes->group($_ENV['PANEL_PAGE'], static function($routes) {
     $routes->group('administrator', static function($routes) {
         $routes->match(['options', 'get'], 'get', 'Admin\\AdministratorController::get');
         $routes->match(['options', 'get'], 'get-role', 'Admin\\AdministratorController::getRoleList');
-        $routes->match(['options', 'get'], 'get-session', 'Admin\\AdministratorController::getSession');
+        $routes->match(['options', 'get'], 'get-account-session', 'Admin\\AdministratorController::getSession');
         $routes->match(['options', 'post'], 'datatable', 'Admin\\AdministratorController::datatable');
         $routes->match(['options', 'post'], 'create', 'Admin\\AdministratorController::create');
         $routes->match(['options', 'post'], 'update', 'Admin\\AdministratorController::update');

@@ -198,6 +198,21 @@ class DavionShield
 
     //================================================================================================
 
+    public function getSession(): array
+    {
+        $accountData = $this->getAccountData();
+
+        $orm = new AdminSessionModel();
+        $get = $orm->select(['id', 'name', 'useragent', 'ip_address'])
+                   ->where('admin_id', $accountData['id'])
+                   ->find();
+
+        // return
+        return empty($get) ? [] : $get;
+    }
+
+    //================================================================================================
+
     public function getSessionFromUser($adminId): array
     {
         $orm = new AdminSessionModel();

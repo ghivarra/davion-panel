@@ -61,6 +61,20 @@ class AccountController extends BaseController
 
     //================================================================================================
 
+    public function getSession(): ResponseInterface
+    {
+        $auth = new DavionShield();
+
+        // return
+        return $this->response->setJSON([
+            'status'  => 'success',
+            'message' => 'Password akun anda berhasil diperbaharui',
+            'data'    => $auth->getSession()
+        ]);
+    }
+
+    //================================================================================================
+
     public function update(): ResponseInterface
     {
         $auth    = new DavionShield();
