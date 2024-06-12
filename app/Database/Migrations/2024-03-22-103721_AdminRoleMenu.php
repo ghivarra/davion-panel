@@ -14,6 +14,9 @@ class AdminRoleMenu extends Migration
 
     public function up()
     {
+        $database = new Database();
+        $timeType = ($database->default['DBDriver'] === 'MySQLi') ? 'DATETIME' : 'TIMESTAMP';
+        
         // set fields
         $fields = [
             'id' => [
@@ -32,12 +35,12 @@ class AdminRoleMenu extends Migration
                 'null'     => true
             ],
             'created_at' => [
-                'type'    => 'TIMESTAMP',
+                'type'    => $timeType,
                 'null'    => true,
                 'default' => new RawSql('CURRENT_TIMESTAMP')
             ],
             'updated_at' => [
-                'type'    => 'TIMESTAMP',
+                'type'    => $timeType,
                 'null'    => true,
                 'default' => new RawSql('CURRENT_TIMESTAMP')
             ]
@@ -52,7 +55,6 @@ class AdminRoleMenu extends Migration
         // add indexes
         $this->forge->addKey('admin_role_id');
         $this->forge->addKey('admin_menu_id');
-        $this->forge->addKey('type');
 
         // add foreign key
         $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id', 'CASCADE', 'CASCADE');

@@ -14,6 +14,9 @@ class Website extends Migration
 
     public function up()
     {
+        $database = new Database();
+        $timeType = ($database->default['DBDriver'] === 'MySQLi') ? 'DATETIME' : 'TIMESTAMP';
+        
         // set fields
         $fields = [
             'id' => [
@@ -31,12 +34,12 @@ class Website extends Migration
                 'null' => true
             ],
             'created_at' => [
-                'type'    => 'TIMESTAMP',
+                'type'    => $timeType,
                 'null'    => true,
                 'default' => new RawSql('CURRENT_TIMESTAMP')
             ],
             'updated_at' => [
-                'type'    => 'TIMESTAMP',
+                'type'    => $timeType,
                 'null'    => true,
                 'default' => new RawSql('CURRENT_TIMESTAMP')
             ]

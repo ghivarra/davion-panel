@@ -14,6 +14,9 @@ class AdminSession extends Migration
 
     public function up()
     {
+        $database = new Database();
+        $timeType = ($database->default['DBDriver'] === 'MySQLi') ? 'DATETIME' : 'TIMESTAMP';
+        
         // set fields
         $fields = [
             'id' => [
@@ -38,12 +41,12 @@ class AdminSession extends Migration
                 'constraint' => 100
             ],
             'created_at' => [
-                'type'    => 'TIMESTAMP',
+                'type'    => $timeType,
                 'null'    => true,
                 'default' => new RawSql('CURRENT_TIMESTAMP')
             ],
             'updated_at' => [
-                'type'    => 'TIMESTAMP',
+                'type'    => $timeType,
                 'null'    => true,
                 'default' => new RawSql('CURRENT_TIMESTAMP')
             ]
@@ -56,7 +59,6 @@ class AdminSession extends Migration
         $this->forge->addKey('id', true);
 
         // add indexes
-        $this->forge->addKey('name');
         $this->forge->addKey('admin_id');
         
         // add foreign key
