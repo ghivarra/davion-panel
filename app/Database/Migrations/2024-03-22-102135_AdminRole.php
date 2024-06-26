@@ -60,8 +60,6 @@ class AdminRole extends Migration
         $this->forge->addKey('id', true);
 
         // add indexes
-        $this->forge->addKey('is_superadmin');
-        $this->forge->addKey('status');
         $this->forge->addKey('deleted_at');
 
         // create table

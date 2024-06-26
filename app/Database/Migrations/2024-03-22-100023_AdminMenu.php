@@ -87,7 +87,6 @@ class AdminMenu extends Migration
         // add indexes
         $this->forge->addKey('admin_menu_group_id');
         $this->forge->addKey('type');
-        $this->forge->addKey('status');
         $this->forge->addKey('deleted_at');
 
         // add foreign key

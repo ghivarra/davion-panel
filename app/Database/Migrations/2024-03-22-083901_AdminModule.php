@@ -67,7 +67,6 @@ class AdminModule extends Migration
 
         // add indexes
         $this->forge->addKey('group');
-        $this->forge->addKey('status');
         $this->forge->addKey('deleted_at');
 
         // create table

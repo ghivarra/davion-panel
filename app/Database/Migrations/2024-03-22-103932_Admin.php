@@ -93,7 +93,6 @@ class Admin extends Migration
 
         // add indexes
         $this->forge->addKey('admin_role_id');
-        $this->forge->addKey('status');
         $this->forge->addKey('email_verified_at');
         $this->forge->addKey('token_expired_at');
         $this->forge->addKey('deleted_at');

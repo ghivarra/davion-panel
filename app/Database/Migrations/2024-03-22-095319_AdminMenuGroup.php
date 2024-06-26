@@ -60,7 +60,6 @@ class AdminMenuGroup extends Migration
         $this->forge->addKey('id', true);
 
         // add indexes
-        $this->forge->addKey('status');
         $this->forge->addKey('deleted_at');
 
         // create table

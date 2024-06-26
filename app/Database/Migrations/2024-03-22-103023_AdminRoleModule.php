@@ -64,7 +64,6 @@ class AdminRoleModule extends Migration
         // add indexes
         $this->forge->addKey('admin_role_id');
         $this->forge->addKey('admin_module_id');
-        $this->forge->addKey('type');
 
         // add foreign key
         $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id', 'CASCADE', 'CASCADE');
