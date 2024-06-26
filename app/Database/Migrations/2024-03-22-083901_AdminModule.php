@@ -16,6 +16,7 @@ class AdminModule extends Migration
     {
         $database = new Database();
         $timeType = ($database->default['DBDriver'] === 'MySQLi') ? 'DATETIME' : 'TIMESTAMP';
+        $charType = ($database->default['DBDriver'] === 'MySQLi') ? 'CHAR' : 'VARCHAR';
 
         // set fields
         $fields = [
@@ -25,21 +26,21 @@ class AdminModule extends Migration
                 'auto_increment' => true
             ],
             'alias' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100,
                 'unique'     => true
             ],
             'name' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100
             ],
             'group' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100,
                 'null'       => true
             ],
             'status' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 10,
                 'default'    => 'Aktif'
             ],

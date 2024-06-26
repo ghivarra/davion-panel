@@ -16,6 +16,7 @@ class AdminMenu extends Migration
     {
         $database = new Database();
         $timeType = ($database->default['DBDriver'] === 'MySQLi') ? 'DATETIME' : 'TIMESTAMP';
+        $charType = ($database->default['DBDriver'] === 'MySQLi') ? 'CHAR' : 'VARCHAR';
         
         // set fields
         $fields = [
@@ -25,16 +26,16 @@ class AdminMenu extends Migration
                 'auto_increment' => true
             ],
             'title' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 50
             ],
             'router_name' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100,
                 'null'       => true
             ],
             'icon' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100,
                 'null'       => true
             ],
@@ -43,12 +44,12 @@ class AdminMenu extends Migration
                 'default' => 1
             ],
             'status' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 10,
                 'default'    => 'Aktif'
             ],
             'type' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 20,
                 'default'    => 'Primary'
             ],

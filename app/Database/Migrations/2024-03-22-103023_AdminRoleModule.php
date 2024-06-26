@@ -16,6 +16,7 @@ class AdminRoleModule extends Migration
     {
         $database = new Database();
         $timeType = ($database->default['DBDriver'] === 'MySQLi') ? 'DATETIME' : 'TIMESTAMP';
+        $charType = ($database->default['DBDriver'] === 'MySQLi') ? 'CHAR' : 'VARCHAR';
         
         // set fields
         $fields = [
@@ -25,7 +26,7 @@ class AdminRoleModule extends Migration
                 'auto_increment' => true
             ],
             'type' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 10,
                 'default'    => 'Full'
             ],

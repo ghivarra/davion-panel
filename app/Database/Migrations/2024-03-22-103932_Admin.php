@@ -16,6 +16,7 @@ class Admin extends Migration
     {
         $database = new Database();
         $timeType = ($database->default['DBDriver'] === 'MySQLi') ? 'DATETIME' : 'TIMESTAMP';
+        $charType = ($database->default['DBDriver'] === 'MySQLi') ? 'CHAR' : 'VARCHAR';
         
         // set fields
         $fields = [
@@ -25,20 +26,20 @@ class Admin extends Migration
                 'auto_increment' => true
             ],
             'username' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 50,
                 'unique'     => true
             ],
             'password' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100
             ],
             'name' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100
             ],
             'email' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100,
                 'unique'     => true
             ],
@@ -47,7 +48,7 @@ class Admin extends Migration
                 'null'       => true
             ],
             'status' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 10,
                 'default'    => 'Aktif'
             ],
@@ -56,12 +57,12 @@ class Admin extends Migration
                 'unsigned' => true,
             ],
             'photo' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100,
                 'null'       => true
             ],
             'token' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100,
                 'null'       => true
             ],

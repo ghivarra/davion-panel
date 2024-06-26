@@ -16,6 +16,7 @@ class AdminRole extends Migration
     {
         $database = new Database();
         $timeType = ($database->default['DBDriver'] === 'MySQLi') ? 'DATETIME' : 'TIMESTAMP';
+        $charType = ($database->default['DBDriver'] === 'MySQLi') ? 'CHAR' : 'VARCHAR';
         
         // set fields
         $fields = [
@@ -25,7 +26,7 @@ class AdminRole extends Migration
                 'auto_increment' => true
             ],
             'name' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100
             ],
             'is_superadmin' => [
@@ -33,7 +34,7 @@ class AdminRole extends Migration
                 'default' => 0
             ],
             'status' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 10,
                 'default'    => 'Aktif'
             ],

@@ -16,6 +16,7 @@ class AdminMenuGroup extends Migration
     {
         $database = new Database();
         $timeType = ($database->default['DBDriver'] === 'MySQLi') ? 'DATETIME' : 'TIMESTAMP';
+        $charType = ($database->default['DBDriver'] === 'MySQLi') ? 'CHAR' : 'VARCHAR';
 
         // set fields
         $fields = [
@@ -25,7 +26,7 @@ class AdminMenuGroup extends Migration
                 'auto_increment' => true
             ],
             'name' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 100
             ],
             'sort_order' => [
@@ -33,7 +34,7 @@ class AdminMenuGroup extends Migration
                 'default' => 1
             ],
             'status' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 10,
                 'default'    => 'Aktif'
             ],

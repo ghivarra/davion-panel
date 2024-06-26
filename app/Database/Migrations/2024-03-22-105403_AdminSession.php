@@ -16,6 +16,7 @@ class AdminSession extends Migration
     {
         $database = new Database();
         $timeType = ($database->default['DBDriver'] === 'MySQLi') ? 'DATETIME' : 'TIMESTAMP';
+        $charType = ($database->default['DBDriver'] === 'MySQLi') ? 'CHAR' : 'VARCHAR';
         
         // set fields
         $fields = [
@@ -25,7 +26,7 @@ class AdminSession extends Migration
                 'auto_increment' => true
             ],
             'name' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 255,
                 'unique'     => true
             ],
@@ -37,7 +38,7 @@ class AdminSession extends Migration
                 'type' => 'text',
             ],
             'ip_address' => [
-                'type'       => 'CHAR',
+                'type'       => $charType,
                 'constraint' => 130
             ],
             'created_at' => [
