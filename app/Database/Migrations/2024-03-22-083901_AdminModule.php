@@ -25,21 +25,21 @@ class AdminModule extends Migration
                 'auto_increment' => true
             ],
             'alias' => [
-                'type'       => 'VARCHAR',
+                'type'       => 'CHAR',
                 'constraint' => 100,
                 'unique'     => true
             ],
             'name' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 200
+                'type'       => 'CHAR',
+                'constraint' => 100
             ],
             'group' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 200,
+                'type'       => 'CHAR',
+                'constraint' => 100,
                 'null'       => true
             ],
             'status' => [
-                'type'       => 'VARCHAR',
+                'type'       => 'CHAR',
                 'constraint' => 10,
                 'default'    => 'Aktif'
             ],
@@ -69,8 +69,16 @@ class AdminModule extends Migration
         $this->forge->addKey('group');
         $this->forge->addKey('deleted_at');
 
+        // option
+        $option = [];
+
+        if ($database->default['DBDriver'] === 'MySQLi')
+        {
+            $option['ROW_FORMAT'] = 'COMPACT';
+        }
+
         // create table
-        $this->forge->createTable($this->tableName, true);
+        $this->forge->createTable($this->tableName, true, $option);
     }
 
     //=====================================================================================================

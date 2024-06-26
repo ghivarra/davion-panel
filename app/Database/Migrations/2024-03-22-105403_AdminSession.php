@@ -25,7 +25,7 @@ class AdminSession extends Migration
                 'auto_increment' => true
             ],
             'name' => [
-                'type'       => 'VARCHAR',
+                'type'       => 'CHAR',
                 'constraint' => 255,
                 'unique'     => true
             ],
@@ -37,8 +37,8 @@ class AdminSession extends Migration
                 'type' => 'text',
             ],
             'ip_address' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 100
+                'type'       => 'CHAR',
+                'constraint' => 130
             ],
             'created_at' => [
                 'type'    => $timeType,
@@ -64,8 +64,16 @@ class AdminSession extends Migration
         // add foreign key
         $this->forge->addForeignKey('admin_id', 'admin', 'id', 'CASCADE', 'CASCADE');
 
+        // option
+        $option = [];
+
+        if ($database->default['DBDriver'] === 'MySQLi')
+        {
+            $option['ROW_FORMAT'] = 'DYNAMIC';
+        }
+
         // create table
-        $this->forge->createTable($this->tableName, true);
+        $this->forge->createTable($this->tableName, true, $option);
     }
 
     //=====================================================================================================

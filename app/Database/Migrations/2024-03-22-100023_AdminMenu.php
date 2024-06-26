@@ -25,16 +25,16 @@ class AdminMenu extends Migration
                 'auto_increment' => true
             ],
             'title' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 200
+                'type'       => 'CHAR',
+                'constraint' => 50
             ],
             'router_name' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 200,
+                'type'       => 'CHAR',
+                'constraint' => 100,
                 'null'       => true
             ],
             'icon' => [
-                'type'       => 'VARCHAR',
+                'type'       => 'CHAR',
                 'constraint' => 100,
                 'null'       => true
             ],
@@ -43,12 +43,12 @@ class AdminMenu extends Migration
                 'default' => 1
             ],
             'status' => [
-                'type'       => 'VARCHAR',
+                'type'       => 'CHAR',
                 'constraint' => 10,
                 'default'    => 'Aktif'
             ],
             'type' => [
-                'type'       => 'VARCHAR',
+                'type'       => 'CHAR',
                 'constraint' => 20,
                 'default'    => 'Primary'
             ],
@@ -93,8 +93,16 @@ class AdminMenu extends Migration
         $this->forge->addForeignKey('admin_menu_parent_id', 'admin_menu', 'id', 'CASCADE', 'RESTRICT');
         $this->forge->addForeignKey('admin_menu_group_id', 'admin_menu_group', 'id', 'CASCADE', 'SET NULL');
 
+        // option
+        $option = [];
+
+        if ($database->default['DBDriver'] === 'MySQLi')
+        {
+            $option['ROW_FORMAT'] = 'COMPACT';
+        }
+
         // create table
-        $this->forge->createTable($this->tableName, true);
+        $this->forge->createTable($this->tableName, true, $option);
     }
 
     //=====================================================================================================

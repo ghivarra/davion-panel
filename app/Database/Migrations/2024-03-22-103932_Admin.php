@@ -25,21 +25,21 @@ class Admin extends Migration
                 'auto_increment' => true
             ],
             'username' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 100,
+                'type'       => 'CHAR',
+                'constraint' => 50,
                 'unique'     => true
             ],
             'password' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 1000
+                'type'       => 'CHAR',
+                'constraint' => 100
             ],
             'name' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 200
+                'type'       => 'CHAR',
+                'constraint' => 100
             ],
             'email' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 200,
+                'type'       => 'CHAR',
+                'constraint' => 100,
                 'unique'     => true
             ],
             'email_verified_at' => [
@@ -47,7 +47,7 @@ class Admin extends Migration
                 'null'       => true
             ],
             'status' => [
-                'type'       => 'VARCHAR',
+                'type'       => 'CHAR',
                 'constraint' => 10,
                 'default'    => 'Aktif'
             ],
@@ -56,13 +56,13 @@ class Admin extends Migration
                 'unsigned' => true,
             ],
             'photo' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 500,
+                'type'       => 'CHAR',
+                'constraint' => 100,
                 'null'       => true
             ],
             'token' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 500,
+                'type'       => 'CHAR',
+                'constraint' => 100,
                 'null'       => true
             ],
             'token_expired_at' => [
@@ -100,8 +100,16 @@ class Admin extends Migration
         // add foreign key
         $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id', 'CASCADE', 'RESTRICT');
 
+        // option
+        $option = [];
+
+        if ($database->default['DBDriver'] === 'MySQLi')
+        {
+            $option['ROW_FORMAT'] = 'COMPACT';
+        }
+
         // create table
-        $this->forge->createTable($this->tableName, true);
+        $this->forge->createTable($this->tableName, true, $option);
     }
 
     //=====================================================================================================

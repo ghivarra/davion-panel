@@ -60,8 +60,16 @@ class AdminRoleMenu extends Migration
         $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('admin_menu_id', 'admin_menu', 'id', 'CASCADE', 'CASCADE');
 
+        // option
+        $option = [];
+
+        if ($database->default['DBDriver'] === 'MySQLi')
+        {
+            $option['ROW_FORMAT'] = 'COMPACT';
+        }
+
         // create table
-        $this->forge->createTable($this->tableName, true);
+        $this->forge->createTable($this->tableName, true, $option);
     }
 
     //=====================================================================================================

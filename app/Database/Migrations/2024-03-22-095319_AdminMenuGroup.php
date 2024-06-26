@@ -25,15 +25,15 @@ class AdminMenuGroup extends Migration
                 'auto_increment' => true
             ],
             'name' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 200
+                'type'       => 'CHAR',
+                'constraint' => 100
             ],
             'sort_order' => [
                 'type'    => 'INT',
                 'default' => 1
             ],
             'status' => [
-                'type'       => 'VARCHAR',
+                'type'       => 'CHAR',
                 'constraint' => 10,
                 'default'    => 'Aktif'
             ],
@@ -62,8 +62,16 @@ class AdminMenuGroup extends Migration
         // add indexes
         $this->forge->addKey('deleted_at');
 
+        // option
+        $option = [];
+
+        if ($database->default['DBDriver'] === 'MySQLi')
+        {
+            $option['ROW_FORMAT'] = 'COMPACT';
+        }
+
         // create table
-        $this->forge->createTable($this->tableName, true);
+        $this->forge->createTable($this->tableName, true, $option);
     }
 
     //=====================================================================================================

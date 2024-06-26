@@ -25,8 +25,8 @@ class Website extends Migration
                 'auto_increment' => true
             ],
             'name' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 200,
+                'type'       => 'CHAR',
+                'constraint' => 100,
                 'unique'     => true
             ],
             'value' => [
@@ -51,8 +51,16 @@ class Website extends Migration
         // add primary key
         $this->forge->addKey('id', true);
 
+        // option
+        $option = [];
+
+        if ($database->default['DBDriver'] === 'MySQLi')
+        {
+            $option['ROW_FORMAT'] = 'DYNAMIC';
+        }
+
         // create table
-        $this->forge->createTable($this->tableName, true);
+        $this->forge->createTable($this->tableName, true, $option);
     }
 
     //=====================================================================================================

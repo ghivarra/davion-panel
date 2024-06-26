@@ -25,15 +25,15 @@ class AdminRole extends Migration
                 'auto_increment' => true
             ],
             'name' => [
-                'type'       => 'VARCHAR',
-                'constraint' => 200
+                'type'       => 'CHAR',
+                'constraint' => 100
             ],
             'is_superadmin' => [
                 'type'    => 'SMALLINT',
                 'default' => 0
             ],
             'status' => [
-                'type'       => 'VARCHAR',
+                'type'       => 'CHAR',
                 'constraint' => 10,
                 'default'    => 'Aktif'
             ],
@@ -62,8 +62,16 @@ class AdminRole extends Migration
         // add indexes
         $this->forge->addKey('deleted_at');
 
+        // option
+        $option = [];
+
+        if ($database->default['DBDriver'] === 'MySQLi')
+        {
+            $option['ROW_FORMAT'] = 'COMPACT';
+        }
+
         // create table
-        $this->forge->createTable($this->tableName, true);
+        $this->forge->createTable($this->tableName, true, $option);
     }
 
     //=====================================================================================================

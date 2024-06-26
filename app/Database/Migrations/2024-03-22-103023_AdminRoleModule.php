@@ -25,7 +25,7 @@ class AdminRoleModule extends Migration
                 'auto_increment' => true
             ],
             'type' => [
-                'type'       => 'VARCHAR',
+                'type'       => 'CHAR',
                 'constraint' => 10,
                 'default'    => 'Full'
             ],
@@ -69,8 +69,16 @@ class AdminRoleModule extends Migration
         $this->forge->addForeignKey('admin_role_id', 'admin_role', 'id', 'CASCADE', 'CASCADE');
         $this->forge->addForeignKey('admin_module_id', 'admin_module', 'id', 'CASCADE', 'CASCADE');
 
+        // option
+        $option = [];
+
+        if ($database->default['DBDriver'] === 'MySQLi')
+        {
+            $option['ROW_FORMAT'] = 'DYNAMIC';
+        }
+
         // create table
-        $this->forge->createTable($this->tableName, true);
+        $this->forge->createTable($this->tableName, true, $option);
     }
 
     //=====================================================================================================
