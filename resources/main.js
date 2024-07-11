@@ -3,7 +3,8 @@ import { createApp, h } from 'vue'
 import { VueIgniter } from './libraries/Ghivarra/VueIgniter'
 import { createRouter, createWebHistory } from 'vue-router'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import router from './router'
+import indexSingle from './router/index-single'
+import indexChunked from './router/index-chunked'
 import axios from 'axios'
 
 // set axios settings
@@ -12,7 +13,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // load router
 const vueRouter = createRouter({
     history: createWebHistory(),
-    routes: router
+    routes: (import.meta.env === 'single') ? indexSingle : indexChunked
 });
 
 // create new Vue CodeIgniter
