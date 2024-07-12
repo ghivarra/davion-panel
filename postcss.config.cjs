@@ -7,8 +7,6 @@ module.exports = {
         `./app/Views/**/*.php`,
         `./resources/**/*.js`,
         `./resources/**/*.vue`,
-        `./node_modules/choices.js/**/*.js`,
-        `./node_modules/ckeditor5/**/*.js`
       ],
       defaultExtractor: (content) => {
         const contentWithoutStyleBlocks = content.replace(
