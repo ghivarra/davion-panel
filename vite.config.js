@@ -17,12 +17,12 @@ export default defineConfig(() => {
 			customHotReload(),
 			ViteRestart({
 				restart: [
-					'postcss.config.cjs'
+					'postcss.config.js'
 				]
 			})
         ],
 		css: {
-			postcss: './postcss.config.cjs',
+			postcss: './postcss.config.js',
 		},
 		build: {
 			emptyOutDir: false,
