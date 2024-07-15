@@ -15,12 +15,20 @@ module.exports = {
         );
         return contentWithoutStyleBlocks.match(/[A-Za-z0-9-_/:]*[A-Za-z0-9-_/]+/g) || [];
       },
-      safelist: [
-        /-(leave|enter|appear)(|-(to|from|active))$/,
-        /^(?!(|.*?:)cursor-move).+-move$/,
-        /^router-link(|-exact)-active$/,
-        /data-v-.*/,
-      ],
+      safelist:{
+        standard: [
+          /-(leave|enter|appear)(|-(to|from|active))$/,
+          /^(?!(|.*?:)cursor-move).+-move$/,
+          /^router-link(|-exact)-active$/,
+          /data-v-.*/,
+        ],
+        deep: [
+  
+        ],
+        greedy: [
+          /^modal-/,
+        ]
+      }
     }),
   ],
 };

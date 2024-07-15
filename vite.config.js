@@ -3,6 +3,7 @@ import vue from "@vitejs/plugin-vue"
 import basicSsl from '@vitejs/plugin-basic-ssl'
 import { fileURLToPath, URL } from 'url'
 import { customHotReload } from "./resources/libraries/Ghivarra/PHP-Hmr"
+import ViteRestart from 'vite-plugin-restart'
 
 /*global process*/
 
@@ -13,7 +14,12 @@ export default defineConfig(() => {
 		plugins: [
             vue(), 
             basicSsl(),
-			customHotReload()
+			customHotReload(),
+			ViteRestart({
+				restart: [
+					'postcss.config.cjs'
+				]
+			})
         ],
 		css: {
 			postcss: './postcss.config.cjs',
