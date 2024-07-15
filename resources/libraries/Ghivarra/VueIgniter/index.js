@@ -20,7 +20,7 @@ const VueIgniter = (options) => {
 
     } else {
         
-        options.setup(app.default, Object.assign({}, pageData.data), id)
+        options.setup(page.default, Object.assign({}, pageData.data), id)
     }
 
 }
