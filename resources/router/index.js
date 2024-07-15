@@ -1,5 +1,9 @@
-const routes = () => {
-    return (import.meta.env === 'single') ? import('@/router/config/index-single.js') : import('@/router/config/index-chunked')
+const router = () => {
+    // uncomment this if using chunked files
+    return import('@/router/config/index-chunked')
+
+    // uncomment this if using single files
+    // return import('@/router/config/index-single')
 }
 
-export default routes
+export default router
