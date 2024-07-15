@@ -30,6 +30,8 @@ export default {
                 ],
                 greedy: [
                     /^modal-/,
+                    /^dropdown-/,
+                    /^form-/,
                 ]
             }
         })
