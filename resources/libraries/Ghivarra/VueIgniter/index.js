@@ -5,12 +5,12 @@ const VueIgniter = (options) => {
     const moduleName = `/${import.meta.env.VITE_RESOURCES_DIR}/views/${pageData.view}.vue`
 
     // uncomment this if using chunked
-    const allPages = import.meta.glob('@/views/**/*.vue', { eager: false})
-    const page = allPages[moduleName]()
+    // const allPages = import.meta.glob('@/views/**/*.vue', { eager: false})
+    // const page = allPages[moduleName]()
 
     // uncomment this if using single file
-    // const allPages = import.meta.glob('@/views/**/*.vue', { eager: true})
-    // const page = allPages[moduleName]
+    const allPages = import.meta.glob('@/views/**/*.vue', { eager: true})
+    const page = allPages[moduleName]
 
     if (typeof page.then === 'function') {
 
