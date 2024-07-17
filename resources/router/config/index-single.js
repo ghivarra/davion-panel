@@ -37,7 +37,7 @@ export default [
     
     // Role Page
     { path: `/${env.VITE_PANEL_PAGE}/role`, name: 'panel.role', component: PanelRoleView, meta: { 'pageName': 'Role & Perizinan' } },
-    { path: `/${env.VITE_PANEL_PAGE}/role/create`, name: 'panel.role.create', component: PanelRoleCreateView, meta: { 'pageName': 'Buat Role Baru' } },
+    { path: `/${env.VITE_PANEL_PAGE}/role/add-new`, name: 'panel.role.create', component: PanelRoleCreateView, meta: { 'pageName': 'Buat Role Baru' } },
     { path: `/${env.VITE_PANEL_PAGE}/role/edit/:roleId`, name: 'panel.role.edit.id', component: PanelRoleEditView, meta: { 'pageName': 'Edit Role' } },
     
     // Catch All / 404 Page
