@@ -112,7 +112,7 @@ export default {
             app.showLoader()
             
             let form = new FormData()
-            form.append('admin_menu_group_id', app.data.groupId)
+            form.append('admin_menu_group_id', app.groupId)
             form.append('type', app.data.type)
             form.append('title', app.data.title)
             form.append('status', app.data.status)
