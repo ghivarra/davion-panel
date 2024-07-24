@@ -137,6 +137,7 @@ export default {
     height: 100dvh;
     background-color: darken($primary, 25%);
     transition: all 250ms ease-in-out;
+    overflow: auto;
 
     @media (max-width: 991.98px) {
         position: fixed;
