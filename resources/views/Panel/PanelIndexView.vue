@@ -316,4 +316,10 @@ table .table-dropdown::after {
     display: none;
 }
 
+.ghivarra-vue-table-wrapper {
+    .col-no {
+        text-align: center;
+    }
+}
+
 </style>
