@@ -51,8 +51,13 @@
 
 <script>
 
-/*eslint no-unused-vars: 0*/
-import * as bootstrap from 'bootstrap'
+// import bootstrap
+import 'bootstrap/js/dist/modal'
+import 'bootstrap/js/dist/button'
+import 'bootstrap/js/dist/dropdown'
+import 'bootstrap/js/dist/offcanvas'
+
+// import others
 import PanelHeaderComponent from '../../components/PanelHeaderComponent.vue'
 import PreloadComponent from '../../components/PreloadComponent.vue'
 import PanelSidebarComponent from '../../components/PanelSidebarComponent.vue'
