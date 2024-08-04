@@ -15,22 +15,22 @@
                 <div class="mb-3">
                     <p class="mb-2 fw-bold">Tipe:</p>
                     <div class="form-check form-check-inline">
-                        <input v-bind:checked="data.is_superadmin === 0" v-model="data.is_superadmin"
+                        <input v-bind:checked="data.is_superadmin == 0" v-model="data.is_superadmin"
                             class="form-check-input" type="radio" name="type" id="restrictedRole"
                             value="0">
                         <label class="form-check-label" for="restrictedRole">Admin Terbatas</label>
                     </div>
 
                     <div class="mb-3 form-check form-check-inline">
-                        <input v-bind:checked="data.is_superadmin === 1" v-model="data.is_superadmin" class="form-check-input" type="radio" name="type" id="superRole" value="1">
+                        <input v-bind:checked="data.is_superadmin == 1" v-model="data.is_superadmin" class="form-check-input" type="radio" name="type" id="superRole" value="1">
                         <label class="form-check-label" for="superRole">Superadmin</label>
                     </div>
 
-                    <div v-if="(data.is_superadmin === 1)" class="alert alert-warning mb-4">
+                    <div v-if="(data.is_superadmin == 1)" class="alert alert-warning mb-4">
                         Role dengan tipe Superadmin secara otomatis akan bisa mengakses <b>semua</b> jenis menu dan modul.
                     </div>
 
-                    <div v-if="(data.is_superadmin === 0)" class="mb-3">
+                    <div v-if="(data.is_superadmin == 0)" class="mb-3">
                         <div class="fw-bold mb-3 border-bottom pb-2">Pilihan Menu:</div>
                         <div>
                             <div v-for="(group, n) in menus" v-bind:key="n" class="mb-3">
@@ -57,7 +57,7 @@
                         </div>
                     </div>
 
-                    <div v-if="(data.is_superadmin === 0)" class="mb-4">
+                    <div v-if="(data.is_superadmin == 0)" class="mb-4">
                         <div class="fw-bold mb-3 border-bottom pb-2">Pilihan Modul:</div>
                         <div>
                             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-2">
