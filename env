@@ -14,7 +14,35 @@
 # ENVIRONMENT
 #--------------------------------------------------------------------
 
-# CI_ENVIRONMENT = production
+CI_ENVIRONMENT='development'
+LOGIN_PAGE='login'
+PANEL_PAGE='admin'
+DEFAULT_ADMIN_PASSWORD='wPsvk1t9jr0sjYfQ1SqqMU2Y4MVTlaq6'
+IMAGE_ALLOWED_SIZE="16,32,64,180,220"
+AUTHOR='Ghivarra Senandika Rushdie'
+SESSION_LOGIN_PARAM='session_login_param'
+SESSION_LOGIN_TOKEN='u7qHHTn5mWhRzS5HMOTUpRU6dXh9NCxn'
+SESSION_LOGIN_TTL=300
+SESSION_GC_PROBABILITY=10
+
+
+#--------------------------------------------------------------------
+# VITE
+#--------------------------------------------------------------------
+
+VITE_URL='https://davion.giberamedia.com'
+VITE_APP_ENV ='development'
+VITE_APP_NAME='Davion Panel'
+VITE_APP_ID='davion'
+VITE_ORIGIN='https://localhost:3479'
+VITE_PORT=3479
+VITE_ASSETS_DIR='dist'
+VITE_ENTRY_FILE='main.js'
+VITE_RESOURCES_DIR='resources'
+VITE_LOGIN_PAGE="${LOGIN_PAGE}"
+VITE_PANEL_PAGE="${PANEL_PAGE}"
+VITE_USE_LOADER=true
+VITE_LOADER_ON_CHANGE_PAGE=false
 
 #--------------------------------------------------------------------
 # APP
