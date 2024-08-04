@@ -29,7 +29,7 @@ The database and files keep resetting every 30 minutes, so it doesn't matter. Tr
 - SweetAlert 2
 
 # I forked but cannot run it?
-One cannot run this app without the ignored files from App/Config, vendor, and node_modules folders. But don't worry, just run steps below (on Linux or UNIX environment):
+One cannot run this app without the ignored files from App/Config, vendor, and node_modules folders. But don't worry, just follow the steps below to run this app (on Linux or UNIX environment):
 
 - Run `npm install` on project location
 - Run `composer install` on project location
