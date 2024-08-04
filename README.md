@@ -28,5 +28,15 @@ The database and files keep resetting every 30 minutes, so it doesn't matter. Tr
 - Bootstrap 5.3
 - SweetAlert 2
 
+# I forked but cannot run it?
+One cannot run this app without the ignored files from App/Config, vendor, and node_modules folders. But don't worry, just run steps below (on Linux or UNIX environment):
+
+- Run `npm install` on project location
+- Run `composer install` on project location
+- Run `cp vendor/codeigniter4/framework/app/Config/{App.php,Cache.php,ContentSecurityPolicy.php,Cookie.php,Database.php,Encryption.php,Email.php,Session.php,Security.php} app/Config/` on project location
+- Set the copied configuration files based on your server/host environment
+- Run `npm run dev` for development environment
+- Run `npm run build` and set `VITE_APP_ENV` in .env file to `production` for production
+
 # FAQ
 Email me at gsenandika@gmail.com for further questions.
