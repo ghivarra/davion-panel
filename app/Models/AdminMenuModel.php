@@ -102,7 +102,7 @@ class AdminMenuModel extends Model
         endforeach;
 
         // return
-        return isset($result) ? [] : $result;
+        return isset($result) ? $result : [];
     }
 
     //================================================================================================
