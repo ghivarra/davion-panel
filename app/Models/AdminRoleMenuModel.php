@@ -38,7 +38,7 @@ class AdminRoleMenuModel extends Model
     protected $beforeUpdate   = [];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];
-    protected $afterFind      = [];
+    protected $afterFind      = ['fixIntegerType'];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
@@ -105,8 +105,43 @@ class AdminRoleMenuModel extends Model
         endforeach;
 
         // return
-        return $result;
+        return isset($result) ? $result : [];
     }
 
     //================================================================================================
+
+    protected function fixIntegerType(array $methods): array
+    {
+        // return if empty
+        if (empty($methods['data']) OR is_null($methods['data']))
+        {
+            return $methods;
+        }
+
+        // check if singular or multiple
+        if ($methods['singleton'])
+        {
+            foreach ($methods['data'] as $field => $value):
+
+                $methods['data'][$field] = is_numeric($value) ? intval($value) : $value;
+
+            endforeach;
+
+        } else {
+
+            foreach ($methods['data'] as $i => $data):
+
+                foreach ($data as $field => $value)
+                {
+                    $methods['data'][$i][$field] = is_numeric($value) ? intval($value) : $value;
+                }
+
+            endforeach;
+        }
+
+        // return
+        return $methods;
+    }
+
+    //======================================================================================
 }
