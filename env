@@ -17,11 +17,11 @@
 CI_ENVIRONMENT='development'
 LOGIN_PAGE='login'
 PANEL_PAGE='admin'
-DEFAULT_ADMIN_PASSWORD='wPsvk1t9jr0sjYfQ1SqqMU2Y4MVTlaq6'
+DEFAULT_ADMIN_PASSWORD='your_default_password_here'
 IMAGE_ALLOWED_SIZE="16,32,64,180,220"
 AUTHOR='Ghivarra Senandika Rushdie'
 SESSION_LOGIN_PARAM='session_login_param'
-SESSION_LOGIN_TOKEN='u7qHHTn5mWhRzS5HMOTUpRU6dXh9NCxn'
+SESSION_LOGIN_TOKEN='your_session_login_token_here' # this is not cookie or any other client token, the token here is to validate your login session in the backend or serverside
 SESSION_LOGIN_TTL=300
 SESSION_GC_PROBABILITY=10
 
