@@ -117,11 +117,11 @@ export default {
             form.append('title', app.data.title)
             form.append('status', app.data.status)
 
-            if (app.data.title !== 'Child') {
+            if (app.data.type !== 'Child') {
                 form.append('icon', app.data.icon)
             }
 
-            if (app.data.title !== 'Parent') {
+            if (app.data.type !== 'Parent') {
                 form.append('router_name', app.data.router_name)
             }
 
