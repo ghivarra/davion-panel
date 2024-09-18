@@ -19,7 +19,7 @@
                             </label>
                             <input list="groupList" type="text" class="form-control" id="moduleGroup" name="group" maxlength="200" required>
                             <datalist id="groupList">
-                                <option v-for="(item, n) in groupList" v-bind:key="n" v-bind:value="item">
+                                <option v-for="(item, n) in moduleGroups" v-bind:key="n" v-bind:value="item">
                                     {{ item }}
                                 </option>
                             </datalist>
@@ -69,7 +69,7 @@ import Swal from 'sweetalert2'
 export default {
     name: 'module-create-modal',
     inject: ['showLoader', 'hideLoader'],
-    props: ['moduleGroup', 'getModuleGroup', 'updateTable'],
+    props: ['moduleGroups', 'getModuleGroup', 'updateTable'],
     methods: {
         create: function(e) {
             let form = e.target
