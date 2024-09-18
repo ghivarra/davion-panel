@@ -13,8 +13,8 @@
                             <div>
                                 <h5 class="fw-bold mb-2">
                                     {{ admin.name }}
-                                    <div class="ms-2 badge" v-bind:class="(admin.statusDefault === 'Aktif') ? 'bg-success' : 'bg-danger'">
-                                        {{ admin.statusDefault }}
+                                    <div class="ms-2 badge" v-bind:class="(admin.status === 'Aktif') ? 'bg-success' : 'bg-danger'">
+                                        {{ admin.status }}
                                     </div>
                                 </h5>
                                 <p class="mb-1">
