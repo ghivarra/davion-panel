@@ -116,32 +116,26 @@ export default {
         },
         activateMenu: function() {
             let app = this
-            let currentRouteName = app.$router.currentRoute.value.name
-
-            // menu exist
-            let menuExist = false
-
             app.menu.forEach((group) => {
-                group.menu.forEach((item) => {
-                    if (typeof item.router_name !== 'undefined' && item.router_name === currentRouteName) {
-                        menuExist = true
-                        app.activeMenuId = item.id
-                    }
-                    if (typeof item.childs !== 'undefined') {
-                        item.childs.forEach((child) => {
-                            if (typeof child.router_name !== 'undefined' && child.router_name === currentRouteName) {
-                                menuExist = true
-                                app.activeParentMenuId = item.id
-                                app.activeMenuId = child.id
-                            }
-                        })
-                    }
-                })
+                if (group.menu.length > 0) {
+                    group.menu.forEach((groupMenu) => {
+                        if (groupMenu.type !== 'Parent') {
+                            groupMenu.is_active = (groupMenu.router_name === app.$route.name)
+                        }
+                        if (typeof groupMenu.childs !== 'undefined') {
+                            groupMenu.childs.forEach((childMenu) => {
+                                if (childMenu.router_name === app.$route.name) {
+                                    childMenu.is_active = true
+                                    groupMenu.is_active = true
+                                } else {
+                                    childMenu.is_active = false
+                                    // groupMenu.is_active = false
+                                }
+                            })
+                        }
+                    })
+                }
             })
-
-            if (!menuExist) {
-                app.activeMenuId = null
-            }
         },
         stopLoader: function() {
             let app = this

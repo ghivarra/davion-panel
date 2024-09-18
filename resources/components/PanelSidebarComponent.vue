@@ -10,42 +10,41 @@
             </button>
         </div>
         <div class="p-3">
-            <div v-for="(group, a) in menu" v-bind:key="a">
+            <div v-for="(group, groupIndex) in menu" v-bind:key="groupIndex">
                 <span v-if="group.name !== 'Default'"
                     class="d-block pt-2 ps-3 mb-2 panel-sidebar-label text-uppercase">{{ group.name }}</span>
-                <div v-for="(item, n) in group.menu" v-bind:key="n"
-                    v-bind:class="{ active: (item.type === 'Primary') ? this.activePrimary.includes(item.id) : this.activeParent.includes(item.id), 'parent': (item.type === 'Parent') }"
+                <div v-for="(menu, menuIndex) in group.menu" v-bind:key="menuIndex"
+                    v-bind:class="{ active: menu.is_active, parent: (menu.type === 'Parent') }"
                     class="panel-sidebar-link mb-1">
 
                     <!-- Primary Menu -->
-                    <router-link v-if="item.type === 'Primary'" v-bind:to="{ name: item.router_name }"
-                        v-on:click="mainMenuClick(item)"
+                    <router-link v-if="menu.type === 'Primary'" v-bind:to="{ name: (menu.router_name === null) ? '' : menu.router_name }"
+                        v-on:click="mainMenuClick(menu)"
                         class="d-flex align-items-center panel-sidebar-link-button btn btn-link w-100 text-decoration-none">
-                        <font-awesome v-bind:icon="(item.icon === null) ? 'fa-regular fa-circle' : item.icon"
+                        <font-awesome v-bind:icon="(menu.icon === null) ? 'fa-regular fa-circle' : menu.icon"
                             class="panel-sidebar-link-icon me-2"></font-awesome>
-                        {{ item.title }}
+                        {{ menu.title }}
                     </router-link>
 
                     <!-- Parent Menu -->
-                    <button v-else v-on:click="mainMenuClick(item)" type="button"
-                        class="d-flex align-items-center panel-sidebar-link-button btn btn-link w-100 text-decoration-none">
-                        <font-awesome v-bind:icon="item.icon" class="panel-sidebar-link-icon me-2"></font-awesome>
-                        {{ item.title }}
+                    <button v-else v-on:click="mainMenuClick(menu)" type="button" class="d-flex align-items-center panel-sidebar-link-button btn btn-link w-100 text-decoration-none">
+                        <font-awesome v-bind:icon="menu.icon" class="panel-sidebar-link-icon me-2"></font-awesome>
+                        {{ menu.title }}
                         <div class="arrow">
                             <font-awesome icon="fas fa-chevron-right" class="arrow-icon"></font-awesome>
                         </div>
                     </button>
 
                     <!-- Childs Menu Wrapper -->
-                    <div v-if="(typeof item.childs !== 'undefined')"
+                    <div v-if="(typeof menu.childs !== 'undefined')"
                         class="panel-sidebar-link-child-wrapper text-white pt-2">
-                        <router-link v-for="(child, x) in item.childs" v-bind:key="x" v-on:click="childMenuClick(child)"
-                            v-bind:to="{ name: child.router_name }"
-                            v-bind:class="{ active: this.activePrimary.includes(child.id) }"
+                        <router-link v-for="(childMenu, childMenuIndex) in menu.childs" v-bind:key="childMenuIndex" 
+                            v-bind:to="{ name: childMenu.router_name }"
+                            v-bind:class="{ active: childMenu.is_active }"
                             class="d-flex mb-2 align-items-center panel-sidebar-link-button child btn btn-link w-100 text-decoration-none">
                             <font-awesome icon="fa-regular fa-circle"
                                 class="panel-sidebar-link-icon me-2"></font-awesome>
-                            {{ child.title }}
+                            {{ childMenu.title }}
                         </router-link>
                     </div>
                 </div>
@@ -67,21 +66,6 @@ export default {
     name: 'panel-sidebar-component',
     props: ['showSidebar', 'menu', 'activeMenu', 'activeParentMenu'],
     inject: ['config'],
-    data: function() {
-        return {
-            activePrimary: [],
-            activeParent: []
-        }
-    },
-    watch: {
-        activeMenu: function(newValue) {
-            this.activePrimary = []
-            this.activePrimary.push(newValue)
-        },
-        activeParentMenu: function(newValue) {
-            this.activeParent.push(newValue)
-        }
-    },
     methods:{
         isActive: function(menu) {
             if (menu.type === 'Primary') {
@@ -91,31 +75,15 @@ export default {
             }
         },
         mainMenuClick: function(menu) {
-            if (menu.type === 'Primary') {
-
-                // clean active Menu
-                this.activePrimary = []
-                this.activeParent = []
-
-                // push new routes
-                this.activePrimary.push(menu.id)
-
-            } else if (menu.type === 'Parent') {
-                if (this.activeParent.includes(menu.id)) {
-                    // search and activate parent
-                    var index = this.activeParent.indexOf(menu.id);
-                    this.activeParent.splice(index, 1);
-                } else {
-                    this.activeParent.push(menu.id)
+            this.menu.forEach((group) => {
+                if (group.menu.length > 0) {
+                    group.menu.forEach((groupMenu) => {
+                        if (groupMenu.type === 'Parent' && groupMenu.id === menu.id) {
+                            groupMenu.is_active = (groupMenu.is_active) ? false : true
+                        }
+                    })
                 }
-            }
-        },
-        childMenuClick: function(menu) {
-            // clean active Menu
-            this.activePrimary = []
-
-            // push new routes
-            this.activePrimary.push(menu.id)
+            })
         }
     },
     computed: {
