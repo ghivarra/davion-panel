@@ -1,6 +1,9 @@
 # Davion Panel
 Created using CodeIgniter 4 and Vue JS 3
 
+## Alternative Versions
+[Click Here](https://github.com/ghivarra/davion-panel-ts) - Davion Panel with CodeIgniter 4 & Vue JS 3 WITH Typescript
+
 ## URL Demo
 https://davion.giberamedia.com/login
 
