@@ -73,10 +73,10 @@
         </section>
 
         <!-- CREATE GROUP MODAL -->
-        <menu-group-create-modal ref="groupCreateModal"></menu-group-create-modal>
+        <group-menu-create-modal ref="groupCreateModal"></group-menu-create-modal>
 
         <!-- UPDATE GROUP MODAL -->
-        <menu-group-update-modal ref="groupUpdateModal" v-bind:updateData="groupUpdateData"></menu-group-update-modal>
+        <group-menu-update-modal ref="groupUpdateModal" v-bind:updateData="groupUpdateData"></group-menu-update-modal>
 
         <!-- CREATE MENU MODAL -->
         <menu-create-modal ref="menuCreateModal" v-bind:groupId="menuCreateGroupId"
@@ -90,8 +90,8 @@
 
 <script>
 
-import MenuGroupCreateModal from '../Modal/MenuGroupCreateModal.vue'
-import MenuGroupUpdateModal from '../Modal/MenuGroupUpdateModal.vue'
+import GroupMenuCreateModal from '../Modal/GroupMenuCreateModal.vue'
+import GroupMenuUpdateModal from '../Modal/GroupMenuUpdateModal.vue'
 import MenuCreateModal from '../Modal/MenuCreateModal.vue'
 import MenuUpdateModal from '../Modal/MenuUpdateModal.vue'
 import { checkAxiosError, panelUrl } from '@/libraries/Function'
@@ -106,8 +106,8 @@ export default {
     components: {
         draggable,
         'draggable-menu-component': draggableMenuComponent,
-        'menu-group-update-modal': MenuGroupUpdateModal,
-        'menu-group-create-modal': MenuGroupCreateModal,
+        'group-menu-update-modal': GroupMenuUpdateModal,
+        'group-menu-create-modal': GroupMenuCreateModal,
         'menu-create-modal': MenuCreateModal,
         'menu-update-modal': MenuUpdateModal
     },
