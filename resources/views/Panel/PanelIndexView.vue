@@ -218,6 +218,7 @@ export default {
                     })
                 } else {
                     app.menu = res.data
+                    app.activateMenu()
                 }
             }).catch(function(res) {
                 checkAxiosError(res.request.status)
