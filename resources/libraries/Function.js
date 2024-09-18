@@ -123,7 +123,7 @@ function parents(child, parent) {
  * @param {object} reactiveElement
  */
 function restructurized(obj) {
-    return {... obj}
+    return Array.isArray(obj) ? [... obj] : {... obj}
 }
 
 // export functions
