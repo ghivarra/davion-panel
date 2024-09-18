@@ -41,6 +41,28 @@ class PublicController extends BaseController
             $adminMenu = $orm->getRoleMenu($accountData['admin_role_id']);
         }
 
+        // add isactive
+        foreach ($adminMenu as $key => $group):
+
+            if (isset($group['menu']) && !empty($group['menu']))
+            {
+                foreach ($group['menu'] as $menuKey => $menu):
+
+                    $adminMenu[$key]['menu'][$menuKey]['is_active'] = false;
+
+                    if (isset($menu['childs']) && !empty($menu['childs']))
+                    {
+                        foreach ($menu['childs'] as $childKey => $child)
+                        {
+                            $adminMenu[$key]['menu'][$menuKey]['childs'][$childKey]['is_active'] = false;
+                        }
+                    }
+
+                endforeach;
+            }
+
+        endforeach;
+
         /// return
         return $this->response->setJSON([
             'status'  => 'success',
