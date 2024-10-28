@@ -317,4 +317,62 @@ table .table-dropdown::after {
     }
 }
 
+.swal-overlay {
+    .swal-modal {
+        .swal-button {
+
+            &.btn {
+                font-size: 1.15rem;
+                padding-left: 1.2rem;
+                padding-right: 1.2rem;
+
+                &.btn-sm {
+                    font-size: 0.95rem;
+                    padding-left: 1rem;
+                    padding-right: 1rem;
+                }   
+            }
+
+            &.btn-primary:not([disabled]):hover, &.btn-secondary:not([disabled]):hover, &.btn-danger:not([disabled]):hover, &.btn-outline-primary:not([disabled]):hover, &.btn-outline-secondary:not([disabled]):hover, &.btn-outline-danger:not([disabled]):hover {
+                background-color: var(--bs-btn-hover-bg);
+            }
+        }
+        
+        .swal-footer {
+            text-align: center;
+        }
+
+        .swal-title {
+            margin-bottom: 1.2rem;
+        }
+
+        .swal-text {
+            text-align: center;
+        }
+
+        &.confirmation-alert {
+            .swal-title {
+                margin-top: 0;
+                padding: 1rem 1.5rem;
+                border-bottom: 1px solid #dcdcdc;
+                font-size: 1.25rem;
+                text-align: left;
+                background-color: #efefef;
+                border-radius: 8px 8px 0 0;
+            }
+            .swal-text {
+                text-align: left;
+            }
+            .swal-footer {
+                margin-top: 2rem;
+                padding: .75rem 1rem;
+                border-top: 1px solid #dcdcdc;
+                font-size: 1.25rem;
+                text-align: right;
+            }
+        }
+    }
+
+}
+
 </style>
