@@ -65,7 +65,7 @@ import { dom } from '@fortawesome/fontawesome-svg-core'
 import { computed } from 'vue'
 import { panelUrl, checkAxiosError, generateBreadcrumb } from '../../libraries/Function'
 import axios from 'axios'
-import Swal from 'sweetalert2'
+import swal from 'sweetalert'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faBars, faPenToSquare, faSliders, faTrashCan, faPlus, faMagnifyingGlass, faXmark, faGear, faKey, faRightFromBracket, faTableCellsLarge, faUser, faUserTie, faTableColumns, faGlobe, faChevronRight, faSave, faEllipsisVertical, faEye, faEyeSlash, faEnvelope, faClockRotateLeft, faCircleInfo, faList } from '@fortawesome/free-solid-svg-icons'
 
@@ -157,7 +157,17 @@ export default {
                 .then(function(res) {
                     res = res.data
                     if (res.status !== 'success') {
-                        Swal.fire('Whoopss!!', res.message, 'warning').then(function() {
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        }).then(function() {
                             window.location.reload()
                         })
                     } else {
@@ -192,7 +202,17 @@ export default {
                         .then(function(res) {
                             let data = res.data
                             if(typeof data.status === 'undefined' || data.status !== 'success') {
-                                Swal.fire('Whoopss!!', 'Koneksi jaringan atau server sedang bermasalah, silahkan coba lagi', 'warning')
+                                swal({
+                                    title: 'Whoopss!!',
+                                    icon: 'warning',
+                                    text: 'Koneksi jaringan atau server sedang bermasalah, silahkan coba lagi',
+                                    buttons: {
+                                        confirm: {
+                                            className: 'btn btn-primary',
+                                            text: 'OK'
+                                        }
+                                    }
+                                })
                             } else {
                                 window.location.reload()
                             }
@@ -213,7 +233,17 @@ export default {
             .then(function(res) {
                 res = res.data
                 if (res.status !== 'success') {
-                    Swal.fire('Whoopss!!', res.message, 'warning').then(function() {
+                    swal({
+                        title: 'Whoopss!!',
+                        icon: 'warning',
+                        text: res.message,
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-primary',
+                                text: 'OK'
+                            }
+                        }
+                    }).then(function() {
                         window.location.reload()
                     })
                 } else {

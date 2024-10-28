@@ -46,7 +46,7 @@
 
 import { panelUrl, checkAxiosError } from '@/libraries/Function'
 import axios from 'axios'
-import Swal from 'sweetalert2'
+import swal from 'sweetalert'
 
 export default {
     name: 'menu-group-create-modal',
@@ -80,7 +80,17 @@ export default {
                     res = res.data
                     if (res.status !== 'success') {
                         app.hideLoader()
-                        Swal.fire('Whoopss!!', res.message, 'warning')
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        })
                     } else {
                         window.location.reload()
                     }
