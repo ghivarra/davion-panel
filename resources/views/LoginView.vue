@@ -40,7 +40,7 @@ import { imageUrl, loginUrl, checkAxiosError } from "../libraries/Function"
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
-import Swal from 'sweetalert2'
+import swal from "sweetalert"
 
 // add icon to use
 library.add(faEye, faEyeSlash)
@@ -79,23 +79,30 @@ export default {
                     if (res.status !== 'success') {
                         app.hideLoader()
                         document.querySelector(`input[name=${res.data.csrfToken}]`).value = res.data.csrfHash
-                        Swal.fire('Otentikasi Gagal', res.message, 'warning')
-                    } else {
-                        Swal.fire({
-                            title: 'Otentikasi Berhasil',
-                            text: 'Anda akan dialihkan ke panel dasbor dalam beberapa detik',
-                            icon: 'success',
-                            timer: 2500,
-                            timerProgressBar: true,
-                            allowOutsideClick: false,
-                            showCloseButton: false,
-                            showConfirmButton: false,
-                            didOpen: () => {
-                                Swal.showLoading()
-                            },
-                            didClose: () => {
-                                window.location.reload()
+                        swal({
+                            title: 'Otentikasi Gagal',
+                            icon: 'warning',
+                            text: res.message,
+                            closeOnEsc: false,
+                            closeOnClickOutside: false,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
                             }
+                        })
+                    } else {
+                        swal({
+                            title: 'Otentikasi Berhasil',
+                            icon: 'success',
+                            text: 'Anda akan dialihkan ke panel dalam dasbor dalam beberapa detik',
+                            closeOnEsc: false,
+                            closeOnClickOutside: false,
+                            timer: 2500,
+                            buttons: {}
+                        }).then(() => {
+                            window.location.reload()
                         })
                     }
                 }).catch(function(res) {
@@ -167,5 +174,30 @@ export default {
         }
     }
 }
+
+.swal-overlay {
+    .swal-button {
+        font-size: 1.15rem;
+        padding-left: 1.2rem;
+        padding-right: 1.2rem;
+
+        &.btn-primary:not([disabled]):hover {
+            background-color: var(--bs-btn-hover-bg);
+        }
+    }
+    
+    .swal-footer {
+        text-align: center;
+    }
+
+    .swal-title {
+        margin-bottom: 1.2rem;
+    }
+
+    .swal-text {
+        text-align: center;
+    }
+}
+
 </style>
 <!-- END STYLES -->
