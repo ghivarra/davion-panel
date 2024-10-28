@@ -32,6 +32,8 @@ export default {
                     /^modal-/,
                     /^dropdown-/,
                     /^form-/,
+                    /^swal-/,
+                    /^swal-overlay/,
                 ]
             }
         })
