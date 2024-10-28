@@ -45,7 +45,7 @@
 <script>
 
 import { panelUrl, checkAxiosError } from '@/libraries/Function'
-import Swal from 'sweetalert2'
+import swal from 'sweetalert'
 import axios from 'axios'
 
 export default {
@@ -75,7 +75,18 @@ export default {
 
             // check data
             if (app.data.newPassword !== app.data.confPassword) {
-                return Swal.fire('Perubahan Dibatalkan', 'Form Password Baru dan form Konfirmasi Password Baru tidak sesuai', 'error')
+                swal({
+                    title: 'Perubahan Dibatalkan',
+                    icon: 'error',
+                    text: 'Form Password Baru dan form Konfirmasi Password Baru tidak sesuai',
+                    buttons: {
+                        confirm: {
+                            className: 'btn btn-primary',
+                            text: 'OK'
+                        }
+                    }
+                })
+                return
             }
 
             app.showLoader()
@@ -86,13 +97,32 @@ export default {
                     res = res.data
                     app.hideLoader()
                     if (res.status !== 'success') {
-                        Swal.fire('Whoopss!!', res.message, 'warning')
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        })
                     } else {
-                        Swal.fire('Perubahan Berhasil Disimpan', res.message, 'success')
-                            .then(function() {
-                                app.showLoader()
-                                app.$router.push({ name: 'panel.profile' })
-                            })
+                        swal({
+                            title: 'Perubahan Berhasil Disimpan',
+                            icon: 'success',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        }).then(function() {
+                            app.showLoader()
+                            app.$router.push({ name: 'panel.profile' })
+                        })
                     }
                 })
                 .catch(function(res) {

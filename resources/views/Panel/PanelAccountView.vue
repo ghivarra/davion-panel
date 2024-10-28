@@ -35,7 +35,7 @@
 <script>
 
 import { panelUrl, checkAxiosError } from '@/libraries/Function'
-import Swal from 'sweetalert2'
+import swal from 'sweetalert'
 import axios from 'axios'
 
 export default {
@@ -81,7 +81,17 @@ export default {
                     res = res.data
                     app.hideLoader()
                     if (res.status !== 'success') {
-                        Swal.fire('Whoopss!!', res.message, 'warning')
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        })
                     } else {
                         app.updateAdminData()
                         app.$router.push({ name: 'panel.profile' })

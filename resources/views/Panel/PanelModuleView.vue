@@ -87,7 +87,7 @@ import VueTable from '@/libraries/Ghivarra/VueTable/VueTable.vue'
 import ModuleCreateModal from '../Modal/ModuleCreateModal.vue'
 import ModuleUpdateModal from '../Modal/ModuleUpdateModal.vue'
 import axios from 'axios'
-import Swal from 'sweetalert2'
+import swal from 'sweetalert'
 
 export default {
     name: 'panel-module-view',
@@ -174,7 +174,17 @@ export default {
                     res = res.data
                     app.hideLoader()
                     if (res.status !== 'success') {
-                        Swal.fire('Whoopss!!', res.message, 'warning')
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        })
                     } else {
                         app.$refs.moduleTable.draw()
                     }
@@ -200,7 +210,17 @@ export default {
                     res = res.data
                     app.hideLoader()
                     if (res.status !== 'success') {
-                        Swal.fire('Whoopss!!', res.message, 'warning')
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        })
                     } else {
                         app.$refs.moduleTable.draw()
                     }

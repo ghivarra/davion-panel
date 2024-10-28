@@ -95,7 +95,7 @@
 
 import { panelUrl, checkAxiosError } from '@/libraries/Function'
 import axios from 'axios'
-import Swal from 'sweetalert2'
+import swal from 'sweetalert'
 
 export default {
     name: 'panel-role-create-view',
@@ -209,7 +209,17 @@ export default {
                     res = res.data
                     app.hideLoader()
                     if (res.status !== 'success') {
-                        Swal.fire('Whoopss!!', res.message, 'warning')
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        })
                     } else {
                         app.$router.push({ name: 'panel.role' })
                     }

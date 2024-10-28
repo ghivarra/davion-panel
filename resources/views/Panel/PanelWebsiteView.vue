@@ -81,7 +81,7 @@
 <script>
 
 import axios from 'axios'
-import Swal from 'sweetalert2'
+import swal from 'sweetalert'
 import { panelUrl, checkAxiosError, imageUrl } from '@/libraries/Function'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons'
@@ -119,7 +119,17 @@ export default {
                     res = res.data
                     if (res.status !== 'success') {
                         app.hideLoader()
-                        Swal.fire('Whoopss!!', res.message, 'warning')
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        })
                     } else {
                         window.location.reload()
                     }
@@ -136,7 +146,17 @@ export default {
                     res = res.data
                     if (res.status !== 'success') {
                         app.hideLoader()
-                        Swal.fire('Whoopss!!', res.message, 'warning')
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        })
                     } else {
                         window.location.reload()
                     }
@@ -153,7 +173,17 @@ export default {
                     res = res.data
                     if (res.status !== 'success') {
                         app.hideLoader()
-                        Swal.fire('Whoopss!!', res.message, 'warning')
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        })
                     } else {
                         window.location.reload()
                     }

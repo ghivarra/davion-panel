@@ -69,7 +69,7 @@
 
 import { panelUrl, checkAxiosError, imageUrl } from '@/libraries/Function'
 import axios from 'axios'
-import Swal from 'sweetalert2'
+import swal from 'sweetalert'
 
 export default {
     name: 'panel-admin-session-view',
@@ -90,14 +90,27 @@ export default {
     methods: {
         deleteSession: function(session) {
             let app = this
-            Swal.fire({
-                html: `Apakah anda yakin akan menghapus sesi login di <b>${session.useragent.platform}</b> dari akun <b>${app.admin.name}</b>?`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Hapus',
-                cancelButtonText: 'Batalkan',
-            }).then((result) => {
-                if (result.isConfirmed) {
+
+            swal({
+                className: 'confirmation-alert',
+                title: 'Hapus Sesi?',
+                text: 'Apabila sesi ini aktif, maka pengguna harus melakukan login ulang',
+                buttons: {
+                    cancel: {
+                        className: 'btn btn-sm btn-outline-secondary',
+                        text: 'Batal',
+                        visible: true,
+                        value: false,
+                    },
+                    confirm: {
+                        className: 'btn btn-sm btn-danger',
+                        text: 'Hapus',
+                        visible: true,
+                        value: true,
+                    },
+                }
+            }).then((isConfirmed) => {
+                if (isConfirmed) {
                     app.showLoader()
 
                     let form = new FormData()
@@ -109,7 +122,17 @@ export default {
                         .then(function(res) {
                             res = res.data
                             if (res.status !== 'success') {
-                                Swal.fire('Whoopss!!', res.message, 'warning')
+                                swal({
+                                    title: 'Whoopss!!',
+                                    icon: 'warning',
+                                    text: res.message,
+                                    buttons: {
+                                        confirm: {
+                                            className: 'btn btn-primary',
+                                            text: 'OK'
+                                        }
+                                    }
+                                })
                             } else {
                                 app.updateAdminData()
                                 window.location.reload()

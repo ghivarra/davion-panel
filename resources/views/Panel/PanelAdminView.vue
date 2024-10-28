@@ -121,7 +121,7 @@ import AdminCreateModal from '@/views/Modal/AdminCreateModal.vue'
 import AdminUpdateModal from '@/views/Modal/AdminUpdateModal.vue'
 import AdminDetailModal from '@/views/Modal/AdminDetailModal.vue'
 import axios from 'axios'
-import Swal from 'sweetalert2'
+import swal from 'sweetalert'
 
 export default {
     name: 'panel-admin-view',
@@ -202,7 +202,17 @@ export default {
                     res = res.data
                     app.hideLoader()
                     if (res.status !== 'success') {
-                        Swal.fire('Whoopss!!', res.message, 'warning')
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        })
                     } else {
                         if (data.id === app.admin.id) {
                             app.loggingOut()
@@ -232,7 +242,17 @@ export default {
                     res = res.data
                     app.hideLoader()
                     if (res.status !== 'success') {
-                        Swal.fire('Whoopss!!', res.message, 'warning')
+                        swal({
+                            title: 'Whoopss!!',
+                            icon: 'warning',
+                            text: res.message,
+                            buttons: {
+                                confirm: {
+                                    className: 'btn btn-primary',
+                                    text: 'OK'
+                                }
+                            }
+                        })
                     } else {
                         if (data.id === app.admin.id) {
                             app.loggingOut()
@@ -257,7 +277,17 @@ export default {
             .then(function(res) {
                 res = res.data
                 if (res.status !== 'success') {
-                    Swal.fire('Whoopss!!', res.message, 'warning').then(function() {
+                    swal({
+                        title: 'Whoopss!!',
+                        icon: 'warning',
+                        text: res.message,
+                        buttons: {
+                            confirm: {
+                                className: 'btn btn-primary',
+                                text: 'OK'
+                            }
+                        }
+                    }).then(function() {
                         window.location.reload()
                     })
                 } else {
