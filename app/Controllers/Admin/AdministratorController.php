@@ -153,6 +153,9 @@ class AdministratorController extends BaseController
             return cannotAccessModule();
         }
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
         // create model instance
         $orm = new AdminModel();
 
@@ -357,6 +360,9 @@ class AdministratorController extends BaseController
             return cannotAccessModule();
         }
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
         // create ORM instance
         $orm  = new AdminModel();
         $data = $orm->select(['admin.id', 'admin.name', 'username', 'is_superadmin', 'admin.status', 'email', 'email_verified_at', 'admin_role_id', 'admin_role.name as admin_role_name', 'photo'])
@@ -393,6 +399,9 @@ class AdministratorController extends BaseController
             return cannotAccessModule();
         }
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
         $orm = new AdminRoleModel();
 
         // return
@@ -413,6 +422,9 @@ class AdministratorController extends BaseController
         {
             return cannotAccessModule();
         }
+
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
 
         // validasi
         $adminId = $this->request->getGet('id');
