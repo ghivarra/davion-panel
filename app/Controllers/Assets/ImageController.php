@@ -4,10 +4,6 @@ namespace App\Controllers\Assets;
 
 use App\Controllers\BaseController;
 use Config\Services;
-use CodeIgniter\HTTP\ResponseInterface;
-use CodeIgniter\Files\File;
-use Intervention\Image\ImageManager;
-use Intervention\Image\Drivers\Gd\Driver;
 
 class ImageController extends BaseController
 {
@@ -17,6 +13,13 @@ class ImageController extends BaseController
 
     public function __construct()
     {
+        // check if session is running and close it
+        if (session_status() === PHP_SESSION_ACTIVE)
+        {
+            session_write_close();
+        }
+
+        // set allowed sizes
         $this->allowedSize = explode(',', $_ENV['IMAGE_ALLOWED_SIZE']);
     }
     
