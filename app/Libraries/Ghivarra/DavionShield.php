@@ -10,12 +10,14 @@ use App\Models\AdminSessionModel;
 class DavionShield
 {
     protected $session;
+    protected $accountData;
 
     //================================================================================================
 
     public function __construct()
     {
         $this->session = Services::session();
+        $this->accountData = $this->session->get('accountData');
     }
 
     //================================================================================================
@@ -82,6 +84,9 @@ class DavionShield
             'accountData'                => $accountData,
             $_ENV['SESSION_LOGIN_PARAM'] => $_ENV['SESSION_LOGIN_TOKEN']
         ]);
+
+        // update account data
+        $this->accountData = $accountData;
         
         // save login data in admin_session
         $adminSessionModel = new AdminSessionModel();
@@ -111,7 +116,7 @@ class DavionShield
         // update account data
         $adminModel        = new AdminModel();
         $adminSessionModel = new AdminSessionModel();
-        $accountData       = $this->session->get('accountData');
+        $accountData       = $this->accountData;
         $accountId         = $accountData['id'];
 
         // check if session exist
@@ -139,6 +144,9 @@ class DavionShield
 
         // set new admin data 
         $this->session->set('accountData', $accountData);
+
+        // update account data
+        $this->accountData = $accountData;
 
         // check request type
         $request = Services::request();
@@ -217,7 +225,7 @@ class DavionShield
 
     public function getAccountData(): array
     {
-        return $this->session->get('accountData');
+        return $this->accountData;
     }
 
     //================================================================================================
