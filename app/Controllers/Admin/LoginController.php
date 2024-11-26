@@ -5,7 +5,6 @@ namespace App\Controllers\Admin;
 use App\Controllers\BaseController;
 use App\Libraries\Ghivarra\DavionShield;
 use App\Models\WebsiteModel;
-use Config\Services;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class LoginController extends BaseController
@@ -16,6 +15,10 @@ class LoginController extends BaseController
 
         if (!$davionShield->attempt())
         {
+            // session no longer needed
+            session_write_close();
+
+            // return
             return $this->response->setJSON([
                 'status'  => 'error',
                 'message' => 'Akun dan password yang diinput tidak sesuai',
@@ -27,6 +30,10 @@ class LoginController extends BaseController
 
         } else {
 
+            // session no longer needed
+            session_write_close();
+
+            // return
             return $this->response->setJSON([
                 'status'  => 'success',
                 'message' => 'Otentikasi berhasil, anda akan dialihkan ke halaman panel dalam beberapa detik'
@@ -38,6 +45,10 @@ class LoginController extends BaseController
     
     public function index(): string
     {
+        // session no longer needed
+        session_write_close();
+
+        // load ORM
         $websiteModel = new WebsiteModel();
 
         // return and render vue
