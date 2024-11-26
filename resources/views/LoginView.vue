@@ -3,7 +3,7 @@
     <main id="loginMain" class="position-relative">
         <section id="loginFormSection" class="login-form-section w-100 d-flex align-items-center">
             <form v-on:submit.prevent="login" id="loginForm" method="post" class="w-100">
-                <input type="hidden" v-bind:name="token" v-bind:value="hash">
+                <input type="hidden" v-bind:name="csrf.token" v-model="csrf.hash">
                 <div class="h4 text-center fw-bold mb-4">Selamat Datang</div>
                 <div class="d-flex justify-content-center mb-5">
                     <img v-bind:src="logo" v-bind:alt="config.name">
@@ -54,7 +54,11 @@ export default {
             passwordInputType: 'password',
             formAccount: '',
             formPassword: '',
-            background: 'url(' + imageUrl('login-background.jpg') + '&original=true)'
+            background: 'url(' + imageUrl('login-background.jpg') + '&original=true)',
+            csrf: {
+                token: this.token,
+                hash: this.hash,
+            }
         }
     },
     computed: {
@@ -78,7 +82,8 @@ export default {
                     res = res.data
                     if (res.status !== 'success') {
                         app.hideLoader()
-                        document.querySelector(`input[name=${res.data.csrfToken}]`).value = res.data.csrfHash
+                        app.csrf.hash = res.data.csrfHash
+                        app.csrf.token = res.data.csrfToken
                         swal({
                             title: 'Otentikasi Gagal',
                             icon: 'warning',
