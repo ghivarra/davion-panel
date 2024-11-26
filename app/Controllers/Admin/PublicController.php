@@ -16,6 +16,10 @@ class PublicController extends BaseController
         $davionShield = new DavionShield();
         $davionShield->logout();
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
+        // return
         return $this->response->setJSON([
             'status'  => 'success',
             'message' => 'Anda berhasil keluar/logout dari panel',
@@ -28,6 +32,9 @@ class PublicController extends BaseController
     {
         $davionShield = new DavionShield();
         $accountData  = $davionShield->getAccountData();
+
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
         
         // check if superadmin
         if ($accountData['is_superadmin'] === SUPERADMIN)
@@ -78,6 +85,9 @@ class PublicController extends BaseController
         $davionShield = new DavionShield();
         $accountData  = $davionShield->getAccountData();
         $query        = $this->request->getPost('query');
+
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
 
         if (empty($query) OR strlen($query) < 2)
         {
@@ -168,6 +178,11 @@ class PublicController extends BaseController
     public function sessionData(): ResponseInterface
     {
         $davionShield = new DavionShield();
+
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
+        // return
         return $this->response->setJSON([
             'status'  => 'success',
             'message' => 'Data berhasil diambil',
@@ -179,6 +194,12 @@ class PublicController extends BaseController
 
     public function singlePageApplication(): ResponseInterface | string
     {
+        // session not needed anymore if active, unlock the session file mechanism
+        if (session_status() === PHP_SESSION_ACTIVE)
+        {
+            session_write_close();
+        }
+
         if ($this->request->isAjax())
         {
             return $this->response->setJSON([
