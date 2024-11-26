@@ -53,6 +53,9 @@ class RoleController extends BaseController
             return cannotAccessModule();
         }
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
         $orm = new AdminMenuModel();
         $all = $orm->select(['admin_menu.id', 'admin_menu.title', 'type', 'admin_menu_group.name as group_name', 'admin_menu_parent_id'])
                    ->join('admin_menu_group', 'admin_menu_group_id = admin_menu_group.id', 'left')
@@ -138,6 +141,9 @@ class RoleController extends BaseController
         {
             return cannotAccessModule();
         }
+
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
 
         $orm = new AdminModuleModel();
         $all = $orm->select(['id', 'name', 'group'])
@@ -328,6 +334,9 @@ class RoleController extends BaseController
             return cannotAccessModule();
         }
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
         // create model instance
         $orm = new AdminRoleModel();
 
@@ -436,6 +445,9 @@ class RoleController extends BaseController
         {
             return cannotAccessModule();
         }
+
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
 
         // id
         $id = $this->request->getGet('id');
