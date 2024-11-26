@@ -117,6 +117,7 @@ export default {
                         .then(function(res) {
                             res = res.data
                             if (res.status !== 'success') {
+                                app.hideLoader()
                                 swal({
                                     title: 'Whoopss!!',
                                     icon: 'warning',
