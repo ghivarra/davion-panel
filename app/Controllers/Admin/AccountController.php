@@ -25,6 +25,9 @@ class AccountController extends BaseController
         $auth    = new DavionShield();
         $account = $auth->getAccountData();
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
         // Hard code to not change admin config
         if (intval($account['id']) === 1) 
         {
@@ -84,6 +87,9 @@ class AccountController extends BaseController
         $account  = $auth->getAccountData();
         $sessions = array_column($auth->getSession(), 'id');
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
         // Hard code to not change admin config
         if (intval($account['id']) === 1) 
         {
@@ -126,6 +132,9 @@ class AccountController extends BaseController
         $auth     = new DavionShield();
         $sessions = $auth->getSession();
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
         // parse
         foreach ($sessions as $n => $session):
 
@@ -148,6 +157,9 @@ class AccountController extends BaseController
     {
         $auth    = new DavionShield();
         $account = $auth->getAccountData();
+
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
 
         // Hard code to not change admin config
         if (intval($account['id']) === 1) 
