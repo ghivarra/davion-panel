@@ -93,6 +93,9 @@ class ModuleController extends BaseController
             return cannotAccessModule();
         }
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
         // create model instance
         $orm = new AdminModuleModel();
 
@@ -209,6 +212,9 @@ class ModuleController extends BaseController
             return cannotAccessModule();
         }
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
         // create ORM instance
         $orm  = new AdminModuleModel();
         $data = $orm->where('alias', $this->request->getGet('alias'))->first();
@@ -240,6 +246,9 @@ class ModuleController extends BaseController
         {
             return cannotAccessModule();
         }
+
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
 
         // create ORM instance
         $orm  = new AdminModuleModel();
