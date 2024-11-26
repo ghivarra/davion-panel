@@ -19,6 +19,9 @@ class WebsiteController extends BaseController
             return cannotAccessModule();
         }
 
+        // session not needed anymore, unlock the session file mechanism
+        session_write_close();
+
         // get data
         $websiteModel = new WebsiteModel();
 
