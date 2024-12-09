@@ -351,7 +351,7 @@ class RoleController extends BaseController
         // get datatable data
         $data = $datatable->fetch([
             'tableName'       => 'admin_role',
-            'orm'             => new AdminModuleModel(),
+            'orm'             => new AdminRoleModel(),
             'selectedColumns' => [
                 'id', 'name', 'is_superadmin', 'status'
             ],
