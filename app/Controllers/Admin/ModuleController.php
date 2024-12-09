@@ -4,42 +4,12 @@ namespace App\Controllers\Admin;
 
 use App\Models\AdminModuleModel;
 use App\Controllers\BaseController;
+use App\Libraries\Ghivarra\Datatable;
 use CodeIgniter\Database\RawSql;
 use CodeIgniter\HTTP\ResponseInterface;
-use Config\Services;
 
 class ModuleController extends BaseController
 {
-    private function buildSearchQuery($orm, $columns)
-    {
-        foreach ($columns as $column):
-
-            if (strlen($column['query']) > 0)
-            {
-                if ($column['key'] === 'status')
-                {
-                    $orm->where($column['key'], $column['query']);
-
-                } else {
-
-                    if (str_contains($column['key'], '.'))
-                    {
-                        $orm->like($column['key'], $column['query'], 'both', null, true);
-    
-                    } else {
-                        
-                        $orm->like("admin_module.{$column['key']}", $column['query'], 'both', null, true);
-                    }
-                }
-            }
-
-        endforeach;
-
-        return $orm;
-    }
-
-    //================================================================================================
-
     public function create(): ResponseInterface
     {
         $permission = $this->checkPermission('moduleCreate');
@@ -96,62 +66,50 @@ class ModuleController extends BaseController
         // session not needed anymore, unlock the session file mechanism
         session_write_close();
 
-        // create model instance
-        $orm = new AdminModuleModel();
-
-        // get input
-        $draw    = $this->request->getPost('draw');
-        $all     = $this->request->getPost('all');
-        $limit   = intval($this->request->getPost('limit'));
-        $offset  = intval($this->request->getPost('offset'));
-        $order   = $this->request->getPost('order');
-        $columns = $this->request->getPost('columns');
-        $select  = ['id', 'alias', 'name', 'group', 'status'];
-
         // set order column and dir
+        $order           = $this->request->getPost('order');
         $defaultOrderCol = 'name';
-        $defaultOrderDir = 'asc';
+        $defaultOrderDir = 'ASC';
         $orderColumn     = isset($order['column']) ? $order['column'] : 'name';
         $orderDir        = isset($order['dir']) ? strtoupper($order['dir']) : 'ASC';
 
-        // get total
-        $total = $orm->countAllResults();
+        // datatable
+        $datatable = new Datatable();
 
-        // no query
-        $orm = $orm->select($select)
-                   ->orderBy($orderColumn, $orderDir)
-                   ->orderBy($defaultOrderCol, $defaultOrderDir);
-        
-        if ($all !== 'true')
-        {
-            $orm = $orm->limit($limit, $offset);
-        }
-
-        // get filtered total
-        $orm           = $this->buildSearchQuery($orm, $columns);
-        $filteredTotal = $orm->countAllResults(false);
-        
-        if ($all !== 'true')
-        {
-            $orm = $orm->limit($limit, $offset);
-        }
-
-        // get data
-        $orm  = $this->buildSearchQuery($orm, $columns);
-        $data = $orm->find();
-
-        // return
-        return $this->response->setJSON([
-            'status'  => 'success',
-            'message' => 'Data berhasil ditarik',
-            'data'    => [
-                'draw'            => $draw,
-                'length'          => count($data),
-                'recordsTotal'    => $total,
-                'recordsFiltered' => $filteredTotal,
-                'row'             => numbering($data, $offset)
+        // get datatable data
+        $data = $datatable->fetch([
+            'tableName'       => 'admin_module',
+            'orm'             => new AdminModuleModel(),
+            'selectedColumns' => [
+                'id', 'alias', 'name', 'group', 'status'
+            ],
+            'getAllData'  => ($this->request->getPost('all') === 'true') ? true : false,
+            'limit'       => intval($this->request->getPost('limit')),
+            'offset'      => intval($this->request->getPost('offset')),
+            'drawCount'   => intval($this->request->getPost('draw')),
+            'columnQuery' => $this->request->getPost('columns'),
+            'orders'      => [
+                ['column' => $orderColumn, 'order' => $orderDir],
+                ['column' => $defaultOrderCol, 'order' => $defaultOrderDir],
+            ],
+            
+            // parameters
+            'joinParams' => [
+                // not used
+            ],
+            'defaultParams' => [
+                // not used
+            ],
+            'searchParams' => [
+                'status' => [
+                    'type'      => 'is',
+                    'targetKey' => 'admin_module.status',
+                ],
             ]
         ]);
+
+        // return
+        return $this->response->setJSON($data);
     }
 
     //================================================================================================
