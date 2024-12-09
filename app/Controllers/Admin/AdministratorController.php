@@ -21,45 +21,6 @@ class AdministratorController extends BaseController
 
     //================================================================================================
 
-    private function buildSearchQuery($orm, $columns)
-    {
-        foreach ($columns as $column):
-
-            if ($column['key'] === 'status' OR $column['key'] === 'name')
-            {
-                $column['key'] = "admin.{$column['key']}";
-
-            } elseif ($column['key'] === 'admin_role_name') {
-
-                $column['key'] = 'admin_role_id';
-            }
-
-            if (strlen($column['query']) > 0)
-            {
-                if ($column['key'] === 'admin.status' OR $column['key'] === 'admin_role_id')
-                {
-                    $orm->where($column['key'], $column['query']);
-
-                } else {
-
-                    if (str_contains($column['key'], '.'))
-                    {
-                        $orm->like($column['key'], $column['query'], 'both', null, true);
-    
-                    } else {
-                        
-                        $orm->like("admin.{$column['key']}", $column['query'], 'both', null, true);
-                    }
-                }
-            }
-
-        endforeach;
-
-        return $orm;
-    }
-
-    //================================================================================================
-
     public function create(): ResponseInterface
     {
         $permission = $this->checkPermission('adminCreate');
