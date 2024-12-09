@@ -20,7 +20,6 @@ class Datatable
     // needed
     private $tableName;
     private $orm;
-    private $defaultParams;
     private $selectedColumns;
     private $joinParams;
     private $getAllData;
@@ -31,23 +30,25 @@ class Datatable
     private $drawCount;
     
     // optional
+    private $defaultParams;
     private $searchParams;
     private $drawMessage;
     private $drawStatus;
 
     //=====================================================================================================
 
-    public function getData(array $options): array
+    public function fetch(array $options): array
     {
         // store needed option parameters
         $this->tableName       = $options['tableName'];
         $this->orm             = $options['orm'];
         $this->selectedColumns = $options['selectedColumns'];
+        $this->joinParams      = $options['joinParams'];
         $this->getAllData      = $options['getAllData'];
         $this->limit           = $options['limit'];
         $this->offset          = $options['offset'];
         $this->drawCount       = $options['drawCount'];
-        $this->orders          = $options['order'];
+        $this->orders          = $options['orders'];
         $this->columnQuery     = $options['columnQuery'];
 
         // store optional parameters
@@ -71,9 +72,6 @@ class Datatable
 
         // build search query
         $currentORM = $this->buildSearchQuery($currentORM);
-
-        // debugs
-        dd($currentORM->getCompiledSelect());
 
         // get filtered total
         $filteredTotal = $currentORM->countAllResults(false);
