@@ -14,36 +14,6 @@ use App\Models\AdminRoleModuleModel;
 
 class RoleController extends BaseController
 {
-    private function buildSearchQuery($orm, $columns)
-    {
-        foreach ($columns as $column):
-
-            if (strlen($column['query']) > 0)
-            {
-                if ($column['key'] === 'status' OR $column['key'] === 'is_superadmin')
-                {
-                    $orm->where($column['key'], $column['query']);
-
-                } else {
-
-                    if (str_contains($column['key'], '.'))
-                    {
-                        $orm->like($column['key'], $column['query'], 'both', null, true);
-    
-                    } else {
-                        
-                        $orm->like("admin_role.{$column['key']}", $column['query'], 'both', null, true);
-                    }
-                }
-            }
-
-        endforeach;
-
-        return $orm;
-    }
-
-    //================================================================================================
-
     public function allMenuList(): ResponseInterface
     {
         $permissionCreate = $this->checkPermission('roleCreate');
