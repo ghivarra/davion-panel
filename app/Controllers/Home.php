@@ -23,12 +23,23 @@ class Home extends BaseController
         // load all data
         $data = $orm->getAllData();
 
+        // load frontend versioning
+        $packages = json_decode(file_get_contents(ROOTPATH . 'package.json'), true);
+
         // return
         return response()->setJSON([
-            'codeigniter_version' => CodeIgniter::CI_VERSION,
-            'app_version'         => $data['app_version'],
-            'icon_version'        => $data['icon_version'],
-            'logo_version'        => $data['logo_version'],
+            'system' => [
+                'ci_version'        => CodeIgniter::CI_VERSION,
+                'vue_version'       => $packages['dependencies']['vue'],
+                'bootstrap_version' => $packages['dependencies']['bootstrap'],
+                'vite_version'      => $packages['devDependencies']['vite'],
+                'sass_version'      => $packages['devDependencies']['sass'],
+            ],
+            'app' => [
+                'app_version'  => $data['app_version'],
+                'icon_version' => $data['icon_version'],
+                'logo_version' => $data['logo_version'],
+            ]
         ]);
     }
 
