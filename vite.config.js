@@ -39,6 +39,7 @@ export default defineConfig(() => {
 			port: env.VITE_PORT,
 			strictPort: true,
             https: true,
+			cors: true,
             hmr: {
                 host: env.VITE_HOST,
                 port: env.VITE_PORT,
