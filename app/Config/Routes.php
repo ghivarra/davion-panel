@@ -6,6 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
+$routes->get('/version', 'Home::version');
 
 // login routes
 $routes->group($_ENV['LOGIN_PAGE'], static function($routes) {
