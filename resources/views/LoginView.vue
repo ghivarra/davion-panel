@@ -101,7 +101,7 @@ export default {
                         swal({
                             title: 'Otentikasi Berhasil',
                             icon: 'success',
-                            text: 'Anda akan dialihkan ke panel dalam dasbor dalam beberapa detik',
+                            text: 'Anda akan dialihkan ke dasbor panel dalam beberapa detik',
                             closeOnEsc: false,
                             closeOnClickOutside: false,
                             timer: 2500,
