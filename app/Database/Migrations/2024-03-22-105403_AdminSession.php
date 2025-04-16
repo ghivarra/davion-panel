@@ -34,6 +34,10 @@ class AdminSession extends Migration
                 'type'     => 'BIGINT',
                 'unsigned' => true,
             ],
+            'client_id' => [
+                'type'       => 'CHAR',
+                'constraint' => 128,
+            ],
             'useragent' => [
                 'type' => 'text',
             ],
@@ -61,6 +65,7 @@ class AdminSession extends Migration
 
         // add indexes
         $this->forge->addKey('admin_id');
+        $this->forge->addKey('client_id');
         
         // add foreign key
         $this->forge->addForeignKey('admin_id', 'admin', 'id', 'CASCADE', 'CASCADE');

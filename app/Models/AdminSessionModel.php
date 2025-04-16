@@ -13,7 +13,7 @@ class AdminSessionModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'name', 'admin_id', 'useragent', 'ip_address'
+        'name', 'admin_id', 'useragent', 'ip_address', 'client_id'
     ];
 
     protected bool $allowEmptyInserts = false;
