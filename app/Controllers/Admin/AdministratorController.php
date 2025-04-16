@@ -83,7 +83,10 @@ class AdministratorController extends BaseController
             'name'          => $data['name'],
             'admin_role_id' => $data['role'],
             'password'      => password_hash($data['password'], PASSWORD_DEFAULT),
-            'photo'         => NULL
+            'photo'         => NULL,
+
+            // so account active already without using confirmation email to block spam
+            'email_verified_at' => date('Y-m-d H:i:s'),
         ];
 
         // if uploaded
