@@ -34,7 +34,7 @@ class SessionGarbageCollector implements FilterInterface
 
             // glob session folders
             $sessions       = glob($sessionConfig->savePath . DIRECTORY_SEPARATOR .  $sessionConfig->cookieName . "*");
-            $expirationTime = time() - $sessionConfig->expiration;
+            $expirationTime = time() - ($sessionConfig->timeToUpdate * 2);
             $expiredSession = [];
 
             foreach ($sessions as $session):

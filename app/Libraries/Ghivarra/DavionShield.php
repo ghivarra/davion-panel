@@ -11,13 +11,15 @@ class DavionShield
 {
     protected $session;
     protected $accountData;
+    protected $clientID;
 
     //================================================================================================
 
     public function __construct()
     {
-        $this->session = Services::session();
-        $this->accountData = $this->session->get('accountData');
+        $this->session     = Services::session();
+        $this->accountData = $this->session->get('__accountData');
+        $this->clientID    = $this->session->get('__clientID');
     }
 
     //================================================================================================
@@ -77,11 +79,14 @@ class DavionShield
         // auth success, regenerate session id
         $this->session->regenerate();
 
+        // create client ID
+        $clientID = createRandomID();
+
         // clear private data and put admin data + login token in sessions
         unset($accountData['password']);
         $this->session->set([
-            'lastRegenerate'             => time(),
-            'accountData'                => $accountData,
+            '__clientID'                 => $clientID,
+            '__accountData'              => $accountData,
             $_ENV['SESSION_LOGIN_PARAM'] => $_ENV['SESSION_LOGIN_TOKEN']
         ]);
 
@@ -93,6 +98,7 @@ class DavionShield
         $adminSessionModel->save([
             'name'       => $this->session->session_id,
             'admin_id'   => $accountData['id'],
+            'client_id'  => $clientID,
             'useragent'  => json_encode($this->parseUserAgent($request)),
             'ip_address' => $request->getIPAddress()
         ]);
@@ -118,12 +124,15 @@ class DavionShield
         $adminSessionModel = new AdminSessionModel();
         $accountData       = $this->accountData;
         $accountId         = $accountData['id'];
+        $sessionId         = $this->session->session_id;
 
         // check if session exist
-        $session = $adminSessionModel->select(['id', 'useragent', 'ip_address'])
-                                     ->where('name', $this->session->session_id)
+        $session = $adminSessionModel->select(['id', 'name', 'useragent', 'ip_address'])
+                                     ->where('name', $sessionId)
+                                     ->orWhere('client_id', $this->clientID)
                                      ->first();
 
+        // if session is not found
         if (empty($session))
         {
             return false;
@@ -143,7 +152,7 @@ class DavionShield
         }
 
         // set new admin data 
-        $this->session->set('accountData', $accountData);
+        $this->session->set('__accountData', $accountData);
 
         // update account data
         $this->accountData = $accountData;
@@ -156,42 +165,14 @@ class DavionShield
         $ipAddress = $request->getIPAddress();
 
         // update if different
-        if ($session['useragent'] !== $userAgent OR $session['ip_address'] !== $ipAddress)
+        if ($session['useragent'] !== $userAgent OR $session['ip_address'] !== $ipAddress OR $session['name'] !== $sessionId)
         {
             $adminSessionModel->save([
                 'id'         => $session['id'],
+                'name'       => $sessionId,
                 'useragent'  => $userAgent,
-                'ip_address' => $ipAddress
+                'ip_address' => $ipAddress,
             ]);
-        }
-
-        // only regenerate on non ajax request to prevent session racing
-        if (!$request->isAJAX())
-        {
-            // check if session ttl needed to be regenerate
-            $TTL = time() - $_ENV['SESSION_LOGIN_TTL'];
-    
-            if ($TTL > $this->session->get('lastRegenerate'))
-            {
-                // store old id
-                $oldId = $session['id'];
-                
-                // regenerate
-                $this->session->regenerate();
-    
-                // load services and models
-                $request = Services::request();
-    
-                // update old id to new id
-                $adminSessionModel->where('id', $oldId)
-                                ->set([
-                                    'name'       => $this->session->session_id,
-                                    'admin_id'   => $accountId,
-                                    'useragent'  => json_encode($this->parseUserAgent($request)),
-                                    'ip_address' => $request->getIPAddress()
-                                ])
-                                ->update();
-            }
         }
         
         // return
@@ -230,12 +211,19 @@ class DavionShield
 
     //================================================================================================
 
+    public function getClientID(): string
+    {
+        return $this->clientID;
+    }
+
+    //================================================================================================
+
     public function getSession(): array
     {
         $accountData = $this->getAccountData();
 
         $orm = new AdminSessionModel();
-        $get = $orm->select(['id', 'name', 'useragent', 'ip_address', 'updated_at as last_update'])
+        $get = $orm->select(['id', 'name', 'useragent', 'client_id', 'ip_address', 'updated_at as last_update'])
                    ->where('admin_id', $accountData['id'])
                    ->orderBy('last_update', 'DESC')
                    ->find();
@@ -249,7 +237,7 @@ class DavionShield
     public function getSessionFromUser($adminId): array
     {
         $orm = new AdminSessionModel();
-        $get = $orm->select(['id', 'name', 'useragent', 'ip_address', 'updated_at as last_update'])
+        $get = $orm->select(['id', 'name', 'useragent', 'client_id', 'ip_address', 'updated_at as last_update'])
                    ->where('admin_id', $adminId)
                    ->orderBy('last_update', 'DESC')
                    ->find();
@@ -301,13 +289,18 @@ class DavionShield
     public function logout(): bool
     {
         $sessionId = $this->session->session_id;
+        $clientId  = $this->clientID;
 
         // remove active session
         $adminSessionModel = new AdminSessionModel();
-        $adminSessionModel->where('name', $sessionId)->delete();
+        $adminSessionModel->where('name', $sessionId)
+                          ->orWhere('client_id', $clientId)
+                          ->delete();
 
         // invalidate session and return
         $this->session->destroy();
+
+        // always return true
         return true;
     }
 
