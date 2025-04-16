@@ -16,6 +16,7 @@
 
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Services;
+use Ramsey\Uuid\Uuid;
 
 function imageUrl($slug = '', $width = NULL, $height = NULL, $priority = 'width'): string
 {
@@ -61,4 +62,10 @@ function cannotAccessModule($status = 'error', $message = 'Anda tidak memiliki i
         'status'  => $status,
         'message' => $message
     ]);
+}
+
+function createRandomID(): string
+{
+    // return random ID
+    return Uuid::uuid4()->toString();
 }
