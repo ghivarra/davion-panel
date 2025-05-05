@@ -20,13 +20,14 @@ composer.lock
 #-------------------------
 # Storage Files
 #-------------------------
-writable/app/*
+writable/app/images/*
 !writable/app/images/computer.png
 !writable/app/images/login-background.png
 !writable/app/images/no-image.png
 !writable/app/images/tablet-smartphone.png
 !writable/app/images/logo/logo.png
 !writable/app/images/icon/icon.png
+!writable/app/images/admin/default-user.png
 
 public/favicon.ico
 
