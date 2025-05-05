@@ -25,8 +25,14 @@ writable/app/images/*
 !writable/app/images/login-background.png
 !writable/app/images/no-image.png
 !writable/app/images/tablet-smartphone.png
+!writable/app/images/logo
+writable/app/images/logo/*
 !writable/app/images/logo/logo.png
+!writable/app/images/icon
+writable/app/images/icon/*
 !writable/app/images/icon/icon.png
+!writable/app/images/admin
+writable/app/images/admin/*
 !writable/app/images/admin/default-user.png
 
 public/favicon.ico
