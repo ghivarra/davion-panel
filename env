@@ -23,7 +23,7 @@ AUTHOR='Ghivarra Senandika Rushdie'
 SESSION_LOGIN_PARAM='session_login_param'
 SESSION_LOGIN_TOKEN='your_session_login_token_here' # this is not cookie or any other client token, the token here is to validate your login session in the backend or serverside
 SESSION_GC_PROBABILITY=10
-
+ENV_DIVIDER = '|'
 
 #--------------------------------------------------------------------
 # VITE
@@ -47,15 +47,25 @@ VITE_LOADER_ON_CHANGE_PAGE=false
 # APP
 #--------------------------------------------------------------------
 
-# app.baseURL = ''
-# If you have trouble with `.`, you could also use `_`.
-# app_baseURL = ''
-# app.forceGlobalSecureRequests = false
-# app.CSPEnabled = false
+app.baseURL = 'https://davion.test/'
+app.allowedHostnames = 'www.davion.test'
+app.supportedLocales = 'id|en'
+app.defaultLocale = 'id'
+app.appTimezone = 'Asia/Jakarta'
 
 #--------------------------------------------------------------------
 # DATABASE
 #--------------------------------------------------------------------
+
+database.default.hostname = 'localhost'
+database.default.database = 'davion'
+database.default.username = 'ghivarra'
+database.default.password = 'I_AM_PASSWORD'
+database.default.DBDriver = 'Postgre'
+database.default.DBPrefix =
+database.default.port = 5432
+database.default.charset = 'utf8'
+database.default.DBCollat = 'utf8_general_ci'
 
 # database.default.hostname = localhost
 # database.default.database = ci4
@@ -64,6 +74,8 @@ VITE_LOADER_ON_CHANGE_PAGE=false
 # database.default.DBDriver = MySQLi
 # database.default.DBPrefix =
 # database.default.port = 3306
+# database.default.charset = 'utf8mb4'
+# database.default.DBCollat = 'utf8mb4_general_ci'
 
 # database.tests.hostname = localhost
 # database.tests.database = ci4_test
@@ -103,14 +115,14 @@ VITE_LOADER_ON_CHANGE_PAGE=false
 # COOKIE
 #--------------------------------------------------------------------
 
-# cookie.prefix = ''
-# cookie.expires = 0
-# cookie.path = '/'
-# cookie.domain = ''
-# cookie.secure = false
-# cookie.httponly = false
-# cookie.samesite = 'Lax'
-# cookie.raw = false
+cookie.prefix = ''
+cookie.expires = 86400
+cookie.path = '/'
+cookie.domain = '.davion.test'
+cookie.secure = true
+cookie.httponly = true
+cookie.samesite = 'Strict'
+cookie.raw = false
 
 #--------------------------------------------------------------------
 # ENCRYPTION
@@ -135,13 +147,13 @@ VITE_LOADER_ON_CHANGE_PAGE=false
 # SECURITY
 #--------------------------------------------------------------------
 
-# security.csrfProtection = 'cookie'
-# security.tokenRandomize = false
-# security.tokenName = 'csrf_token_name'
-# security.headerName = 'X-CSRF-TOKEN'
-# security.cookieName = 'csrf_cookie_name'
-# security.expires = 7200
-# security.regenerate = true
+security.csrfProtection = 'cookie'
+security.tokenRandomize = true
+security.tokenName = 'asjdlkasd8213sanea21'
+security.headerName = 'X-CSRF-TOKEN'
+security.cookieName = 'osadb8qw3ldjasd'
+security.expires = 7200
+security.regenerate = true
 # security.redirect = false
 # security.samesite = 'Lax'
 
@@ -149,9 +161,9 @@ VITE_LOADER_ON_CHANGE_PAGE=false
 # SESSION
 #--------------------------------------------------------------------
 
-# session.driver = 'CodeIgniter\Session\Handlers\FileHandler'
-# session.cookieName = 'ci_session'
-# session.expiration = 7200
+session.driver = 'CodeIgniter\Session\Handlers\FileHandler'
+session.cookieName = 'hj12h3lLAS'
+session.expiration = 86400
 # session.savePath = null
 # session.matchIP = false
 # session.timeToUpdate = 300
