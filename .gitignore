@@ -22,7 +22,7 @@ composer.lock
 #-------------------------
 writable/app/images/*
 !writable/app/images/computer.png
-!writable/app/images/login-background.png
+!writable/app/images/login-background.jpg
 !writable/app/images/no-image.png
 !writable/app/images/tablet-smartphone.png
 !writable/app/images/logo
