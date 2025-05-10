@@ -35,6 +35,8 @@ function imageUrl($slug = '', $width = NULL, $height = NULL, $priority = 'width'
     return $url;
 }
 
+//======================================================================================================
+
 function numbering(array $array = [], int $start = 0): array
 {
     foreach ($array as $key => $value):
@@ -47,12 +49,16 @@ function numbering(array $array = [], int $start = 0): array
     return $array;
 }
 
+//======================================================================================================
+
 function prettyPrint($var): void
 {
     echo '<pre>';
     var_dump($var);
     echo '</pre>';
 }
+
+//======================================================================================================
 
 function cannotAccessModule($status = 'error', $message = 'Anda tidak memiliki izin untuk mengakses halaman ini.'): ResponseInterface
 {
@@ -64,11 +70,15 @@ function cannotAccessModule($status = 'error', $message = 'Anda tidak memiliki i
     ]);
 }
 
+//======================================================================================================
+
 function createRandomID(): string
 {
     // return random ID
     return Uuid::uuid4()->toString();
 }
+
+//======================================================================================================
 
 function envArrayParser(string $key, array $default = []): array
 {
