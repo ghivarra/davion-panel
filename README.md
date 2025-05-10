@@ -36,12 +36,12 @@ The database and files keep resetting every 30 minutes, so it doesn't matter. Tr
 # I forked but cannot run it?
 One cannot run this app without the ignored files from DotEnv, App/Config, vendor, and node_modules folders. But don't worry, just follow the steps below to run this app (on Linux or UNIX environment):
 
-- Run `npm install` on project location
-- Run `composer install` on project location
-- Run `cp vendor/codeigniter4/framework/app/Config/{App.php,Cache.php,ContentSecurityPolicy.php,Cookie.php,Database.php,Encryption.php,Email.php,Session.php,Security.php} app/Config/` on project location
-- Run `cp env .env` on project location
-- Set the copied configuration files based on your server/host environment
-- Run `php spark migrate:refresh` on project location to migrate the database
+- Run `npm install` on root project location
+- Run `composer install` on root project location
+- Run `cp public/default-favicon.ico public/favicon.ico` on root project location
+- Run `cp env .env` on root project location
+- Set the copied environment configuration files based on your server/host environment
+- Run `php spark migrate:refresh` on root project location to migrate the database
 - Run `npm run dev` for development environment
 - Run `npm run build` and set `VITE_APP_ENV` in .env file to `production` for production
 
