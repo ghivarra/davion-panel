@@ -47,8 +47,8 @@ VITE_LOADER_ON_CHANGE_PAGE=false
 # APP
 #--------------------------------------------------------------------
 
-app.baseURL = 'https://davion.test/'
-app.allowedHostnames = 'www.davion.test'
+app.baseURL = 'https://davion.giberamedia.com/'
+app.allowedHostnames = 'davion.giberamedia.com'
 app.supportedLocales = 'id|en'
 app.defaultLocale = 'id'
 app.appTimezone = 'Asia/Jakarta'
@@ -118,7 +118,7 @@ database.default.DBCollat = 'utf8_general_ci'
 cookie.prefix = ''
 cookie.expires = 86400
 cookie.path = '/'
-cookie.domain = '.davion.test'
+cookie.domain = '.davion.giberamedia.com'
 cookie.secure = true
 cookie.httponly = true
 cookie.samesite = 'Strict'
