@@ -69,3 +69,14 @@ function createRandomID(): string
     // return random ID
     return Uuid::uuid4()->toString();
 }
+
+function envArrayParser(string $key, array $default = []): array
+{
+    // get environment key
+    $data = getenv($key);
+    
+    // return parsed data
+    return empty($data) ? $default : explode(getenv('ENV_DIVIDER'), str_replace(' ', '', $data));
+}
+
+//======================================================================================================
