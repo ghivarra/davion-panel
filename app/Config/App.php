@@ -11,6 +11,10 @@ class App extends BaseConfig
         $this->allowedHostnames = envArrayParser('app.allowedHostnames', []);
         $this->supportedLocales = envArrayParser('app.supportedLocales', ['en']);
         $this->proxyIPs         = envArrayParser('app.proxyIPs', []);
+
+        // modify because it is NOT automatically updated from env
+        // detected bug on CodeIgniter 4.6.1
+        $this->baseURL = getenv('app.baseURL');
     }
 
     /**
@@ -23,7 +27,7 @@ class App extends BaseConfig
      *
      * E.g., http://example.com/
      */
-    public string $baseURL = 'https://davion.test/';
+    public string $baseURL = '';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.
