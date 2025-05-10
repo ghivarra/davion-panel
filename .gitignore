@@ -1,15 +1,15 @@
 #-------------------------
 # Config Files
 #-------------------------
-app/Config/App.php
-app/Config/Cookie.php
-app/Config/Database.php
-app/Config/Email.php
-app/Config/Session.php
-app/Config/Security.php
-app/Config/Encryption.php
-app/Config/Cache.php
-app/Config/ContentSecurityPolicy.php
+# app/Config/App.php
+# app/Config/Cookie.php
+# app/Config/Database.php
+# app/Config/Email.php
+# app/Config/Session.php
+# app/Config/Security.php
+# app/Config/Encryption.php
+# app/Config/Cache.php
+# app/Config/ContentSecurityPolicy.php
 
 #-------------------------
 # Package Lock
