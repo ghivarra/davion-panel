@@ -20,12 +20,27 @@ class VueIgniter
     protected $viewPath;
     protected $viewData = [];
     protected $rootView = 'DefaultView';
+    protected $entryFile = '';
+
+    //========================================================================================
+
+    public function __construct()
+    {
+        $this->entryFile = $_ENV['VITE_ENTRY_FILE'];
+    }
 
     //========================================================================================
 
     public function setRootView(string $rootViewPath): void
     {
         $this->rootView = $rootViewPath;
+    }
+
+    //========================================================================================
+
+    public function setEntryFile(string $entryFileName): void
+    {
+        $this->entryFile = $entryFileName;
     }
 
     //========================================================================================
@@ -40,7 +55,7 @@ class VueIgniter
         if ($_ENV['VITE_APP_ENV'] === 'development')
         {
             // build main js url
-            $mainJSUrl = "{$_ENV['VITE_ORIGIN']}/{$_ENV['VITE_RESOURCES_DIR']}/main.js";
+            $mainJSUrl = "{$_ENV['VITE_ORIGIN']}/{$_ENV['VITE_RESOURCES_DIR']}/{$this->entryFile}";
 
             // we didn't used ssl verifications so we can use self signed ssl in localhost environment such as laragon etc.
             // make sure you only develop your app in localhost so MITM attack is not an issue
@@ -74,7 +89,14 @@ class VueIgniter
 
                     if ($fileExtension === '.js')
                     {
-                        if (isset($asset->isEntry) && $asset->isEntry)
+                        $entryFilePath = "{$_ENV['VITE_RESOURCES_DIR']}/{$this->entryFile}";
+
+                        if (!isset($asset->src, $asset->isEntry))
+                        {
+                            continue;
+                        }
+
+                        if (($asset->src === $entryFilePath) && $asset->isEntry)
                         {
                             $mainJS = base_url($asset->file);
 
