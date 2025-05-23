@@ -102,6 +102,7 @@ class VueIgniter
 
                             array_push($assets['js'], "<script type=\"module\" src=\"{$mainJS}\" crossorigin defer></script>");
 
+                            // search for original styles
                             if (isset($asset->css) && !empty($asset->css))
                             {
                                 foreach ($asset->css as $css):
@@ -111,7 +112,40 @@ class VueIgniter
 
                                 endforeach;
                             }
+
+                            // to fix multiple entry file style tags not resolved
+                            if (isset($asset->imports))
+                            {
+                                foreach ($asset->imports as $importedScript):
+
+                                    foreach ($manifest as $key => $newAsset)
+                                    {
+                                        if ($key === $importedScript)
+                                        {
+                                            if (isset($newAsset->css) && !empty($newAsset->css))
+                                            {
+                                                foreach ($newAsset->css as $css):
+
+                                                    $css = base_url($css);
+                                                    array_push($assets['css'], "<link href=\"{$css}\" rel=\"stylesheet\">");
+
+                                                endforeach;
+                                            }
+
+                                            break;
+                                        }
+                                    }
+
+                                endforeach;
+                            }
                         }
+                    }
+
+                    // if only use one styles
+                    if (isset($asset->src) && $asset->src === 'style.css')
+                    {
+                        $css = base_url($asset->file);
+                        array_push($assets['css'], "<link href=\"{$css}\" rel=\"stylesheet\">");
                     }
 
                 endforeach;
