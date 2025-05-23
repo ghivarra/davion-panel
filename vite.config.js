@@ -32,6 +32,30 @@ export default defineConfig(() => {
 			manifest: true,
 			rollupOptions: {
 				input: `./${env.VITE_RESOURCES_DIR}/${env.VITE_ENTRY_FILE}`,
+				output: {
+					manualChunks: (id) => {
+
+						// the first order executed first so make sure the dependency from the packages is
+						// chunked first to prevent uncaught reference error after bundled
+						const chunkedFiles = [
+							'fortawesome', // chunk big icons packages
+							'node_modules', // chunk all another dependency packages,
+							'resources/libraries', // chunk all custom library packages
+						];
+
+						// debug all libs needed
+						// console.log(id)
+
+						for (let i = 0; i < chunkedFiles.length; i++) {
+							const chunked = chunkedFiles[i];
+							if (id.includes(chunked)) {
+								return 'chunk-' + chunked
+							}
+						}
+
+						return undefined
+					}
+				}
 			},
 		},
 		server: {
